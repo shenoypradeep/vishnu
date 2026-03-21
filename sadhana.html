@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sādhana App | Vedic Space</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css">
+    <script src="https://unpkg.com/feather-icons"></script>
+
+    <style>
+        :root {
+            --primary-blue: #1e3a8a;
+            --deep-blue: #0f172a;
+            --gold: #fbbf24;
+            --gold-muted: rgba(251, 191, 36, 0.2);
+            --text-light: #f8fafc;
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: radial-gradient(circle at top right, var(--primary-blue), var(--deep-blue));
+            color: var(--text-light);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        .serif { font-family: 'Playfair Display', serif; }
+
+        /* --- Navigation --- */
+        .navbar {
+            position: fixed;
+            top: 0; width: 100%;
+            background: rgba(15, 23, 42, 0.9);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--gold-muted);
+            z-index: 1000;
+            padding: 1rem 0;
+        }
+
+        .nav-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        .nav-links { display: flex; gap: 20px; }
+        .nav-links a {
+            color: var(--text-light);
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 500;
+            opacity: 0.7;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+        .nav-links a.active, .nav-links a:hover { opacity: 1; color: var(--gold); }
+
+        /* --- Main Container --- */
+        .app-container {
+            max-width: 1200px;
+            margin: 100px auto 40px;
+            padding: 0 20px;
+        }
+
+        .view-section { display: none; animation: fadeIn 0.5s ease forwards; }
+        .view-section.active { display: block; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section-intro { text-align: center; margin-bottom: 50px; }
+        .section-intro h1 { font-size: 2.5rem; color: #fff; margin-bottom: 10px; }
+        .divider { width: 50px; height: 3px; background: var(--gold); margin: 15px auto; }
+
+        /* --- Grid & Cards (Meditations & Pranayama) --- */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 25px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--gold-muted);
+            border-radius: 20px;
+            overflow: hidden;
+            transition: var(--transition);
+        }
+        .card:hover { border-color: var(--gold); transform: translateY(-5px); }
+        .card-img { width: 100%; aspect-ratio: 16/9; object-fit: cover; }
+        .card-body { padding: 1.5rem; }
+        .card-body h3 { color: var(--gold); margin-bottom: 10px; font-size: 1.25rem; }
+        .card-body p { font-size: 0.9rem; color: #94a3b8; margin-bottom: 1.5rem; }
+
+        /* --- Modern Audio Player --- */
+        audio { width: 100%; filter: invert(1); height: 35px; opacity: 0.8; }
+
+        /* --- Video Container --- */
+        .video-wrapper { position: relative; padding-bottom: 56.25%; height: 0; border-radius: 12px; overflow: hidden; }
+        .video-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
+
+        /* --- Viewer (Abhyasa & Parayana) --- */
+        .viewer-box { max-width: 800px; margin: 0 auto; position: relative; }
+        .swiper { border-radius: 20px; border: 1px solid var(--gold-muted); box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
+        .swiper-slide img { width: 100%; display: block; }
+        
+        .controls { display: flex; justify-content: center; gap: 15px; margin-top: 30px; }
+        .btn-circle {
+            background: var(--card-bg);
+            border: 1px solid var(--gold-muted);
+            color: white;
+            width: 50px; height: 50px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; transition: var(--transition);
+        }
+        .btn-circle:hover { background: var(--gold); color: var(--deep-blue); }
+
+        /* --- Parayana Chakra --- */
+        .chakra-container { display: flex; align-items: center; justify-content: center; gap: 40px; margin-top: 40px; background: rgba(0,0,0,0.2); padding: 20px; border-radius: 20px; }
+        #chakra-svg { width: 120px; height: 120px; }
+        .ring-bg { fill: none; stroke: rgba(255,255,255,0.1); stroke-width: 6; }
+        .ring-progress { fill: none; stroke: var(--gold); stroke-width: 6; stroke-linecap: round; transform: rotate(-90deg); transform-origin: center; transition: stroke-dashoffset 0.1s linear; }
+
+        /* Mobile Adjustments */
+        @media (max-width: 768px) {
+            .nav-links { display: none; } /* Could be a burger menu later */
+            .section-intro h1 { font-size: 1.8rem; }
+            .chakra-container { flex-direction: column; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="nav-content">
+        <a href="index.html" class="serif" style="text-decoration:none; color:white; font-size:1.2rem; font-weight:600;">Vedic Space</a>
+        <div class="nav-links">
+            <a onclick="switchView('meditations')" id="link-meditations" class="active">Meditations</a>
+            <a onclick="switchView('pranayama')" id="link-pranayama">Pranayama</a>
+            <a onclick="switchView('abhyasa')" id="link-abhyasa">Abhyāsa</a>
+            <a onclick="switchView('parayana')" id="link-parayana">Parayana</a>
+        </div>
+    </div>
+</nav>
+
+<div class="app-container">
+
+    <section id="meditations" class="view-section active">
+        <div class="section-intro">
+            <h1 class="serif">Guided Meditations</h1>
+            <p>Journey into the stillness of your soul</p>
+            <div class="divider"></div>
+        </div>
+        <div class="grid" id="meditation-grid"></div>
+    </section>
+
+    <section id="pranayama" class="view-section">
+        <div class="section-intro">
+            <h1 class="serif">Pranayama</h1>
+            <p>Mastering the Breath of Life</p>
+            <div class="divider"></div>
+        </div>
+        <div class="grid" id="pranayama-grid"></div>
+    </section>
+
+    <section id="abhyasa" class="view-section">
+        <div class="section-intro">
+            <h1 class="serif">Abhyāsa</h1>
+            <p>Vishnu Sahasranāma Practice Room</p>
+            <div class="divider"></div>
+        </div>
+        <div class="viewer-box">
+            <div class="swiper" id="abhyasa-swiper">
+                <div class="swiper-wrapper">
+                    </div>
+                <div class="swiper-pagination"></div>
+            </div>
+            <div class="controls">
+                <button class="btn-circle" onclick="aSwiper.slidePrev()"><i data-feather="chevron-left"></i></button>
+                <button class="btn-circle" id="audio-toggle" onclick="toggleAudio()"><i data-feather="volume-2"></i></button>
+                <button class="btn-circle" onclick="aSwiper.slideNext()"><i data-feather="chevron-right"></i></button>
+            </div>
+        </div>
+    </section>
+
+    <section id="parayana" class="view-section">
+        <div class="section-intro">
+            <h1 class="serif">Parayana</h1>
+            <p>Automatic Chanting Flow</p>
+            <div class="divider"></div>
+        </div>
+        <div class="viewer-box">
+            <img id="p-slide" src="Slide1.PNG" style="width:100%; border-radius:20px; border:1px solid var(--gold-muted);">
+            
+            <div class="chakra-container">
+                <svg id="chakra-svg" viewBox="0 0 120 120">
+                    <circle class="ring-bg" cx="60" cy="60" r="54" />
+                    <circle id="p-ring" class="ring-progress" cx="60" cy="60" r="54" stroke-dasharray="339.29" stroke-dashoffset="339.29" />
+                </svg>
+                
+                <div>
+                    <h2 id="p-timer-val" class="serif" style="font-size: 2rem;">3.00s</h2>
+                    <div style="display:flex; gap:10px; margin-top:10px;">
+                        <button class="btn-circle" onclick="adjP(-0.25)"><i data-feather="minus"></i></button>
+                        <button class="btn-circle" onclick="toggleP()" id="p-play-btn"><i data-feather="pause"></i></button>
+                        <button class="btn-circle" onclick="adjP(0.25)"><i data-feather="plus"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
+<script>
+    // --- Data Configuration ---
+    const meditationData = [
+        { title: "Silver String", img: "Silver_String.png", audio: "audio/silver_string.mp3", desc: "Focus on the infinite vertical axis of light." },
+        { title: "Hari Om", img: "Hari_Om_Chakras.png", audio: "audio/hari_om_meditation.mp3", desc: "Vibrational alignment for all energy centers." },
+        { title: "You Are Light", img: "You_Are_The_Light.png", audio: "audio/you_are_the_light.mp3", desc: "Realize your inherent divinity." }
+    ];
+
+    const pranayamaData = [
+        { title: "Nadi Shodhan", video: "https://www.youtube.com/embed/gId_Y69pTf8", desc: "Channel cleaning and nervous system balancing." },
+        { title: "Bhastrika", video: "https://www.youtube.com/embed/ET-Z6_XmIas", desc: "The Bellows Breath for instant energy boost." }
+    ];
+
+    // --- View Controller ---
+    function switchView(viewId) {
+        document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active'));
+        document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+        
+        document.getElementById(viewId).classList.add('active');
+        document.getElementById('link-' + viewId).classList.add('active');
+        window.scrollTo(0,0);
+        feather.replace();
+    }
+
+    // --- Render Grids ---
+    function initGrids() {
+        const mGrid = document.getElementById('meditation-grid');
+        meditationData.forEach(m => {
+            mGrid.innerHTML += `
+                <div class="card">
+                    <img src="${m.img}" class="card-img">
+                    <div class="card-body">
+                        <h3 class="serif">${m.title}</h3>
+                        <p>${m.desc}</p>
+                        <audio controls src="${m.audio}"></audio>
+                    </div>
+                </div>`;
+        });
+
+        const pGrid = document.getElementById('pranayama-grid');
+        pranayamaData.forEach(p => {
+            pGrid.innerHTML += `
+                <div class="card">
+                    <div class="video-wrapper"><iframe src="${p.video}"></iframe></div>
+                    <div class="card-body">
+                        <h3 class="serif">${p.title}</h3>
+                        <p>${p.desc}</p>
+                    </div>
+                </div>`;
+        });
+    }
+
+    // --- Abhyasa (Swiper) Logic ---
+    const aSwiper = new Swiper('#abhyasa-swiper', { loop: true, pagination: { el: '.swiper-pagination' } });
+    const swiperWrapper = document.querySelector('#abhyasa-swiper .swiper-wrapper');
+    for(let i=1; i<=8; i++) { // Sample count
+        swiperWrapper.innerHTML += `<div class="swiper-slide"><img src="Slide${i}.JPG"></div>`;
+    }
+    function toggleAudio() { alert("Audio preferences updated."); }
+
+    // --- Parayana (Chanter) Logic ---
+    let pIdx = 1, pDur = 3000, pIsPlaying = true, pStart = performance.now();
+    const pRing = document.getElementById('p-ring'), pImg = document.getElementById('p-slide');
+    
+    function toggleP() { 
+        pIsPlaying = !pIsPlaying; 
+        document.getElementById('p-play-btn').innerHTML = pIsPlaying ? `<i data-feather="pause"></i>` : `<i data-feather="play"></i>`;
+        feather.replace();
+        if(pIsPlaying) pStart = performance.now();
+    }
+    
+    function adjP(val) { pDur += val * 1000; if(pDur < 500) pDur = 500; document.getElementById('p-timer-val').innerText = (pDur/1000).toFixed(2)+'s'; }
+
+    function runLoop() {
+        requestAnimationFrame(runLoop);
+        if(!pIsPlaying) return;
+        let elapsed = performance.now() - pStart;
+        let progress = elapsed / pDur;
+        if(progress >= 1) {
+            pIdx = (pIdx % 112) + 1;
+            pImg.src = `Slide${pIdx}.PNG`;
+            pStart = performance.now();
+            progress = 0;
+        }
+        pRing.style.strokeDashoffset = 339.29 * (1 - progress);
+    }
+
+    // --- Boot ---
+    initGrids();
+    runLoop();
+    feather.replace();
+</script>
+
+</body>
+</html>
