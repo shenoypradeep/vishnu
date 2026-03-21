@@ -1,0 +1,89 @@
+body {
+  margin: 0;
+  background: radial-gradient(circle, #0a0f1c, #000);
+  font-family: 'Segoe UI', sans-serif;
+  color: #e6c37a;
+  text-align: center;
+}
+
+/* SLIDE */
+
+#slide-container {
+  height: 80vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#slide {
+  max-width: 92%;
+  max-height: 92%;
+  border-radius: 12px;
+  box-shadow: 0 0 40px rgba(230, 195, 122, 0.25);
+}
+
+/* WHEEL */
+
+#wheel {
+  position: relative;
+  width: 140px;
+  height: 140px;
+  margin: 20px auto;
+  border-radius: 50%;
+  border: 2px solid rgba(230,195,122,0.4);
+  box-shadow: 0 0 25px rgba(230,195,122,0.2);
+}
+
+/* Segments */
+
+.segment {
+  position: absolute;
+  width: 50%;
+  height: 100%;
+  top: 0;
+  cursor: pointer;
+}
+
+.left {
+  left: 0;
+}
+
+.right {
+  right: 0;
+}
+
+/* Center Play */
+
+#center-btn {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #e6c37a;
+  color: black;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  cursor: pointer;
+  box-shadow: 0 0 15px rgba(230,195,122,0.6);
+}
+
+/* Fullscreen */
+
+#fullscreen {
+  position: absolute;
+  bottom: 8px;
+  right: 10px;
+  font-size: 14px;
+  cursor: pointer;
+  opacity: 0.7;
+}
+
+#counter {
+  font-size: 14px;
+  opacity: 0.7;
+}
