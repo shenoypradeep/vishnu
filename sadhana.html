@@ -1,16 +1,9 @@
-This happens because the **Single Page Application (SPA)** logic defaults to showing only the first section (`#meditation`) while the other sections are hidden via `display: none`. Since the navigation menu was set to `display: none` on mobile in the previous CSS, mobile users have no way to trigger the `showView()` function to see the other three sections.
-
-To fix this, we will add a **Mobile Bottom Navigation Bar** (common in modern apps) so you can switch between sections with your thumb, while keeping the exact colors, glassmorphism, and branding from `index.html`.
-
-### Recreated `sadhana.html` (Mobile Optimized)
-
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Sādhana App | Vedic Space</title>
+    <title>Sādhana Dashboard | Vedic Space</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -20,7 +13,7 @@ To fix this, we will add a **Mobile Bottom Navigation Bar** (common in modern ap
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css">
 
     <style>
-        /* --- EXACT CSS VARIABLES FROM INDEX.HTML --- */
+        /* --- EXACT CSS VARIABLES & BRANDING FROM INDEX.HTML --- */
         :root {
             --primary-blue: #1e3a8a;
             --deep-blue: #0f172a;
@@ -30,7 +23,7 @@ To fix this, we will add a **Mobile Bottom Navigation Bar** (common in modern ap
             --glass-bg: rgba(255, 255, 255, 0.05);
             --glass-border: rgba(255, 255, 255, 0.1);
             --nav-height: 80px;
-            --mobile-nav-height: 70px;
+            --m-nav-height: 70px;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -38,16 +31,18 @@ To fix this, we will add a **Mobile Bottom Navigation Bar** (common in modern ap
         body {
             font-family: 'Inter', sans-serif;
             background-color: var(--deep-blue);
+            /* Exact Radial Gradient from index.html */
             background-image: 
                 radial-gradient(circle at 20% 30%, rgba(30, 58, 138, 0.15) 0%, transparent 40%),
                 radial-gradient(circle at 80% 70%, rgba(30, 58, 138, 0.1) 0%, transparent 40%);
             color: var(--text-light);
             min-height: 100vh;
+            line-height: 1.6;
         }
 
         .serif { font-family: 'Playfair Display', serif; }
 
-        /* --- DESKTOP HEADER --- */
+        /* --- HEADER & NAVIGATION --- */
         header {
             height: var(--nav-height);
             display: flex;
@@ -64,99 +59,95 @@ To fix this, we will add a **Mobile Bottom Navigation Bar** (common in modern ap
 
         .logo {
             font-family: 'Playfair Display', serif;
-            font-size: 1.4rem;
-            font-weight: 700;
-            color: white;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 12px;
+            font-size: 1.4rem; font-weight: 700;
+            color: white; text-decoration: none;
+            display: flex; align-items: center; gap: 10px;
         }
 
         .logo-icon {
-            width: 34px; height: 34px;
+            width: 32px; height: 32px;
             background: var(--accent-gold);
             border-radius: 8px;
             display: flex; align-items: center; justify-content: center;
             color: var(--deep-blue);
         }
 
-        nav.desktop-nav { display: flex; gap: 25px; }
-        nav.desktop-nav a {
+        /* Desktop Nav - Hidden on Mobile */
+        .desktop-nav { display: flex; gap: 25px; }
+        .desktop-nav a {
             text-decoration: none; color: var(--text-light);
             font-weight: 500; font-size: 0.9rem;
             opacity: 0.7; transition: 0.3s; cursor: pointer;
         }
-        nav.desktop-nav a.active { opacity: 1; color: var(--accent-gold); }
+        .desktop-nav a.active { opacity: 1; color: var(--accent-gold); border-bottom: 2px solid var(--accent-gold); }
 
-        /* --- MOBILE BOTTOM NAV --- */
+        /* Mobile Bottom Nav - Visible only on Mobile */
         .mobile-nav {
             display: none;
             position: fixed;
-            bottom: 0; width: 100%;
-            height: var(--mobile-nav-height);
+            bottom: 0; width: 100%; height: var(--m-nav-height);
             background: rgba(15, 23, 42, 0.95);
             backdrop-filter: blur(15px);
             border-top: 1px solid var(--glass-border);
             z-index: 1000;
-            justify-content: space-around;
-            align-items: center;
+            justify-content: space-around; align-items: center;
             padding-bottom: env(safe-area-inset-bottom);
         }
 
-        .mobile-nav-item {
+        .m-nav-link {
             display: flex; flex-direction: column; align-items: center;
             color: var(--text-muted); text-decoration: none; font-size: 0.65rem;
             gap: 4px; transition: 0.3s;
         }
-        .mobile-nav-item.active { color: var(--accent-gold); }
-        .mobile-nav-item i { width: 20px; height: 20px; }
+        .m-nav-link.active { color: var(--accent-gold); }
+        .m-nav-link i { width: 20px; height: 20px; }
 
-        /* --- CONTENT AREA --- */
+        /* --- CONTENT WRAPPER --- */
         .container {
             max-width: 1200px;
-            margin: calc(var(--nav-height) + 30px) auto 100px;
+            margin: calc(var(--nav-height) + 40px) auto 100px;
             padding: 0 20px;
         }
 
-        .section-view { display: none; animation: fadeIn 0.4s ease-out forwards; }
+        .section-view { display: none; animation: fadeIn 0.4s ease forwards; }
         .section-view.active { display: block; }
+
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         .title-block { text-align: center; margin-bottom: 40px; }
-        .title-block h1 { font-size: 2.2rem; margin-bottom: 8px; }
+        .title-block h1 { font-size: 2.5rem; margin-bottom: 8px; }
+        .divider { width: 40px; height: 3px; background: var(--accent-gold); margin: 15px auto; }
 
-        /* --- CARDS & GLASS PANES --- */
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
-        .glass-pane {
+        /* --- UI COMPONENTS --- */
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 25px; }
+        
+        .pane {
             background: var(--glass-bg);
             border: 1px solid var(--glass-border);
             border-radius: 20px;
             overflow: hidden;
+            transition: 0.3s;
         }
-        .pane-img { width: 100%; aspect-ratio: 16/9; object-fit: cover; }
-        .pane-content { padding: 20px; }
-        .pane-content h3 { color: var(--accent-gold); margin-bottom: 10px; }
-        
-        audio { width: 100%; filter: invert(1); height: 35px; margin-top: 15px; }
+        .pane:hover { border-color: var(--accent-gold); }
 
-        /* --- CHAKRA UI --- */
-        .chakra-ui {
+        audio { width: 100%; filter: invert(1); height: 35px; opacity: 0.7; margin-top: 10px; }
+
+        /* Parayana Chakra */
+        .chakra-box {
             background: rgba(0,0,0,0.2);
-            border-radius: 20px;
-            padding: 20px;
+            border-radius: 24px; padding: 30px;
             display: flex; flex-direction: column; align-items: center; gap: 20px;
             border: 1px solid var(--glass-border);
+            max-width: 500px; margin: 30px auto;
         }
-        #chakra-svg { width: 100px; height: 100px; }
-        .ring-fill { fill: none; stroke: var(--accent-gold); stroke-width: 6; transform: rotate(-90deg); transform-origin: center; transition: 0.1s linear; }
+        .ring-progress { fill: none; stroke: var(--accent-gold); stroke-width: 6; stroke-linecap: round; transform: rotate(-90deg); transform-origin: center; transition: 0.1s linear; }
 
-        /* --- MOBILE MEDIA QUERIES --- */
+        /* Mobile Adjustments */
         @media (max-width: 768px) {
-            nav.desktop-nav { display: none; }
+            .desktop-nav { display: none; }
             .mobile-nav { display: flex; }
-            .container { margin-top: calc(var(--nav-height) + 10px); }
             .title-block h1 { font-size: 1.8rem; }
+            .container { margin-top: calc(var(--nav-height) + 10px); }
         }
     </style>
 </head>
@@ -168,109 +159,93 @@ To fix this, we will add a **Mobile Bottom Navigation Bar** (common in modern ap
         Vedic Space
     </a>
     <nav class="desktop-nav">
-        <a onclick="setView('m')" id="d-m" class="active">Meditations</a>
-        <a onclick="setView('pr')" id="d-pr">Pranayama</a>
-        <a onclick="setView('ab')" id="d-ab">Abhyāsa</a>
-        <a onclick="setView('pa')" id="d-pa">Parayana</a>
+        <a onclick="show('med')" id="d-med" class="active">Meditations</a>
+        <a onclick="show('pran')" id="d-pran">Pranayama</a>
+        <a onclick="show('abhy')" id="d-abhy">Abhyāsa</a>
+        <a onclick="show('para')" id="d-para">Parayana</a>
     </nav>
 </header>
 
 <nav class="mobile-nav">
-    <a onclick="setView('m')" id="m-m" class="mobile-nav-item active"><i data-feather="wind"></i>Meditate</a>
-    <a onclick="setView('pr')" id="m-pr" class="mobile-nav-item"><i data-feather="activity"></i>Breath</a>
-    <a onclick="setView('ab')" id="m-ab" class="mobile-nav-item"><i data-feather="book-open"></i>Abhyāsa</a>
-    <a onclick="setView('pa')" id="m-pa" class="mobile-nav-item"><i data-feather="repeat"></i>Parayana</a>
+    <a onclick="show('med')" id="m-med" class="m-nav-link active"><i data-feather="wind"></i>Dhyāna</a>
+    <a onclick="show('pran')" id="m-pran" class="m-nav-link"><i data-feather="activity"></i>Prana</a>
+    <a onclick="show('abhy')" id="m-abhy" class="m-nav-link"><i data-feather="book-open"></i>Abhyāsa</a>
+    <a onclick="show('para')" id="m-para" class="m-nav-link"><i data-feather="repeat"></i>Parayana</a>
 </nav>
 
 <main class="container">
-    <section id="view-m" class="section-view active">
+    
+    <section id="view-med" class="section-view active">
         <div class="title-block">
-            <h1 class="serif">Meditations</h1>
-            <p class="serif" style="font-style:italic; opacity:0.6;">Inner Stillness</p>
+            <h1 class="serif">Guided Meditations</h1>
+            <div class="divider"></div>
         </div>
-        <div class="grid">
-            <div class="glass-pane">
-                <img src="Silver_String.png" class="pane-img">
-                <div class="pane-content">
-                    <h3>Silver String</h3>
-                    <p>Focus on the infinite vertical channel.</p>
+        <div class="grid" id="med-grid">
+            <div class="pane">
+                <img src="Silver_String.png" style="width:100%">
+                <div style="padding:20px;">
+                    <h3 class="serif">Silver String</h3>
+                    <p style="font-size:0.9rem; color:var(--text-muted);">Guided dhyāna for alignment.</p>
                     <audio controls src="audio/silver_string.mp3"></audio>
                 </div>
             </div>
         </div>
     </section>
 
-    <section id="view-pr" class="section-view">
-        <div class="title-block"><h1 class="serif">Pranayama</h1></div>
-        <div class="grid">
-            <div class="glass-pane">
-                <div style="padding-bottom:56.25%; position:relative;">
-                    <iframe src="https://www.youtube.com/embed/gId_Y69pTf8" style="position:absolute; width:100%; height:100%; border:0; border-radius:20px 20px 0 0;"></iframe>
-                </div>
-                <div class="pane-content"><h3>Nadi Shodhan</h3></div>
-            </div>
+    <section id="view-para" class="section-view">
+        <div class="title-block">
+            <h1 class="serif">Parayana</h1>
+            <div class="divider"></div>
         </div>
-    </section>
-
-    <section id="view-ab" class="section-view">
-        <div class="title-block"><h1 class="serif">Abhyāsa</h1></div>
-        <div class="swiper" id="ab-swiper">
-            <div class="swiper-wrapper">
-                <div class="swiper-slide"><img src="Slide1.JPG" style="width:100%; border-radius:20px;"></div>
-                <div class="swiper-slide"><img src="Slide2.JPG" style="width:100%; border-radius:20px;"></div>
-            </div>
-        </div>
-    </section>
-
-    <section id="view-pa" class="section-view">
-        <div class="title-block"><h1 class="serif">Parayana</h1></div>
-        <div class="chakra-ui">
-            <img id="pa-img" src="Slide1.PNG" style="width:100%; border-radius:15px;">
-            <svg id="chakra-svg" viewBox="0 0 120 120">
+        <div class="chakra-box">
+            <img id="p-img" src="Slide1.PNG" style="width:100%; border-radius:12px; border:1px solid var(--glass-border);">
+            <svg width="100" height="100" viewBox="0 0 120 120">
                 <circle cx="60" cy="60" r="54" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="6"/>
-                <circle id="pa-ring" class="ring-fill" cx="60" cy="60" r="54" stroke-dasharray="339.29" stroke-dashoffset="339.29"/>
+                <circle id="p-ring" class="ring-progress" cx="60" cy="60" r="54" stroke-dasharray="339.29" stroke-dashoffset="339.29"/>
             </svg>
-            <button class="btn-glass" onclick="togglePa()" id="btn-pa" style="background:var(--accent-gold); color:var(--deep-blue); border:none; padding:10px 25px; border-radius:20px; font-weight:bold;">Pause</button>
+            <button onclick="toggleP()" id="p-btn" style="background:var(--accent-gold); color:var(--deep-blue); border:none; padding:12px 30px; border-radius:30px; font-weight:700; cursor:pointer;">Pause</button>
         </div>
     </section>
+
+    <section id="view-pran" class="section-view"><div class="title-block"><h1 class="serif">Pranayama</h1></div></section>
+    <section id="view-abhy" class="section-view"><div class="title-block"><h1 class="serif">Abhyāsa</h1></div></section>
+
 </main>
 
-<script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
 <script>
-    // Navigation Logic
-    function setView(viewCode) {
-        // Hide all
+    // Navigation Control
+    function show(id) {
+        // Remove active states from all views and links
         document.querySelectorAll('.section-view').forEach(v => v.classList.remove('active'));
-        document.querySelectorAll('.mobile-nav-item, .desktop-nav a').forEach(n => n.classList.remove('active'));
-        
-        // Show selected
-        document.getElementById('view-' + viewCode).classList.add('active');
-        document.getElementById('m-' + viewCode).classList.add('active');
-        document.getElementById('d-' + viewCode).classList.add('active');
+        document.querySelectorAll('.desktop-nav a, .m-nav-link').forEach(l => l.classList.remove('active'));
+
+        // Activate selected
+        document.getElementById('view-' + id).classList.add('active');
+        document.getElementById('d-' + id).classList.add('active');
+        document.getElementById('m-' + id).classList.add('active');
         
         window.scrollTo(0,0);
     }
 
     // Parayana Engine
     let pIdx = 1, pDur = 3000, pOn = true, pStart = performance.now();
-    function togglePa() { pOn = !pOn; document.getElementById('btn-pa').innerText = pOn ? "Pause" : "Play"; if(pOn) pStart = performance.now(); }
+    function toggleP() { pOn = !pOn; document.getElementById('p-btn').innerText = pOn ? "Pause" : "Play"; if(pOn) pStart = performance.now(); }
 
-    function run() {
-        requestAnimationFrame(run);
-        if(!pOn || !document.getElementById('view-pa').classList.contains('active')) return;
+    function loop() {
+        requestAnimationFrame(loop);
+        if(!pOn || !document.getElementById('view-para').classList.contains('active')) return;
         let progress = (performance.now() - pStart) / pDur;
         if(progress >= 1) {
             pIdx = (pIdx % 112) + 1;
-            document.getElementById('pa-img').src = `Slide${pIdx}.PNG`;
+            document.getElementById('p-img').src = `Slide${pIdx}.PNG`;
             pStart = performance.now(); progress = 0;
         }
-        document.getElementById('pa-ring').style.strokeDashoffset = 339.29 * (1 - progress);
+        document.getElementById('p-ring').style.strokeDashoffset = 339.29 * (1 - progress);
     }
 
-    const swiper = new Swiper('#ab-swiper', { loop: true });
-    run();
+    loop();
     feather.replace();
 </script>
+
 </body>
 </html>
-```
