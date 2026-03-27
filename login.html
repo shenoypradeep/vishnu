@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Login | Vedic Space</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/feather-icons"></script>
+    <style>
+        :root { --gold: #fbbf24; --glass: rgba(255, 255, 255, 0.08); --border: rgba(255, 255, 255, 0.12); }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #1e3a8a, #1e40af);
+            color: white; min-height: 100vh;
+            display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 25px;
+        }
+        .header-section { text-align: center; margin-bottom: 30px; }
+        .serif { font-family: 'Playfair Display', serif; font-size: 2.5rem; color: var(--gold); }
+        .login-card {
+            background: var(--glass); backdrop-filter: blur(10px);
+            border: 1px solid var(--border); border-radius: 24px;
+            padding: 30px 20px; width: 100%; max-width: 400px;
+        }
+        input {
+            width: 100%; background: rgba(255,255,255,0.1); border: 1px solid var(--border);
+            padding: 16px; border-radius: 15px; color: white; margin-bottom: 15px; font-size: 1rem; outline: none;
+        }
+        .btn-primary { width: 100%; background: var(--gold); color: #1e3a8a; border: none; padding: 16px; border-radius: 15px; font-weight: 700; cursor: pointer; margin-top: 10px; }
+        .btn-google {
+            width: 100%; background: white; color: #444; border: none; padding: 14px; border-radius: 15px;
+            font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer;
+        }
+        .divider { text-align: center; margin: 20px 0; font-size: 0.8rem; opacity: 0.5; display: flex; align-items: center; gap: 10px; }
+        .divider::before, .divider::after { content: ""; flex: 1; height: 1px; background: var(--border); }
+        #error-msg { color: #f87171; font-size: 0.85rem; text-align: center; margin-bottom: 10px; min-height: 1.2rem; }
+    </style>
+</head>
+<body>
+    <div class="header-section">
+        <h1 class="serif">Vedic Space</h1>
+        <p style="opacity: 0.8;">Sādhana Portal</p>
+    </div>
+
+    <div class="login-card">
+        <div id="error-msg"></div>
+        
+        <button class="btn-google" id="google-btn">
+            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="18">
+            Continue with Google
+        </button>
+
+        <div class="divider">OR EMAIL</div>
+
+        <input type="email" id="email" placeholder="Email Address">
+        <input type="password" id="password" placeholder="Password">
+        <button class="btn-primary" id="login-btn">Sign In</button>
+        
+        <p id="signup-btn" style="text-align:center; margin-top:20px; font-size:0.85rem; cursor:pointer; opacity:0.7;">
+            New here? Create Account
+        </p>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDNODSDmwHVfqt2CSb0tPDZwJGYjov7Lt0",
+            authDomain: "vedic-space.firebaseapp.com",
+            projectId: "vedic-space",
+            storageBucket: "vedic-space.firebasestorage.app",
+            messagingSenderId: "465492860613",
+            appId: "1:465492860613:web:701d9c3ab0cd4c5a3edaac"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const provider = new GoogleAuthProvider();
+
+        const err = document.getElementById('error-msg');
+
+        // Google Login
+        document.getElementById('google-btn').onclick = async () => {
+            try {
+                await signInWithPopup(auth, provider);
+                window.location.href = "sadhana.html";
+            } catch (e) { 
+                err.innerText = "Google Sign-in failed. Check console for details.";
+                console.error(e);
+            }
+        };
+
+        // Email Login
+        document.getElementById('login-btn').onclick = async () => {
+            try {
+                await signInWithEmailAndPassword(auth, document.getElementById('email').value, document.getElementById('password').value);
+                window.location.href = "sadhana.html";
+            } catch (e) { err.innerText = "Invalid login credentials."; }
+        };
+
+        // Email Signup
+        document.getElementById('signup-btn').onclick = async () => {
+            try {
+                await createUserWithEmailAndPassword(auth, document.getElementById('email').value, document.getElementById('password').value);
+                window.location.href = "sadhana.html";
+            } catch (e) { err.innerText = e.message.replace("Firebase: ", ""); }
+        };
+    </script>
+</body>
+</html>
