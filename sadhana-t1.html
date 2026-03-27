@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Sādhana | VSS App</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css">
+    <script src="https://unpkg.com/feather-icons"></script>
+
+    <style>
+        :root {
+            --bg-blue: #1e3a8a;
+            --accent-gold: #fbbf24;
+            --glass: rgba(255, 255, 255, 0.05);
+            --border: rgba(251, 191, 36, 0.2);
+        }
+
+        body { 
+            background: linear-gradient(135deg, #1e3a8a, #1e40af); 
+            color: white; 
+            margin: 0; 
+            font-family: 'Inter', sans-serif; 
+            min-height: 100vh;
+        }
+        
+        .serif { font-family: 'Playfair Display', serif; }
+
+        /* --- DESKTOP HEADER --- */
+        .header { 
+            position: fixed; top: 0; width: 100%; 
+            background: rgba(30, 58, 138, 0.95); 
+            backdrop-filter: blur(10px); 
+            border-bottom: 1px solid var(--border); 
+            z-index: 1000; padding: 12px 0; 
+        }
+        .nav { display: flex; justify-content: space-between; align-items: center; max-width: 1200px; margin: auto; padding: 0 20px; }
+        .logo { display: flex; align-items: center; gap: 10px; font-size: 22px; font-weight: 600; color: white; text-decoration: none; }
+        .logo img { height: 40px; }
+        
+        .nav-links { display: flex; gap: 25px; }
+        .nav-links span { cursor: pointer; opacity: 0.7; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; transition: 0.3s; }
+        .nav-links span.active { color: var(--accent-gold); opacity: 1; font-weight: 600; }
+
+        /* --- MOBILE BOTTOM NAV --- */
+        .mobile-nav {
+            display: none; position: fixed; bottom: 0; width: 100%;
+            background: rgba(30, 58, 138, 0.98); border-top: 1px solid var(--border);
+            z-index: 1001; padding: 10px 0 calc(10px + env(safe-area-inset-bottom));
+            justify-content: space-around; align-items: center;
+        }
+        .mobile-nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; color: white; opacity: 0.6; font-size: 10px; cursor: pointer; }
+        .mobile-nav-item.active { color: var(--accent-gold); opacity: 1; }
+        .mobile-nav-item i { width: 22px; height: 22px; }
+
+        /* --- CONTAINER & SECTIONS --- */
+        .container { padding-top: 90px; max-width: 1100px; margin: auto; padding-left: 20px; padding-right: 20px; padding-bottom: 100px; }
+        .section { display: none; animation: fadeIn 0.4s ease; }
+        .section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .title { text-align: center; margin-bottom: 30px; }
+        .divider { width: 60px; height: 3px; background: linear-gradient(135deg, #f59e0b, #fbbf24); margin: 10px auto; border-radius: 2px; }
+        
+        .card { background: var(--glass); border: 1px solid var(--border); border-radius: 15px; overflow: hidden; transition: 0.3s; }
+        .card:hover { border-color: var(--accent-gold); }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+        .card img { width: 100%; height: 180px; object-fit: cover; }
+        .card-body { padding: 15px; text-align: center; }
+        
+        audio { width: 100%; filter: invert(1); margin-top: 10px; }
+        .video-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; }
+        .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
+
+        /* --- PARAYANA CHANTER --- */
+        #p-ring { fill: none; stroke: var(--accent-gold); stroke-width: 6; stroke-dasharray: 339.29; stroke-dashoffset: 339.29; transform: rotate(-90deg); transform-origin: center; transition: 0.1s linear; }
+
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .mobile-nav { display: flex; }
+            .container { padding-top: 70px; }
+        }
+    </style>
+</head>
+<body>
+
+<header class="header">
+  <div class="nav">
+    <div class="logo serif">
+      <img src="https://vedicspace.in/assets/logo.png">Vedic Space
+    </div>
+    <div class="nav-links">
+      <span onclick="show('med')" id="nav-med" class="active">Meditations</span>
+      <span onclick="show('abhy')" id="nav-abhy">Abhyāsa</span>
+      <span onclick="show('pran')" id="nav-pran">Prāṇāyāma</span>
+      <span onclick="show('para')" id="nav-para">Parāyaṇa</span>
+    </div>
+  </div>
+</header>
+
+<nav class="mobile-nav">
+    <div class="mobile-nav-item active" id="m-med" onclick="show('med')"><i data-feather="wind"></i>Dhyāna</div>
+    <div class="mobile-nav-item" id="m-abhy" onclick="show('abhy')"><i data-feather="book-open"></i>Abhyāsa</div>
+    <div class="mobile-nav-item" id="m-pran" onclick="show('pran')"><i data-feather="activity"></i>Prāṇa</div>
+    <div class="mobile-nav-item" id="m-para" onclick="show('para')"><i data-feather="repeat"></i>Flow</div>
+</nav>
+
+<div class="container">
+    <!-- MEDITATIONS -->
+    <section id="med" class="section active">
+        <div class="title">
+            <h1 class="serif">Meditations</h1>
+            <div class="divider"></div>
+        </div>
+        <div class="grid" id="medGrid">
+            <!-- Content loaded via JS -->
+        </div>
+    </section>
+
+    <!-- ABHYASA -->
+    <section id="abhy" class="section">
+        <div class="title">
+            <h1 class="serif">Abhyāsālaya</h1>
+            <div class="divider"></div>
+        </div>
+        <div class="card" style="max-width: 600px; margin: auto; padding: 10px;">
+            <img id="ab-img" src="Slide1.JPG" style="height: auto; border-radius: 10px;">
+            <div style="display: flex; justify-content: center; gap: 15px; margin-top: 15px;">
+                <button onclick="changeAb(-1)" style="padding: 10px 20px; border-radius: 10px; background: var(--accent-gold); color: #1e3a8a; font-weight: bold; border: none;">Prev</button>
+                <button onclick="changeAb(1)" style="padding: 10px 20px; border-radius: 10px; background: var(--accent-gold); color: #1e3a8a; font-weight: bold; border: none;">Next</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- PRANAYAMA -->
+    <section id="pran" class="section">
+        <div class="title">
+            <h1 class="serif">Prāṇāyāma</h1>
+            <div class="divider"></div>
+        </div>
+        <div class="grid">
+            <div class="card">
+                <div class="video-container">
+                    <iframe src="https://www.youtube.com/embed/gId_Y69pTf8"></iframe>
+                </div>
+                <div class="card-body"><h3>Nadi Shodhana</h3></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PARAYANA -->
+    <section id="para" class="section">
+        <div class="title">
+            <h1 class="serif">Parāyaṇa Flow</h1>
+            <div class="divider"></div>
+        </div>
+        <div class="card" style="text-align: center; padding: 30px;">
+            <img id="p-img" src="Slide1.PNG" style="max-width: 300px; border-radius: 15px;">
+            <div style="margin: 20px 0;">
+                <svg width="100" height="100" viewBox="0 0 120 120">
+                    <circle cx="60" cy="60" r="54" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="6"/>
+                    <circle id="p-ring" cx="60" cy="60" r="54" />
+                </svg>
+                <h2 id="p-timer" class="serif" style="color: var(--accent-gold); margin-top: 10px;">3.00s</h2>
+            </div>
+            <button onclick="toggleFlow()" id="flow-btn" style="background: var(--accent-gold); color: #1e3a8a; border: none; padding: 12px 30px; border-radius: 25px; font-weight: bold;">Pause</button>
+        </div>
+    </section>
+</div>
+
+<!-- FIREBASE SDK -->
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDNODSDmwHVfqt2CSb0tPDZwJGYjov7Lt0",
+      authDomain: "vedic-space.firebaseapp.com",
+      databaseURL: "https://vedic-space-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "vedic-space",
+      storageBucket: "vedic-space.firebasestorage.app",
+      messagingSenderId: "465492860613",
+      appId: "1:465492860613:web:701d9c3ab0cd4c5a3edaac",
+      measurementId: "G-9H9S9RJSNP"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+</script>
+
+<script>
+    // Tab Controller
+    function show(id) {
+        document.querySelectorAll('.section').forEach(s => s.style.display = 'none');
+        document.getElementById(id).style.display = 'block';
+
+        // Nav Highlighting
+        document.querySelectorAll('.nav-links span, .mobile-nav-item').forEach(el => el.classList.remove('active'));
+        document.getElementById('nav-' + id)?.classList.add('active');
+        document.getElementById('m-' + id)?.classList.add('active');
+        
+        window.scrollTo(0,0);
+    }
+
+    // Meditations Data
+    const meditations = [
+        {title: "Silver String", img: "Silver_String.png", audio: "audio/silver_string.mp3"},
+        {title: "Hari Om Chakras", img: "Hari_Om_Chakras.png", audio: "audio/hari_om_meditation.mp3"}
+    ];
+
+    const medGrid = document.getElementById('medGrid');
+    meditations.forEach(m => {
+        medGrid.innerHTML += `
+            <div class="card">
+                <img src="${m.img}">
+                <div class="card-body">
+                    <h3 class="serif">${m.title}</h3>
+                    <audio controls src="${m.audio}"></audio>
+                </div>
+            </div>`;
+    });
+
+    // Abhyasa Logic
+    let abIdx = 1;
+    function changeAb(dir) {
+        abIdx += dir;
+        if(abIdx < 1) abIdx = 8;
+        if(abIdx > 8) abIdx = 1;
+        document.getElementById('ab-img').src = `Slide${abIdx}.JPG`;
+    }
+
+    // Parayana Engine
+    let pIdx = 1, pOn = true, pStart = Date.now(), pDur = 3000;
+    function toggleFlow() {
+        pOn = !pOn;
+        document.getElementById('flow-btn').innerText = pOn ? "Pause" : "Play";
+    }
+
+    function runFlow() {
+        if(pOn && document.getElementById('para').style.display === 'block') {
+            let elapsed = Date.now() - pStart;
+            let progress = elapsed / pDur;
+            if(progress >= 1) {
+                pIdx = (pIdx % 112) + 1;
+                document.getElementById('p-img').src = `Slide${pIdx}.PNG`;
+                pStart = Date.now();
+                progress = 0;
+            }
+            document.getElementById('p-ring').style.strokeDashoffset = 339.29 * (1 - progress);
+        }
+        requestAnimationFrame(runFlow);
+    }
+
+    window.onload = () => {
+        feather.replace();
+        runFlow();
+        show('med'); // Initial tab
+    };
+</script>
+
+</body>
+</html>
