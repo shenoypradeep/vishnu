@@ -1,14 +1,39 @@
 const CACHE_NAME = 'sadhana-cache-v1';
 
+function shouldHandleRequest(request) {
+  if (request.method !== 'GET') {
+    return false;
+  }
+
+  const url = new URL(request.url);
+
+  // Only cache same-origin static assets so navigations and API calls
+  // always go to the network and don't get stuck on stale responses.
+  if (url.origin !== self.location.origin) {
+    return false;
+  }
+
+  if (request.mode === 'navigate') {
+    return false;
+  }
+
+  return ['style', 'script', 'image', 'font', 'audio'].includes(request.destination);
+}
+
 // Install event - basic setup
 self.addEventListener('install', (event) => {
   self.skipWaiting();
 });
 
-// Fetch event - Cache First strategy
+self.addEventListener('activate', (event) => {
+  event.waitUntil(self.clients.claim());
+});
+
+// Fetch event - Cache First strategy for static assets only
 self.addEventListener('fetch', (event) => {
-  // We only care about caching GET requests for images/audio
-  if (event.request.method !== 'GET') return;
+  if (!shouldHandleRequest(event.request)) {
+    return;
+  }
 
   event.respondWith(
     caches.match(event.request).then((cachedResponse) => {
@@ -19,13 +44,20 @@ self.addEventListener('fetch', (event) => {
 
       // Otherwise fetch from network, then cache it for next time
       return fetch(event.request).then((networkResponse) => {
+        if (!networkResponse || networkResponse.status !== 200) {
+          return networkResponse;
+        }
+
         return caches.open(CACHE_NAME).then((cache) => {
           cache.put(event.request, networkResponse.clone());
           return networkResponse;
         });
       }).catch(() => {
         // Fallback if offline and not in cache
-        return new Response("Offline content not available");
+        return new Response('Offline content not available', {
+          status: 503,
+          statusText: 'Service Unavailable'
+        });
       });
     })
   );
