@@ -1,0 +1,136 @@
+Use this cheat sheet with `\$vedicspace-blogger`. Swap in your file/topic/details as needed.
+
+**Create**
+- `Use $vedicspace-blogger to create a new Vedic Space blog post about [topic].`
+- `Use $vedicspace-blogger to create a new post on [topic] using the existing Vedic Space HTML structure.`
+- `Use $vedicspace-blogger to write a publish-ready article on [topic] in the Vedic Space voice.`
+- `Use $vedicspace-blogger to create a blog post from scratch on [topic] with title, subtitle, metadata, and references.`
+- `Use $vedicspace-blogger to create a long-form article connecting [spiritual concept] with [modern concept].`
+
+**Template-Based**
+- `Use $vedicspace-blogger to create [new-file].html using [template-file].html as the template.`
+- `Use $vedicspace-blogger to turn this draft into a full Vedic Space HTML post based on [template-file].html.`
+- `Use $vedicspace-blogger to rebuild [file].html so it matches the house blog template while preserving the content.`
+- `Use $vedicspace-blogger to create a second version of [file].html with expanded content but the same design.`
+
+**Expand Existing Posts**
+- `Use $vedicspace-blogger to expand [file].html with more depth on [section/topic].`
+- `Use $vedicspace-blogger to add 3 new sections to [file].html on [topics].`
+- `Use $vedicspace-blogger to enrich [file].html with more practical examples and smoother transitions.`
+- `Use $vedicspace-blogger to create [new-file].html as an expanded version of [old-file].html.`
+- `Use $vedicspace-blogger to add a stronger conclusion and clearer takeaways to [file].html.`
+
+**Research-Backed Writing**
+- `Use $vedicspace-blogger to add research-backed material to [file].html about [topic].`
+- `Use $vedicspace-blogger to connect [practice] with modern neuroscience using linked sources.`
+- `Use $vedicspace-blogger to add a scientific references section with authoritative links.`
+- `Use $vedicspace-blogger to verify the factual claims in [file].html and add citations where needed.`
+- `Use $vedicspace-blogger to write a post on [topic] that clearly separates spiritual reflection from evidence-backed claims.`
+
+**Using a Specific Source**
+- `Use $vedicspace-blogger to expand [file].html using ideas from [URL], with proper attribution and no copying.`
+- `Use $vedicspace-blogger to create a Vedic Space article inspired by [URL].`
+- `Use $vedicspace-blogger to pull the key insights from [URL] and weave them into [file].html.`
+- `Use $vedicspace-blogger to add a source note referencing [URL] and integrate its main ideas naturally.`
+
+**Tone and Voice**
+- `Use $vedicspace-blogger to rewrite [file].html in a more contemplative and devotional voice.`
+- `Use $vedicspace-blogger to make this post calmer, clearer, and more readable without losing depth.`
+- `Use $vedicspace-blogger to make the article sound more like Vedic Space and less academic.`
+- `Use $vedicspace-blogger to simplify this post for a general audience while preserving its meaning.`
+- `Use $vedicspace-blogger to make this article feel more warm, grounded, and spiritually resonant.`
+
+**Structure and Flow**
+- `Use $vedicspace-blogger to improve the structure of [file].html.`
+- `Use $vedicspace-blogger to reorganize this article into stronger sections and headings.`
+- `Use $vedicspace-blogger to add better subheads and smoother transitions to [file].html.`
+- `Use $vedicspace-blogger to shorten repetitive sections in [file].html.`
+- `Use $vedicspace-blogger to turn these notes into a clear article arc: opening, explanation, integration, closing reflection.`
+
+**SEO**
+- `Use $vedicspace-blogger to optimize [file].html for SEO without making it sound robotic.`
+- `Use $vedicspace-blogger to rewrite the title, subtitle, and meta description for better search intent.`
+- `Use $vedicspace-blogger to audit this post for SEO and fix weak headings, metadata, and internal links.`
+- `Use $vedicspace-blogger to give me 10 SEO-friendly title options for this article.`
+- `Use $vedicspace-blogger to generate a better meta description for [topic/post].`
+- `Use $vedicspace-blogger to suggest internal linking opportunities for [file].html.`
+
+**Citations**
+- `Use $vedicspace-blogger to normalize the citations in [file].html.`
+- `Use $vedicspace-blogger to convert this loose source list into properly formatted linked references.`
+- `Use $vedicspace-blogger to add citation links for all research claims in this article.`
+- `Use $vedicspace-blogger to separate journal citations from inspirational/source-note links.`
+- `Use $vedicspace-blogger to check whether any citation dates or titles are inaccurate and fix them.`
+
+**HTML Cleanup**
+- `Use $vedicspace-blogger to clean up the HTML in [file].html while preserving appearance.`
+- `Use $vedicspace-blogger to fix encoding issues and mojibake in [file].html.`
+- `Use $vedicspace-blogger to replace outdated asset paths in [file].html.`
+- `Use $vedicspace-blogger to update the logo path and external links in [file].html.`
+- `Use $vedicspace-blogger to make this page more PDF-friendly while keeping the same site style.`
+
+**Metadata and Publishing**
+- `Use $vedicspace-blogger to add missing title, meta description, category, and read-time info to [file].html.`
+- `Use $vedicspace-blogger to prepare [file].html for publishing.`
+- `Use $vedicspace-blogger to do a final publish-readiness pass on [file].html.`
+- `Use $vedicspace-blogger to make this blog post PDF-ready and then export it.`
+- `Use $vedicspace-blogger to create a polished final version of [file].html and a matching PDF.`
+
+**Social Repurposing**
+- `Use $vedicspace-blogger to create 3 X posts from [file].html.`
+- `Use $vedicspace-blogger to write 5 Instagram captions based on this blog post.`
+- `Use $vedicspace-blogger to create LinkedIn post variants from [file].html.`
+- `Use $vedicspace-blogger to turn this article into a short Threads post series.`
+- `Use $vedicspace-blogger to create social copy for Instagram, X, and LinkedIn from this article.`
+
+**Newsletter Repurposing**
+- `Use $vedicspace-blogger to create a newsletter snippet from [file].html.`
+- `Use $vedicspace-blogger to generate 5 subject lines and 3 preview lines for this post.`
+- `Use $vedicspace-blogger to turn this article into a short email intro with a call to read more.`
+- `Use $vedicspace-blogger to create a newsletter-ready summary of [file].html with key takeaways.`
+- `Use $vedicspace-blogger to repurpose this blog post into a newsletter block plus social caption set.`
+
+**Ideas and Planning**
+- `Use $vedicspace-blogger to suggest 20 blog topics for Vedic Space.`
+- `Use $vedicspace-blogger to suggest blog topics around [theme].`
+- `Use $vedicspace-blogger to create a month of blog ideas for Vedic Space.`
+- `Use $vedicspace-blogger to suggest titles for a post about [topic].`
+- `Use $vedicspace-blogger to outline a post on [topic] before writing it.`
+
+**Series and Content Strategy**
+- `Use $vedicspace-blogger to design a 5-part blog series on [theme].`
+- `Use $vedicspace-blogger to turn this topic into a pillar post plus 3 supporting articles.`
+- `Use $vedicspace-blogger to suggest internal cross-links between these Vedic Space blog posts.`
+- `Use $vedicspace-blogger to map out beginner, intermediate, and advanced articles on [topic].`
+
+**Editing Short Inputs**
+- `Use $vedicspace-blogger to turn these notes into a polished article: [paste notes].`
+- `Use $vedicspace-blogger to convert this transcript into a Vedic Space blog post.`
+- `Use $vedicspace-blogger to turn this outline into HTML in the Vedic Space blog style.`
+- `Use $vedicspace-blogger to transform this rough draft into a publishable post with citations.`
+
+**Comparisons and Angles**
+- `Use $vedicspace-blogger to write a balanced comparison of [practice A] and [practice B].`
+- `Use $vedicspace-blogger to write a post showing how [ancient practice] relates to [modern wellness topic].`
+- `Use $vedicspace-blogger to make this article more practical for beginners.`
+- `Use $vedicspace-blogger to write a version of this topic focused on stress relief, not philosophy.`
+
+**Audit / Review**
+- `Use $vedicspace-blogger to review [file].html for weak sections, unsupported claims, and SEO gaps.`
+- `Use $vedicspace-blogger to audit this article for tone consistency and readability.`
+- `Use $vedicspace-blogger to review this post like an editor and then fix the issues directly.`
+- `Use $vedicspace-blogger to identify what is missing from this article before publishing.`
+
+**High-Leverage Combo Prompts**
+- `Use $vedicspace-blogger to create a new blog post on [topic], add verified citations, optimize SEO metadata, and generate 3 Instagram captions.`
+- `Use $vedicspace-blogger to expand [file].html using [URL], keep the same design, add a scientific references section, and prepare a PDF-ready final version.`
+- `Use $vedicspace-blogger to turn these notes into a Vedic Space article, create title options, add citations, and write a newsletter snippet.`
+- `Use $vedicspace-blogger to audit [file].html, improve the structure, fix citations, tighten the meta description, and generate social copy.`
+
+**Fill-In Template**
+- `Use $vedicspace-blogger to [create/update/expand/rewrite/audit] [file or topic] using [template/source URL], with [tone goal], [SEO goal], [citation requirement], and [extra outputs like PDF/social/newsletter].`
+
+**Best Short Prompt**
+- `Use $vedicspace-blogger to make this publish-ready.`
+
+If you want, I can also make this into a saved `blogging-prompts.md` file in your workspace.
