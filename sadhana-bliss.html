@@ -208,6 +208,39 @@
     </div>
 </section>
 
+<section id="v-learn" class="view">
+    <div class="card" style="padding: 15px; text-align: center; border: none; background: transparent;">
+        <h3 class="serif" style="color: var(--gold); margin-bottom: 5px;">Learn Vishnu Sahasranama</h3>
+        <div id="learn-progress-text" style="font-size: 12px; opacity: 0.8; margin-bottom: 10px;">-- hours left to complete</div>
+        
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; position: relative; padding: 0 5px;">
+            <div style="position: absolute; top: 50%; left: 10px; right: 10px; height: 2px; background: rgba(255,255,255,0.2); z-index: 1; transform: translateY(-50%);"></div>
+            <div id="learn-progress-fill" style="position: absolute; top: 50%; left: 10px; width: 0%; height: 2px; background: var(--gold); z-index: 2; transform: translateY(-50%); transition: width 0.3s ease;"></div>
+            <div id="learn-milestones" style="display: flex; justify-content: space-between; width: 100%; z-index: 3;"></div>
+        </div>
+
+        <div class="slide-wrapper" style="position: relative; display: block; width: 100%; aspect-ratio: 16/9; background: #000; border-radius: 12px; overflow: hidden; margin-bottom: 15px; border: 1px solid var(--border);">
+            <iframe id="learn-video" src="" style="width: 100%; height: 100%; border: 0;" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            
+            <button onclick="navLearn(-1)" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.4); border: none; color: white; border-radius: 50%; width: 40px; height: 40px; cursor: pointer; z-index: 10; display: flex; align-items: center; justify-content: center;">
+                <i data-feather="chevron-left"></i>
+            </button>
+            <button onclick="navLearn(1)" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.4); border: none; color: white; border-radius: 50%; width: 40px; height: 40px; cursor: pointer; z-index: 10; display: flex; align-items: center; justify-content: center;">
+                <i data-feather="chevron-right"></i>
+            </button>
+        </div>
+        
+        <div style="display: flex; justify-content: space-between; align-items: center; background: var(--glass); padding: 10px 15px; border-radius: 15px; border: 1px solid var(--border);">
+            <div id="learn-title" class="serif" style="font-weight: bold; font-size: 16px; color: var(--gold);">Shlokas 1-10</div>
+            
+            <div class="mode-toggle" style="margin: 0; height: 35px; min-width: 160px;">
+                <button id="learn-mode-prog" class="mode-btn active" onclick="setLearnStatus(false)">In-Progress</button>
+                <button id="learn-mode-comp" class="mode-btn" onclick="setLearnStatus(true)">Completed</button>
+            </div>
+        </div>
+    </div>
+</section>
+
 </div>
 
 <nav class="mobile-nav">
@@ -216,6 +249,7 @@
     <div class="nav-item" onclick="showTab('med')" id="n-med"><i data-feather="moon"></i>Dhyāna</div>
     <div class="nav-item" onclick="showTab('japa')" id="n-japa"><i data-feather="video"></i>Japa</div>
     <div class="nav-item" onclick="showTab('mandala')" id="n-mandala"><i data-feather="zap"></i>Mandala</div>
+    <div class="nav-item" onclick="showTab('learn')" id="n-learn"><i data-feather="book-open"></i>Learn</div>
 </nav>
 
 <script>
@@ -240,15 +274,35 @@ const pranayamas = [
 {title:"Surya Bhedana",video:"https://www.youtube.com/embed/4YIlmACF7g8"}
 ];
 
-let mandalaData = JSON.parse(localStorage.getItem('vss_mandala_tracker')) || { completed: [], specialDays: [1, 15, 30, 45] };
-let currentMode = 'chanting';
+const learnLessons = [
+    { title: "Shlokas 1-10", duration: 22, url: "https://www.youtube.com/embed/XDzlsJ01P_A" },
+    { title: "Shlokas 11-20", duration: 23, url: "https://www.youtube.com/embed/dSPrO6FVEYQ" },
+    { title: "Shlokas 21-35", duration: 38, url: "https://www.youtube.com/embed/QAx2L7-fdKM" },
+    { title: "Shlokas 36-50", duration: 36, url: "https://www.youtube.com/embed/9BE4EkOHi4g" },
+    { title: "Shlokas 51-65", duration: 32, url: "https://www.youtube.com/embed/J3KkNE28nO8" },
+    { title: "Shlokas 66-80", duration: 34, url: "https://www.youtube.com/embed/hM_GMZarFIU" },
+    { title: "Shlokas 81-95", duration: 35, url: "https://www.youtube.com/embed/iyET-Q-dS-A" },
+    { title: "Shlokas 96-108", duration: 31, url: "https://www.youtube.com/embed/fu4JTCv9ybc" }
+];
 
-const renderedTabs = { med: false, pran: false, flow: false, japa: false, mandala: false };
+let mandalaData = JSON.parse(localStorage.getItem('vss_mandala_tracker')) || { completed: [], specialDays: [1, 15, 30, 45] };
+let learnData = JSON.parse(localStorage.getItem('vss_learn_tracker')) || Array(8).fill(false);
+let currentMode = 'chanting';
+let lIdx = 0; // Learn index
+
+const renderedTabs = { med: false, pran: false, flow: false, japa: false, mandala: false, learn: false };
 
 function showTab(t){
     document.querySelectorAll('.view,.nav-item').forEach(el=>el.classList.remove('active'));
     document.getElementById('v-'+t).classList.add('active');
     document.getElementById('n-'+t).classList.add('active');
+    
+    // Pause learn video if switching away
+    if (t !== 'learn') {
+        const iframe = document.getElementById('learn-video');
+        if (iframe) iframe.src = iframe.src;
+    }
+    
     renderTabIfNeeded(t);
 }
 
@@ -259,9 +313,65 @@ function renderTabIfNeeded(tab){
     if(tab === 'flow'){ preloadNearby(); feather.replace(); }
     if(tab === 'japa') initJitsi();
     if(tab === 'mandala') renderMandalaGrid();
+    if(tab === 'learn') { renderLearnTab(); feather.replace(); }
     renderedTabs[tab] = true;
 }
 
+// --- Learn VSS Logic ---
+function renderLearnTab() {
+    document.getElementById('learn-video').src = learnLessons[lIdx].url;
+    document.getElementById('learn-title').innerText = learnLessons[lIdx].title;
+    
+    const isComp = learnData[lIdx];
+    document.getElementById('learn-mode-prog').classList.toggle('active', !isComp);
+    document.getElementById('learn-mode-comp').classList.toggle('active', isComp);
+    
+    updateLearnProgress();
+}
+
+function navLearn(dir) {
+    lIdx += dir;
+    if (lIdx < 0) lIdx = learnLessons.length - 1;
+    if (lIdx >= learnLessons.length) lIdx = 0;
+    renderLearnTab();
+}
+
+function setLearnStatus(status) {
+    learnData[lIdx] = status;
+    localStorage.setItem('vss_learn_tracker', JSON.stringify(learnData));
+    renderLearnTab();
+}
+
+function updateLearnProgress() {
+    let totalMins = 251; // Total duration
+    let compMins = 0;
+    let milestonesHTML = '';
+    
+    learnLessons.forEach((lesson, i) => {
+        const comp = learnData[i];
+        if (comp) compMins += lesson.duration;
+        
+        const color = comp ? 'var(--gold)' : 'var(--bg)';
+        const border = comp ? 'var(--gold)' : 'rgba(255,255,255,0.4)';
+        const transform = i === lIdx ? 'scale(1.5)' : 'scale(1)';
+        milestonesHTML += `<div style="width: 12px; height: 12px; border-radius: 50%; background: ${color}; border: 2px solid ${border}; cursor: pointer; transition: 0.3s; transform: ${transform};" onclick="goToLearn(${i})" title="${lesson.title}"></div>`;
+    });
+    
+    let leftMins = totalMins - compMins;
+    let hrs = Math.floor(leftMins / 60);
+    let mins = leftMins % 60;
+    document.getElementById('learn-progress-text').innerText = leftMins <= 0 ? `Course Completed! 🎉` : `${hrs}h ${mins}m left to complete`;
+    
+    document.getElementById('learn-milestones').innerHTML = milestonesHTML;
+    document.getElementById('learn-progress-fill').style.width = `${(compMins/totalMins)*100}%`;
+}
+
+function goToLearn(idx) {
+    lIdx = idx;
+    renderLearnTab();
+}
+
+// --- Mode Logic ---
 function setMode(mode) {
     currentMode = mode;
     document.getElementById('mode-chanting').classList.toggle('active', mode === 'chanting');
@@ -337,7 +447,7 @@ function renderPran(data=pranayamas){
     feather.replace();
 }
 
-// Flow Logic
+// --- Flow Logic ---
 let pIdx=1, pOn=false, pStart=Date.now(), pDuration=3000; 
 
 function preloadNearby(){
