@@ -120,6 +120,111 @@
             .nav-links { display: flex !important; }
             body { padding-bottom: 20px; }
         }
+		/* Shruti Chat Companion */
+#shruti-fab {
+    position: fixed;
+    bottom: 80px; /* Above the mobile nav */
+    right: 20px;
+    width: 55px;
+    height: 55px;
+    background: linear-gradient(135deg, var(--gold), #d97706);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 15px rgba(251, 191, 36, 0.4);
+    cursor: pointer;
+    z-index: 1001;
+    transition: transform 0.3s;
+}
+#shruti-fab:hover { transform: scale(1.1); }
+#shruti-fab i { color: var(--bg); }
+
+#shruti-window {
+    position: fixed;
+    bottom: 145px;
+    right: 20px;
+    width: 350px;
+    max-width: calc(100vw - 40px);
+    height: 500px;
+    max-height: calc(100vh - 200px);
+    background: rgba(30, 58, 138, 0.95);
+    backdrop-filter: blur(15px);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    display: none; /* Hidden by default */
+    flex-direction: column;
+    z-index: 1001;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+    transform-origin: bottom right;
+    animation: scaleIn 0.3s ease;
+}
+
+@keyframes scaleIn {
+    from { opacity: 0; transform: scale(0.8); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+.shruti-header {
+    padding: 15px;
+    background: rgba(0,0,0,0.2);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.shruti-title { font-weight: bold; color: var(--gold); display: flex; align-items: center; gap: 8px; }
+
+.shruti-messages {
+    flex-grow: 1;
+    padding: 15px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+.shruti-messages::-webkit-scrollbar { width: 4px; }
+.shruti-messages::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 4px; }
+
+.msg { max-width: 85%; padding: 10px 14px; border-radius: 15px; font-size: 13px; line-height: 1.5; }
+.msg-user { align-self: flex-end; background: var(--glass); border: 1px solid rgba(255,255,255,0.1); border-bottom-right-radius: 4px; }
+.msg-shruti { align-self: flex-start; background: rgba(251, 191, 36, 0.1); border: 1px solid var(--border); border-bottom-left-radius: 4px; }
+
+.shruti-input-area {
+    padding: 10px;
+    background: rgba(0,0,0,0.2);
+    border-top: 1px solid var(--border);
+    display: flex;
+    gap: 10px;
+}
+.shruti-input {
+    flex-grow: 1;
+    background: var(--glass);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: white;
+    padding: 10px 15px;
+    border-radius: 20px;
+    outline: none;
+    font-size: 13px;
+}
+.shruti-send {
+    background: var(--gold);
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    color: var(--bg);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+@media (max-width: 768px) {
+    #shruti-window { bottom: 90px; right: 10px; width: calc(100vw - 20px); }
+    #shruti-fab { bottom: 90px; right: 15px; }
+}
     </style>
 </head>
 <body onkeydown="handleKeys(event)">
@@ -652,6 +757,81 @@ document.getElementById('main-nav').addEventListener('wheel', (evt) => {
 
 // For Cache Control
 if('serviceWorker'in navigator){ navigator.serviceWorker.register('sw.js'); }
+
+// --- Shruti Chat Logic ---
+function toggleShruti() {
+    const win = document.getElementById('shruti-window');
+    if (win.style.display === 'flex') {
+        win.style.display = 'none';
+    } else {
+        win.style.display = 'flex';
+        document.getElementById('shruti-input').focus();
+    }
+}
+
+function handleShrutiKey(e) {
+    if (e.key === 'Enter') sendToShruti();
+}
+
+function sendToShruti() {
+    const input = document.getElementById('shruti-input');
+    const text = input.value.trim();
+    if (!text) return;
+    
+    const chat = document.getElementById('shruti-chat');
+    
+    // Add User Message
+    const userMsg = document.createElement('div');
+    userMsg.className = 'msg msg-user';
+    userMsg.innerText = text;
+    chat.appendChild(userMsg);
+    
+    input.value = '';
+    chat.scrollTop = chat.scrollHeight;
+
+    // Show typing indicator
+    const typingMsg = document.createElement('div');
+    typingMsg.className = 'msg msg-shruti';
+    typingMsg.innerHTML = '<i data-feather="more-horizontal" style="animation: pulse 1s infinite;"></i>';
+    chat.appendChild(typingMsg);
+    feather.replace();
+    chat.scrollTop = chat.scrollHeight;
+
+    // MOCK API CALL - This is where we will link your Gemini Pro API later!
+    setTimeout(() => {
+        chat.removeChild(typingMsg);
+        const shrutiMsg = document.createElement('div');
+        shrutiMsg.className = 'msg msg-shruti';
+        shrutiMsg.innerHTML = `This is a placeholder response. Once we connect the <b>Gemini Pro API</b>, I will parse your PDFs and explain the depth of <i>"${text}"</i>.`;
+        chat.appendChild(shrutiMsg);
+        chat.scrollTop = chat.scrollHeight;
+    }, 1500);
+}
 </script>
+<div id="shruti-fab" onclick="toggleShruti()">
+    <i data-feather="message-circle"></i>
+</div>
+
+<div id="shruti-window">
+    <div class="shruti-header">
+        <div class="shruti-title serif">
+            <i data-feather="sun" style="width: 16px;"></i> Shruti
+        </div>
+        <i data-feather="x" style="cursor: pointer; opacity: 0.7;" onclick="toggleShruti()"></i>
+    </div>
+    
+    <div class="shruti-messages" id="shruti-chat">
+        <div class="msg msg-shruti">
+            Namaste. I am Shruti. How may I assist your Sādhanā today? You can ask me about a specific Shloka, a Sanskrit root, or how to deepen your practice.
+        </div>
+    </div>
+    
+    <div class="shruti-input-area">
+        <input type="text" id="shruti-input" class="shruti-input" placeholder="Ask about Vishnu Sahasranama..." onkeypress="handleShrutiKey(event)">
+        <button class="shruti-send" onclick="sendToShruti()">
+            <i data-feather="send" style="width: 16px; margin-left: -2px;"></i>
+        </button>
+    </div>
+</div>
 </body>
 </html>
