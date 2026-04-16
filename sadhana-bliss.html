@@ -9,7 +9,7 @@
 	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 	<link rel="apple-touch-icon" href="../assets/logo.webp">
 	
-    <title>VSS | Sādhanā </title>
+    <title>VSS | Sādhanā</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
@@ -18,7 +18,7 @@
     <style>
         :root { --bg: #1e3a8a; --gold: #fbbf24; --glass: rgba(255, 255, 255, 0.07); --border: rgba(251, 191, 36, 0.2); }
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { background: var(--bg); color: white; font-family: 'Inter', sans-serif; padding-bottom: 80px; }
+        body { background: var(--bg); color: white; font-family: 'Inter', sans-serif; padding-bottom: 90px; }
         .serif { font-family: 'Playfair Display', serif; }
         
         .logo-img { height: 40px; margin-bottom: 15px; }
@@ -47,9 +47,22 @@
         .video-box { position: relative; padding-bottom: 56.25%; height: 0; background: #000; }
         .video-box iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
         
-        .mobile-nav { position: fixed; bottom: 0; width: 100%; background: #1e3a8a; border-top: 1px solid var(--border); display: flex; justify-content: space-around; padding: 12px; z-index: 1000; }
-        .nav-item { color: white; opacity: 0.6; display: flex; flex-direction: column; align-items: center; font-size: 10px; cursor: pointer; }
-        .nav-item.active { opacity: 1; color: var(--gold); }
+        /* Sleek Slidable Navigation Bar */
+        .mobile-nav { 
+            position: fixed; bottom: 0; width: 100%; background: #1e3a8a; border-top: 1px solid var(--border); 
+            display: flex; align-items: center; padding: 15px 20px; z-index: 1000;
+            overflow-x: auto; scroll-behavior: smooth; -webkit-overflow-scrolling: touch;
+            gap: 30px; 
+            /* Hide scrollbar */
+            -ms-overflow-style: none; scrollbar-width: none;
+        }
+        .mobile-nav::-webkit-scrollbar { display: none; }
+        
+        .nav-item { 
+            color: white; opacity: 0.5; display: flex; flex-direction: column; align-items: center; 
+            font-size: 11px; cursor: pointer; flex-shrink: 0; transition: 0.3s ease;
+        }
+        .nav-item.active { opacity: 1; color: var(--gold); transform: scale(1.05); }
         
         #p-ring-new { fill: none; stroke: var(--gold); stroke-width: 5; stroke-dasharray: 219.9; stroke-dashoffset: 219.9; transform: rotate(-90deg); transform-origin: center; transition: 0.1s linear; }
         #jaas-container { width: 100%; height: 60vh; border-radius: 15px; overflow: hidden; background: #000; }
@@ -61,24 +74,11 @@
         #flow-container:fullscreen .flow-controls,
         @media screen and (max-height: 500px) and (orientation: landscape) {
             #flow-container .flow-controls {
-                position: fixed;
-                bottom: 10px;
-                left: 50%;
-                transform: translateX(-50%);
-                width: auto;
-                max-width: 95%;
-                background: rgba(0, 0, 0, 0.65);
-                border-radius: 50px;
-                padding: 8px 15px !important;
-                backdrop-filter: blur(15px);
-                border: 1px solid rgba(255, 255, 255, 0.2);
-                display: flex !important;
-                flex-direction: row !important;
-                align-items: center !important;
-                justify-content: center !important;
-                gap: 12px !important;
-                margin-top: 0 !important;
-                z-index: 200;
+                position: fixed; bottom: 10px; left: 50%; transform: translateX(-50%); width: auto; max-width: 95%;
+                background: rgba(0, 0, 0, 0.65); border-radius: 50px; padding: 8px 15px !important;
+                backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.2);
+                display: flex !important; flex-direction: row !important; align-items: center !important;
+                justify-content: center !important; gap: 12px !important; margin-top: 0 !important; z-index: 200;
             }
             #flow-container .mode-toggle { height: 35px; min-width: 120px; }
             #flow-container .flow-controls > div { flex-shrink: 0; }
@@ -196,7 +196,6 @@
 
     <div class="card" style="padding: 20px;">
         <h3 class="serif" style="font-size: 1.1rem; margin-bottom: 15px; color: var(--gold);">Daily State Logging</h3>
-        
         <div class="metric-row"><span class="metric-label">Mind (Stillness)</span><input type="range" class="metric-slider" id="m-mind" value="50"></div>
         <div class="metric-row"><span class="metric-label">Body (Lightness)</span><input type="range" class="metric-slider" id="m-body" value="50"></div>
         <div class="metric-row"><span class="metric-label">Breath (Refinement)</span><input type="range" class="metric-slider" id="m-breath" value="50"></div>
@@ -243,13 +242,13 @@
 
 </div>
 
-<nav class="mobile-nav">
-    <div class="nav-item" onclick="showTab('pran')" id="n-pran"><i data-feather="wind"></i>Prāṇa</div>
-    <div class="nav-item active" onclick="showTab('flow')" id="n-flow"><i data-feather="refresh-cw"></i>Flow</div>
-    <div class="nav-item" onclick="showTab('med')" id="n-med"><i data-feather="moon"></i>Dhyāna</div>
-    <div class="nav-item" onclick="showTab('japa')" id="n-japa"><i data-feather="video"></i>Japa</div>
-    <div class="nav-item" onclick="showTab('mandala')" id="n-mandala"><i data-feather="zap"></i>Mandala</div>
-    <div class="nav-item" onclick="showTab('learn')" id="n-learn"><i data-feather="book-open"></i>Learn</div>
+<nav class="mobile-nav" id="main-nav">
+    <div class="nav-item active" onclick="showTab('flow')" id="n-flow"><i data-feather="refresh-cw"></i><span style="margin-top: 4px;">Flow</span></div>
+    <div class="nav-item" onclick="showTab('learn')" id="n-learn"><i data-feather="book-open"></i><span style="margin-top: 4px;">Learn</span></div>
+    <div class="nav-item" onclick="showTab('mandala')" id="n-mandala"><i data-feather="zap"></i><span style="margin-top: 4px;">Mandala</span></div>
+    <div class="nav-item" onclick="showTab('pran')" id="n-pran"><i data-feather="wind"></i><span style="margin-top: 4px;">Prāṇa</span></div>
+    <div class="nav-item" onclick="showTab('med')" id="n-med"><i data-feather="moon"></i><span style="margin-top: 4px;">Dhyāna</span></div>
+    <div class="nav-item" onclick="showTab('japa')" id="n-japa"><i data-feather="video"></i><span style="margin-top: 4px;">Japa</span></div>
 </nav>
 
 <script>
@@ -288,7 +287,7 @@ const learnLessons = [
 let mandalaData = JSON.parse(localStorage.getItem('vss_mandala_tracker')) || { completed: [], specialDays: [1, 15, 30, 45] };
 let learnData = JSON.parse(localStorage.getItem('vss_learn_tracker')) || Array(8).fill(false);
 let currentMode = 'chanting';
-let lIdx = 0; // Learn index
+let lIdx = 0; 
 
 const renderedTabs = { med: false, pran: false, flow: false, japa: false, mandala: false, learn: false };
 
@@ -297,11 +296,13 @@ function showTab(t){
     document.getElementById('v-'+t).classList.add('active');
     document.getElementById('n-'+t).classList.add('active');
     
-    // Pause learn video if switching away
     if (t !== 'learn') {
         const iframe = document.getElementById('learn-video');
         if (iframe) iframe.src = iframe.src;
     }
+    
+    // Auto-scroll nav into view (for mobile/overflow scenario)
+    document.getElementById('n-'+t).scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
     
     renderTabIfNeeded(t);
 }
@@ -343,7 +344,7 @@ function setLearnStatus(status) {
 }
 
 function updateLearnProgress() {
-    let totalMins = 251; // Total duration
+    let totalMins = 251; 
     let compMins = 0;
     let milestonesHTML = '';
     
@@ -371,7 +372,7 @@ function goToLearn(idx) {
     renderLearnTab();
 }
 
-// --- Mode Logic ---
+// --- Flow, Audio & Mandala Logic ---
 function setMode(mode) {
     currentMode = mode;
     document.getElementById('mode-chanting').classList.toggle('active', mode === 'chanting');
@@ -379,7 +380,6 @@ function setMode(mode) {
     
     const audio = document.getElementById('flow-bg-audio');
     audio.pause();
-    // Reset audio source to starting track
     audio.src = "./meditations/vss.mp3"; 
     audio.load();
     document.getElementById('audio-play-icon').setAttribute('data-feather', 'play');
@@ -388,7 +388,6 @@ function setMode(mode) {
 
 function handleAudioEnd() {
     const audio = document.getElementById('flow-bg-audio');
-    // If in Sadhana mode and vss.mp3 just ended, play Hari Om
     if (currentMode === 'sadhana' && audio.src.toLowerCase().includes('vss.mp3')) {
         audio.src = "./meditations/hari_om_meditation.mp3";
         audio.load();
@@ -447,14 +446,13 @@ function renderPran(data=pranayamas){
     feather.replace();
 }
 
-// --- Flow Logic ---
+// Flow Slide Logic
 let pIdx=1, pOn=false, pStart=Date.now(), pDuration=3000; 
 
 function preloadNearby(){
     for(let i=-2;i<=2;i++){
         let idx=pIdx+i; if(idx<1) idx=109+idx; if(idx>109) idx=idx-109;
-        const img = new Image();
-        img.src=`./parayana/Slide${idx}.webp`;
+        const img = new Image(); img.src=`./parayana/Slide${idx}.webp`;
     }
 }
 
@@ -473,8 +471,7 @@ function togglePlay(){
 
 function adjSlideTime(delta){ 
     pDuration=Math.max(50,pDuration+delta); 
-    pStart=Date.now(); 
-    updateTimerText();
+    pStart=Date.now(); updateTimerText();
 }
 
 function updateTimerText(){
@@ -491,14 +488,10 @@ function handleKeys(e) {
 
 function toggleFS(){ 
     const el = document.getElementById('flow-container'); 
-    if(!document.fullscreenElement) {
-        el.requestFullscreen().catch(()=>{}); 
-    } else {
-        document.exitFullscreen(); 
-    }
+    if(!document.fullscreenElement) { el.requestFullscreen().catch(()=>{}); } 
+    else { document.exitFullscreen(); }
 }
 
-// Fullscreen Icon update
 document.addEventListener('fullscreenchange', () => {
     const icon = document.getElementById('fs-icon');
     if (icon) {
@@ -508,7 +501,6 @@ document.addEventListener('fullscreenchange', () => {
     }
 });
 
-// Swipe Logic
 let touchStartX = 0;
 const swipeZone = document.getElementById('swipe-zone');
 if (swipeZone) {
@@ -530,23 +522,15 @@ function toggleAudioMute() {
 function toggleAudioPlay() {
     const audio = document.getElementById('flow-bg-audio');
     const icon = document.getElementById('audio-play-icon');
-    
-    // Ensure src is set if it's currently empty
-    if (!audio.src) {
-        audio.src = "./meditations/vss.mp3";
-    }
+    if (!audio.src) audio.src = "./meditations/vss.mp3";
 
     if (audio.paused) {
         audio.play().then(() => {
-            icon.setAttribute('data-feather', 'pause');
-            feather.replace();
-        }).catch(e => {
-            console.log("Audio play blocked.", e);
-        });
+            icon.setAttribute('data-feather', 'pause'); feather.replace();
+        }).catch(e => { console.log("Audio play blocked.", e); });
     } else {
         audio.pause();
-        icon.setAttribute('data-feather', 'play');
-        feather.replace();
+        icon.setAttribute('data-feather', 'play'); feather.replace();
     }
 }
 
@@ -560,7 +544,7 @@ function flowLoop(){
         }
         const ring = document.getElementById('p-ring-new');
         if(ring){ 
-            const circum=138.2; // 2 * PI * 22
+            const circum=138.2; 
             ring.style.strokeDasharray = circum;
             ring.style.strokeDashoffset = circum * (1 - progress); 
         }
@@ -570,11 +554,17 @@ function flowLoop(){
 
 window.onload=()=>{ 
     updateTimerText();
-    // Default audio src
     document.getElementById('flow-bg-audio').src = "./meditations/vss.mp3";
     renderTabIfNeeded('flow'); 
     flowLoop(); 
 };
+
+// Nav Scrolling with mouse wheel on desktop
+document.getElementById('main-nav').addEventListener('wheel', (evt) => {
+    e.preventDefault();
+    document.getElementById('main-nav').scrollLeft += evt.deltaY;
+});
+
 if('serviceWorker'in navigator){ navigator.serviceWorker.register('sw.js'); }
 </script>
 </body>
