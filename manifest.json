@@ -2,7 +2,7 @@
   "name": "Vedic Space | Sādhanā",
   "short_name": "Vedic Space",
   "start_url": "login.html",
-  "display": "fullscreen",
+  "display": "standalone",
   "background_color": "##1e3d9d",
   "theme_color": "##1e3d9d",
   "icons": [
