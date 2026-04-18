@@ -39,7 +39,6 @@
         .view.active { display: block; animation: fadeIn 0.3s ease; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        .search-container { margin-bottom: 15px; padding: 0 5px; }
         .search-input { width: 100%; background: var(--glass); border: 1px solid var(--border); border-radius: 12px; padding: 12px 15px; color: white; font-size: 14px; outline: none; transition: border 0.3s; font-family: inherit; resize: vertical; box-sizing: border-box; }
         .search-input:focus { border-color: var(--gold); }
 
@@ -53,31 +52,42 @@
         .video-box { position: relative; padding-bottom: 56.25%; height: 0; background: #000; }
         .video-box iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
 
+        /* --- Interactive Wheel Picker Styles for Med/Pran --- */
+        .interactive-picker { background: var(--glass); border: 1px solid var(--border); border-radius: 15px; margin-bottom: 20px; overflow: hidden; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .picker-search-bar { display: flex; align-items: center; padding: 14px 15px; gap: 10px; background: rgba(0,0,0,0.2); position: relative; z-index: 2; }
+        .picker-search-bar input { flex: 1; background: transparent; border: none; color: var(--gold); font-size: 15px; font-weight: 600; outline: none; font-family: 'Inter', sans-serif; text-overflow: ellipsis; }
+        .picker-search-bar input::placeholder { color: rgba(255,255,255,0.6); font-weight: 400; }
+        .picker-wheel-area { height: 0; position: relative; transition: height 0.3s cubic-bezier(0.4, 0, 0.2, 1); opacity: 0; }
+        .interactive-picker.expanded .picker-wheel-area { height: 150px; opacity: 1; }
+        .picker-wheel { height: 100%; overflow-y: auto; scroll-snap-type: y mandatory; scrollbar-width: none; }
+        .picker-wheel::-webkit-scrollbar { display: none; }
+        .wheel-pad { height: 55px; } 
+        .wheel-item { height: 40px; display: flex; align-items: center; justify-content: center; scroll-snap-align: center; font-size: 15px; color: white; opacity: 0.4; transition: all 0.2s; cursor: pointer; text-align: center; padding: 0 20px; font-family: 'Inter', sans-serif; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .wheel-item.active { opacity: 1; color: var(--gold); font-weight: bold; transform: scale(1.08); }
+        .picker-highlight { position: absolute; top: 55px; left: 15px; right: 15px; height: 40px; border-top: 1px solid var(--gold); border-bottom: 1px solid var(--gold); background: rgba(251, 191, 36, 0.1); border-radius: 8px; pointer-events: none; z-index: 1; }
+        .media-display { animation: scaleIn 0.4s ease; transform-origin: top center; }
+
         /* Custom Sādhanā Slider UI */
         .metric-card { margin-bottom: 30px; background: rgba(0,0,0,0.15); padding: 15px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); }
         .metric-label-row { display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 13px; font-weight: 600; color: white; }
         .metric-label-row .active-state-text { color: var(--gold); font-weight: bold; }
-        
         .slider-container { display: flex; flex-direction: column; gap: 8px; }
-        
         .metric-slider { width: 100%; -webkit-appearance: none; appearance: none; background: rgba(255,255,255,0.2); height: 6px; border-radius: 5px; outline: none; margin: 10px 0; }
         .metric-slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 22px; height: 22px; border-radius: 50%; background: var(--gold); cursor: pointer; transition: transform 0.1s; border: 3px solid var(--bg); box-shadow: 0 2px 5px rgba(0,0,0,0.5); }
         .metric-slider::-moz-range-thumb { width: 22px; height: 22px; border-radius: 50%; background: var(--gold); cursor: pointer; transition: transform 0.1s; border: 3px solid var(--bg); box-shadow: 0 2px 5px rgba(0,0,0,0.5); }
         .metric-slider::-webkit-slider-thumb:active { transform: scale(1.2); }
         .metric-slider::-moz-range-thumb:active { transform: scale(1.2); }
-
         .slider-labels { display: flex; justify-content: space-between; font-size: 10px; color: rgba(255,255,255,0.4); text-align: center; margin-top: -5px; }
         .slider-labels span { flex: 1; display: flex; flex-direction: column; align-items: center; word-wrap: break-word; padding: 0 2px; line-height: 1.2; transition: 0.3s; }
         .slider-labels span::before { content: '|'; display: block; margin-bottom: 4px; color: rgba(255,255,255,0.2); font-size: 10px; font-weight: bold; }
         .slider-labels span.active-label { color: var(--gold); font-weight: 600; transform: scale(1.05); }
         .slider-labels span.active-label::before { color: var(--gold); }
-
         .sara-score-badge { display: inline-block; padding: 8px 20px; border-radius: 30px; background: rgba(251, 191, 36, 0.15); border: 1px solid var(--border); color: var(--gold); font-weight: bold; font-size: 28px; margin-bottom: 5px; }
         
+        /* Layouts & Fullscreen */
         #p-ring-new { fill: none; stroke: var(--gold); stroke-width: 5; stroke-dasharray: 219.9; stroke-dashoffset: 219.9; transform: rotate(-90deg); transform-origin: center; transition: 0.1s linear; }
         #jaas-container { width: 100%; height: 60vh; border-radius: 15px; overflow: hidden; background: #000; }
 
-        /* Fullscreen Layouts */
         #flow-container:fullscreen, #learn-container:fullscreen { background: #000; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 0; width: 100vw; height: 100vh; }
         #flow-container:fullscreen .slide-wrapper, #learn-container:fullscreen .slide-wrapper { width: 100vw; height: 100vh; max-width: none; border-radius: 0; }
         #learn-container:fullscreen { padding: 20px; }
@@ -89,16 +99,46 @@
                 position: fixed; bottom: 10px; left: 50%; transform: translateX(-50%); width: auto; max-width: 95%;
                 background: rgba(0, 0, 0, 0.65); border-radius: 50px; padding: 8px 15px !important;
                 backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.2);
-                display: flex !important; flex-direction: row !important; align-items: center !important;
-                justify-content: center !important; gap: 12px !important; margin-top: 0 !important; z-index: 200;
+                display: flex !important; flex-direction: row !important; align-items: center !important; justify-content: center !important; gap: 12px !important; margin-top: 0 !important; z-index: 200;
             }
             #flow-container .mode-toggle { height: 35px; min-width: 120px; }
             #flow-container .flow-controls > div { flex-shrink: 0; }
+            
+            /* Learn Screen Landscape hide tracker */
+            .tracker-section { display: none !important; }
+            .gita-verse-container { display: none !important; }
         }
+        
+        #learn-container:fullscreen .tracker-section { display: none !important; }
+        #flow-container:fullscreen .gita-verse-container { display: none !important; }
 
         .mode-toggle { display: flex; background: var(--glass); border-radius: 12px; padding: 2px; border: 1px solid var(--border); height: 40px; min-width: 140px; }
         .mode-btn { flex: 1; border: none; background: transparent; color: white; border-radius: 8px; cursor: pointer; font-size: 10px; transition: 0.3s; padding: 0 4px; line-height: 1.2; }
         .mode-btn.active { background: var(--gold); color: var(--bg); font-weight: bold; }
+
+        /* Learn VSS Layout Classes */
+        .learn-layout { display: flex; flex-direction: column; gap: 20px; }
+        .learn-layout .video-section { flex: 1; min-width: 0; }
+        .learn-layout .tracker-section { display: flex; flex-direction: column; align-items: center; justify-content: center; background: var(--glass); border: 1px solid var(--border); border-radius: 15px; padding: 20px; }
+
+        /* Flow Section Verse Styling */
+        .gita-verse-container { margin-top: 25px; padding: 15px; display: flex; flex-direction: column; align-items: center; gap: 15px; transition: all 0.3s ease; }
+        .gita-verse-text { color: var(--gold); font-weight: bold; font-size: 14px; line-height: 1.6; text-align: center; }
+        .gita-verse-img { width: 100%; max-width: 320px; border-radius: 12px; display: block; border: 1px solid var(--border); }
+
+        /* Desktop Layout Shifts */
+        @media (min-width: 768px) {
+            .mobile-nav-wrapper { display: none !important; }
+            .nav-links { display: flex !important; }
+            body { padding-bottom: 20px; }
+            
+            .learn-layout { flex-direction: row; align-items: stretch; }
+            .learn-layout .tracker-section { width: 250px; flex-shrink: 0; margin-bottom: 15px; }
+
+            /* Desktop Flow Section: hide image, keep text */
+            .gita-verse-img { display: none; }
+            .gita-verse-text { font-size: 17px; }
+        }
 
         /* Sleek Scrollable Bottom Navigation */
         .mobile-nav-wrapper {
@@ -132,29 +172,11 @@
         .left-arrow { left: 0; background: linear-gradient(to right, rgba(30,58,138,1) 40%, rgba(30,58,138,0)); }
         .right-arrow { right: 0; background: linear-gradient(to left, rgba(30,58,138,1) 40%, rgba(30,58,138,0)); }
         
-        @media (hover: none) {
-            .nav-arrow { opacity: 0.8; width: 35px; pointer-events: auto; }
-        }
+        @media (hover: none) { .nav-arrow { opacity: 0.8; width: 35px; pointer-events: auto; } }
 
-        /* Desktop Layout Shifts */
-        @media (min-width: 768px) {
-            .mobile-nav-wrapper { display: none !important; }
-            .nav-links { display: flex !important; }
-            body { padding-bottom: 20px; }
-        }
-
-		/* Shruti Chat Companion */
+        /* Shruti Chat Companion */
         #shruti-fab {
-            position: fixed;
-            bottom: 80px; 
-            right: 20px;
-            width: 55px;
-            height: 55px;
-            background: linear-gradient(135deg, var(--gold), #d97706);
-            border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 4px 15px rgba(251, 191, 36, 0.4);
-            cursor: pointer; z-index: 1001; transition: transform 0.3s;
+            position: fixed; bottom: 80px; right: 20px; width: 55px; height: 55px; background: linear-gradient(135deg, var(--gold), #d97706); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(251, 191, 36, 0.4); cursor: pointer; z-index: 1001; transition: transform 0.3s;
         }
         #shruti-fab:hover { transform: scale(1.1); }
         #shruti-fab i { color: var(--bg); }
@@ -167,70 +189,28 @@
             overflow: hidden; transform-origin: bottom right; animation: scaleIn 0.3s ease;
         }
 
-        @keyframes scaleIn {
-            from { opacity: 0; transform: scale(0.8); }
-            to { opacity: 1; transform: scale(1); }
-        }
-        @keyframes slideUpMobile {
-            from { opacity: 0; transform: translateY(100%); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        @keyframes scaleIn { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
+        @keyframes slideUpMobile { from { opacity: 0; transform: translateY(100%); } to { opacity: 1; transform: translateY(0); } }
 
-        .shruti-header {
-            padding: 15px; background: rgba(0,0,0,0.2); border-bottom: 1px solid var(--border);
-            display: flex; justify-content: space-between; align-items: center;
-        }
+        .shruti-header { padding: 15px; background: rgba(0,0,0,0.2); border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
         .shruti-title { font-weight: bold; color: var(--gold); display: flex; align-items: center; }
-
-        .shruti-messages {
-            flex-grow: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px;
-        }
+        .shruti-messages { flex-grow: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
         .shruti-messages::-webkit-scrollbar { width: 4px; }
         .shruti-messages::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 4px; }
-
         .msg { max-width: 85%; padding: 10px 14px; border-radius: 15px; font-size: 13px; line-height: 1.5; }
         .msg-user { align-self: flex-end; background: var(--glass); border: 1px solid rgba(255,255,255,0.1); border-bottom-right-radius: 4px; }
         .msg-shruti { align-self: flex-start; background: rgba(251, 191, 36, 0.1); border: 1px solid var(--border); border-bottom-left-radius: 4px; }
 
-        .shruti-input-area {
-            padding: 10px; background: rgba(0,0,0,0.4); border-top: 1px solid var(--border); display: flex; gap: 8px; align-items: center;
-            padding-bottom: max(10px, env(safe-area-inset-bottom));
-        }
-        .shruti-input {
-            flex-grow: 1; background: var(--glass); border: 1px solid rgba(255,255,255,0.2); color: white;
-            padding: 10px 15px; border-radius: 20px; outline: none; font-size: 13px; min-width: 0;
-        }
-        
-        .shruti-mic {
-            background: var(--glass); border: 1px solid var(--border); width: 38px; height: 38px; border-radius: 50%;
-            color: var(--gold); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.3s;
-        }
-        
-        .shruti-mic.listening {
-            background: #ff4757 !important; 
-            border-color: #ff4757 !important; 
-            color: white !important; 
-            animation: pulseMic 1.5s infinite;
-        }
-        @keyframes pulseMic {
-            0% { box-shadow: 0 0 0 0 rgba(255, 71, 87, 0.4); }
-            70% { box-shadow: 0 0 0 10px rgba(255, 71, 87, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(255, 71, 87, 0); }
-        }
-
-        .shruti-send {
-            background: var(--gold); border: none; width: 38px; height: 38px; border-radius: 50%;
-            color: var(--bg); cursor: pointer; display: flex; align-items: center; justify-content: center;
-        }
+        .shruti-input-area { padding: 10px; background: rgba(0,0,0,0.4); border-top: 1px solid var(--border); display: flex; gap: 8px; align-items: center; padding-bottom: max(10px, env(safe-area-inset-bottom)); }
+        .shruti-input { flex-grow: 1; background: var(--glass); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 10px 15px; border-radius: 20px; outline: none; font-size: 13px; min-width: 0; }
+        .shruti-mic { background: var(--glass); border: 1px solid var(--border); width: 38px; height: 38px; border-radius: 50%; color: var(--gold); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.3s; }
+        .shruti-mic.listening { background: #ff4757 !important; border-color: #ff4757 !important; color: white !important; animation: pulseMic 1.5s infinite; }
+        @keyframes pulseMic { 0% { box-shadow: 0 0 0 0 rgba(255, 71, 87, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(255, 71, 87, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 71, 87, 0); } }
+        .shruti-send { background: var(--gold); border: none; width: 38px; height: 38px; border-radius: 50%; color: var(--bg); cursor: pointer; display: flex; align-items: center; justify-content: center; }
 
         @media (max-width: 768px) {
             #shruti-window { 
-                top: 0; left: 0; right: 0; bottom: 0; 
-                width: 100vw; height: 100vh; height: 100dvh; 
-                max-width: 100vw; max-height: none; 
-                border-radius: 0; 
-                z-index: 9999; 
-                animation: slideUpMobile 0.3s ease;
+                top: 0; left: 0; right: 0; bottom: 0; width: 100vw; height: 100vh; height: 100dvh; max-width: 100vw; max-height: none; border-radius: 0; z-index: 9999; animation: slideUpMobile 0.3s ease;
             }
             #shruti-fab { bottom: calc(90px + env(safe-area-inset-bottom, 0px)); right: 15px; }
         }
@@ -277,6 +257,14 @@
     <div class="card" style="padding: 15px 20px;">
         <h3 class="serif" style="color: var(--gold); margin-bottom: 25px; font-size: 1.3rem; text-align: center;">Daily State Observation</h3>
         
+        <div class="metric-card" style="padding-bottom: 5px;">
+            <div class="metric-label-row" style="margin-bottom: 8px;"><span>Log Timing</span></div>
+            <div class="mode-toggle" style="margin: 0 auto 15px auto; width: 100%;">
+                <button id="timing-before" class="mode-btn active" onclick="setSadhanaTiming('before')">Before Sādhanā</button>
+                <button id="timing-after" class="mode-btn" onclick="setSadhanaTiming('after')">After Sādhanā</button>
+            </div>
+        </div>
+
         <div class="metric-card">
             <div class="metric-label-row"><span>Body State</span><span id="label-body" class="active-state-text">Neutral</span></div>
             <div class="slider-container">
@@ -332,7 +320,20 @@
         <button onclick="logSadhanaSnapshot()" style="width: 100%; margin-top: 20px; background: linear-gradient(135deg, var(--gold), #d97706); border: none; color: var(--bg); padding: 16px; border-radius: 12px; font-weight: bold; font-size: 14px; cursor: pointer; box-shadow: 0 4px 15px rgba(251, 191, 36, 0.3); transition: transform 0.2s;">
             Record Sādhana Snapshot
         </button>
-        <p style="text-align: center; font-size: 11px; opacity: 0.6; margin-top: 12px;">Logging multiple times a day increases your Sādhana Sāra weightage.</p>
+        
+        <div style="display: flex; gap: 10px; margin-top: 15px;">
+            <button onclick="exportSadhanaLogs()" style="flex: 1; background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: white; padding: 12px; border-radius: 12px; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; transition: 0.3s;">
+                <i data-feather="download" style="width: 14px;"></i> Export
+            </button>
+            <button onclick="shareSadhanaLogs('whatsapp')" style="flex: 1; background: #25D366; border: none; color: white; padding: 12px; border-radius: 12px; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; transition: 0.3s;">
+                <i data-feather="message-circle" style="width: 14px;"></i> WhatsApp
+            </button>
+            <button onclick="shareSadhanaLogs('email')" style="flex: 1; background: #1e3a8a; border: 1px solid #3b82f6; color: white; padding: 12px; border-radius: 12px; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; transition: 0.3s;">
+                <i data-feather="mail" style="width: 14px;"></i> Email
+            </button>
+        </div>
+
+        <p style="text-align: center; font-size: 11px; opacity: 0.6; margin-top: 15px;">Logging multiple times a day increases your Sādhana Sāra weightage.</p>
     </div>
 </section>
 
@@ -381,8 +382,35 @@
 </section>
 
 <section id="v-pran" class="view">
-    <div class="search-container"><input type="text" id="searchPran" class="search-input" placeholder="Search pranayama..." oninput="filterPran()"></div>
-    <div id="pranGrid"></div>
+    <div class="interactive-picker" id="picker-pran">
+        <div class="picker-search-bar">
+            <i data-feather="search" style="width: 16px; color: var(--gold);"></i>
+            <input type="text" id="input-pran" placeholder="Search Pranayama..." onfocus="expandPicker('pran')" oninput="filterPicker('pran')">
+            <i data-feather="chevron-down" id="chevron-pran" onclick="togglePicker('pran')" style="cursor:pointer; color: var(--gold);"></i>
+        </div>
+        <div class="picker-wheel-area">
+            <div class="picker-highlight"></div>
+            <div class="picker-wheel" id="wheel-pran" onscroll="handleWheelScroll('pran')">
+                </div>
+        </div>
+    </div>
+    <div id="display-pran" class="media-display"></div>
+</section>
+
+<section id="v-med" class="view">
+    <div class="interactive-picker" id="picker-med">
+        <div class="picker-search-bar">
+            <i data-feather="search" style="width: 16px; color: var(--gold);"></i>
+            <input type="text" id="input-med" placeholder="Search Meditations..." onfocus="expandPicker('med')" oninput="filterPicker('med')">
+            <i data-feather="chevron-down" id="chevron-med" onclick="togglePicker('med')" style="cursor:pointer; color: var(--gold);"></i>
+        </div>
+        <div class="picker-wheel-area">
+            <div class="picker-highlight"></div>
+            <div class="picker-wheel" id="wheel-med" onscroll="handleWheelScroll('med')">
+                </div>
+        </div>
+    </div>
+    <div id="display-med" class="media-display"></div>
 </section>
 
 <section id="v-flow" class="view">
@@ -444,17 +472,23 @@
                 </button>
             </div>
         </div>
-    </div>
-</section>
 
-<section id="v-med" class="view">
-    <div class="search-container"><input type="text" id="searchMed" class="search-input" placeholder="Search meditations..." oninput="filterMed()"></div>
-    <div id="medGrid"></div>
+        <div class="gita-verse-container">
+            <img src="./assets/bg_10-25.PNG" class="gita-verse-img" alt="Bhagavad Gita 10.25">
+            <div class="gita-verse-text">
+                यज्ञानां जपयज्ञोऽस्मि स्थावराणां हिमालय: ॥ १०.२५ ॥<br>
+                Among Yajnās, I am japa [sadhana],<br>
+                of immovables, I am the Himālayas.<br>
+                <span style="font-size: 0.8em; opacity: 0.8; font-weight: normal; margin-top: 5px; display: block;">- Bhagavad Gita 10.25</span>
+            </div>
+        </div>
+
+    </div>
 </section>
 
 <section id="v-japa" class="view">
     <div class="card" style="padding: 15px;">
-        <h3 class="serif" style="margin-bottom: 15px; color: var(--gold); text-align: center;">Japa Yajna Live</h3>
+        <h3 class="serif" style="margin-bottom: 15px; color: var(--gold); text-align: center;">Japa Yajna Online</h3>
         <div id="jaas-container"></div>
     </div>
 </section>
@@ -476,37 +510,45 @@
 </section>
 
 <section id="v-learn" class="view">
-    <div id="learn-container" class="card" style="padding: 15px; text-align: center; border: none; background: transparent; position: relative;">
+    <div id="learn-container" class="card" style="padding: 15px; border: none; background: transparent; position: relative;">
         <button onclick="toggleLearnFS()" class="fs-btn" style="position: absolute; top: 15px; right: 15px; background: rgba(0,0,0,0.3); border: 1px solid var(--border); color: white; padding: 8px; border-radius: 8px; z-index: 100; cursor: pointer;">
             <i data-feather="maximize" id="learn-fs-icon" style="width: 18px; height: 18px;"></i>
         </button>
 
-        <h3 class="serif" style="color: var(--gold); margin-bottom: 5px;">Learn VSS</h3>
-        <div id="learn-progress-text" style="font-size: 12px; opacity: 0.8; margin-bottom: 10px;">-- hours left to complete</div>
+        <h3 class="serif" style="color: var(--gold); margin-bottom: 15px; text-align: center;">Learn VSS</h3>
         
-        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; position: relative; padding: 0 5px;">
-            <div style="position: absolute; top: 50%; left: 10px; right: 10px; height: 2px; background: rgba(255,255,255,0.2); z-index: 1; transform: translateY(-50%);"></div>
-            <div id="learn-progress-fill" style="position: absolute; top: 50%; left: 10px; width: 0%; height: 2px; background: var(--gold); z-index: 2; transform: translateY(-50%); transition: width 0.3s ease;"></div>
-            <div id="learn-milestones" style="display: flex; justify-content: space-between; width: 100%; z-index: 3;"></div>
-        </div>
+        <div class="learn-layout">
+            <div class="video-section">
+                <div class="slide-wrapper" style="position: relative; display: block; width: 100%; aspect-ratio: 16/9; background: #000; border-radius: 12px; overflow: hidden; border: 1px solid var(--border);">
+                    <iframe id="learn-video" src="" style="width: 100%; height: 100%; border: 0;" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    
+                    <button onclick="navLearn(-1)" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.4); border: none; color: white; border-radius: 50%; width: 40px; height: 40px; cursor: pointer; z-index: 10; display: flex; align-items: center; justify-content: center;">
+                        <i data-feather="chevron-left"></i>
+                    </button>
+                    <button onclick="navLearn(1)" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.4); border: none; color: white; border-radius: 50%; width: 40px; height: 40px; cursor: pointer; z-index: 10; display: flex; align-items: center; justify-content: center;">
+                        <i data-feather="chevron-right"></i>
+                    </button>
+                </div>
+            </div>
 
-        <div class="slide-wrapper" style="position: relative; display: block; width: 100%; aspect-ratio: 16/9; background: #000; border-radius: 12px; overflow: hidden; margin-bottom: 15px; border: 1px solid var(--border);">
-            <iframe id="learn-video" src="" style="width: 100%; height: 100%; border: 0;" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-            
-            <button onclick="navLearn(-1)" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.4); border: none; color: white; border-radius: 50%; width: 40px; height: 40px; cursor: pointer; z-index: 10; display: flex; align-items: center; justify-content: center;">
-                <i data-feather="chevron-left"></i>
-            </button>
-            <button onclick="navLearn(1)" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.4); border: none; color: white; border-radius: 50%; width: 40px; height: 40px; cursor: pointer; z-index: 10; display: flex; align-items: center; justify-content: center;">
-                <i data-feather="chevron-right"></i>
-            </button>
-        </div>
-        
-        <div style="display: flex; justify-content: space-between; align-items: center; background: var(--glass); padding: 10px 15px; border-radius: 15px; border: 1px solid var(--border);">
-            <div id="learn-title" class="serif" style="font-weight: bold; font-size: 16px; color: var(--gold);">Shlokas 1-10</div>
-            
-            <div class="mode-toggle" style="margin: 0; height: 35px; min-width: 160px;">
-                <button id="learn-mode-prog" class="mode-btn active" onclick="setLearnStatus(false)">In-Progress</button>
-                <button id="learn-mode-comp" class="mode-btn" onclick="setLearnStatus(true)">Completed</button>
+            <div class="tracker-section">
+                <div style="position: relative; width: 140px; height: 140px; margin-bottom: 20px;">
+                    <svg viewBox="0 0 100 100" style="width: 100%; height: 100%; transform: rotate(-90deg);">
+                        <circle cx="50" cy="50" r="40" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="8"></circle>
+                        <g id="learn-donut-segments"></g>
+                    </svg>
+                    <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                        <span id="learn-time-left" style="color: var(--gold); font-weight: bold; font-size: 18px;"></span>
+                        <span style="font-size: 10px; opacity: 0.7;">Left</span>
+                    </div>
+                </div>
+                
+                <div id="learn-title" class="serif" style="font-weight: bold; font-size: 14px; color: var(--gold); text-align: center; margin-bottom: 15px; line-height: 1.4;"></div>
+                
+                <div class="mode-toggle" style="margin: 0; height: 35px; width: 100%; max-width: 200px;">
+                    <button id="learn-mode-prog" class="mode-btn active" onclick="setLearnStatus(false)">In-Progress</button>
+                    <button id="learn-mode-comp" class="mode-btn" onclick="setLearnStatus(true)">Completed</button>
+                </div>
             </div>
         </div>
     </div>
@@ -554,9 +596,7 @@
         <button id="shruti-mic" class="shruti-mic" onclick="toggleSpeech()" title="Tap to speak">
             <i data-feather="mic" style="width: 16px;"></i>
         </button>
-        
         <input type="text" id="shruti-input" class="shruti-input" placeholder="Ask about Shri Vishnu's Thousand Divine Names..." onkeypress="handleShrutiKey(event)">
-        
         <button class="shruti-send" onclick="sendToShruti()">
             <i data-feather="send" style="width: 16px; margin-left: -2px;"></i>
         </button>
@@ -564,8 +604,16 @@
 </div>
 
 <script>
+// --- LOGIC & STATE DATA ---
 let sadhanaStore = JSON.parse(localStorage.getItem('vss_sadhana_logs')) || {};
 let currentDailyScore = 0;
+let currentSadhanaTiming = 'before';
+
+function setSadhanaTiming(timing) {
+    currentSadhanaTiming = timing;
+    document.getElementById('timing-before').classList.toggle('active', timing === 'before');
+    document.getElementById('timing-after').classList.toggle('active', timing === 'after');
+}
 
 function updateLabel(id, val, labels) {
     document.getElementById(`label-${id}`).innerHTML = labels[val].replace(/<br>/g, ' '); 
@@ -580,7 +628,11 @@ function updateLabel(id, val, labels) {
 function logSadhanaSnapshot() {
     const today = new Date().toISOString().split('T')[0];
     const snapshot = {
-        time: new Date().getTime(),
+        userId: localStorage.getItem('vss_user_id') || 'guest_user',
+        date: today,
+        time: new Date().toLocaleTimeString(),
+        timestamp: new Date().getTime(),
+        timing: currentSadhanaTiming,
         body: parseInt(document.getElementById('s-body').value),
         breath: parseInt(document.getElementById('s-breath').value),
         mind: parseInt(document.getElementById('s-mind').value),
@@ -635,6 +687,23 @@ function calculateSadhanaSara() {
     document.getElementById('dailyScoreBadge').innerText = currentDailyScore;
 }
 
+function exportSadhanaLogs() {
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(sadhanaStore, null, 2));
+    const dlAnchorElem = document.createElement('a');
+    dlAnchorElem.setAttribute("href", dataStr);
+    dlAnchorElem.setAttribute("download", "vss_sadhana_logs.json");
+    dlAnchorElem.click();
+}
+
+function shareSadhanaLogs(method) {
+    const text = `My Sādhana Sāra Score today is ${currentDailyScore}! I've completed ${mandalaData.completed.length}/45 days of my Mandala on the Vedic Space App.`;
+    if (method === 'whatsapp') {
+        window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`);
+    } else if (method === 'email') {
+        window.open(`mailto:?subject=My Sādhana Progress&body=${encodeURIComponent(text)}`);
+    }
+}
+
 let saraChart;
 function renderSadhanaChart() {
     const ctx = document.getElementById('saraChart');
@@ -676,25 +745,6 @@ function renderSadhanaChart() {
     });
 }
 
-function showTab(t){
-    document.querySelectorAll('.view,.nav-item').forEach(el=>el.classList.remove('active'));
-    document.querySelectorAll('.nav-links a').forEach(el=>el.classList.remove('active-link'));
-    document.getElementById('v-'+t).classList.add('active');
-    
-    if(document.getElementById('n-'+t)) document.getElementById('n-'+t).classList.add('active');
-    if(document.getElementById('t-'+t)) document.getElementById('t-'+t).classList.add('active-link');
-    
-    if (t !== 'learn') {
-        const iframe = document.getElementById('learn-video');
-        if (iframe) iframe.src = iframe.src;
-    }
-    
-    const nItem = document.getElementById('n-'+t);
-    if(nItem) nItem.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
-    
-    renderTabIfNeeded(t);
-}
-
 const meditations = [
 {title:"Hari Om Meditation",audio:"./meditations/hari_om_meditation.mp3",img:"./meditations/Hari_Om_Chakras.webp"},
 {title:"Om Namah Shivaya",audio:"./meditations/om_namah_shivaya.mp3",img:"./meditations/Om_Namah_Shivaya.webp"},
@@ -727,13 +777,33 @@ const learnLessons = [
     { title: "Shlokas 96-108", duration: 31, url: "https://www.youtube.com/embed/fu4JTCv9ybc" }
 ];
 
+const datasets = { pran: pranayamas, med: meditations };
 let mandalaData = JSON.parse(localStorage.getItem('vss_mandala_tracker')) || { completed: [], specialDays: [1, 15, 30, 45] };
 let learnData = JSON.parse(localStorage.getItem('vss_learn_tracker')) || Array(8).fill(false);
 let currentMode = 'chanting';
 let lIdx = 0; 
+let scrollTimeouts = {};
 
-// Added sangha to renderedTabs tracking
 const renderedTabs = { med: false, pran: false, flow: false, japa: false, mandala: false, learn: false, sangha: false };
+
+function showTab(t){
+    document.querySelectorAll('.view,.nav-item').forEach(el=>el.classList.remove('active'));
+    document.querySelectorAll('.nav-links a').forEach(el=>el.classList.remove('active-link'));
+    document.getElementById('v-'+t).classList.add('active');
+    
+    if(document.getElementById('n-'+t)) document.getElementById('n-'+t).classList.add('active');
+    if(document.getElementById('t-'+t)) document.getElementById('t-'+t).classList.add('active-link');
+    
+    if (t !== 'learn') {
+        const iframe = document.getElementById('learn-video');
+        if (iframe) iframe.src = iframe.src;
+    }
+    
+    const nItem = document.getElementById('n-'+t);
+    if(nItem) nItem.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+    
+    renderTabIfNeeded(t);
+}
 
 function scrollNav(dir) {
     const nav = document.getElementById('main-nav');
@@ -743,8 +813,8 @@ function scrollNav(dir) {
 
 function renderTabIfNeeded(tab){
     if(renderedTabs[tab]) return;
-    if(tab === 'med') renderMed();
-    if(tab === 'pran') renderPran();
+    if(tab === 'med') initPicker('med');
+    if(tab === 'pran') initPicker('pran');
     if(tab === 'flow'){ preloadNearby(); feather.replace(); }
     if(tab === 'japa') initJitsi();
     if(tab === 'mandala') renderMandalaGrid();
@@ -753,9 +823,132 @@ function renderTabIfNeeded(tab){
     renderedTabs[tab] = true;
 }
 
+// INTERACTIVE PICKER LOGIC FOR PRĀṆA & DHYĀNA 
+function initPicker(type) {
+    renderWheelItems(type, datasets[type]);
+    const initialData = datasets[type][0];
+    document.getElementById(`input-${type}`).value = initialData.title;
+    renderMediaHTML(type, initialData);
+}
+
+function togglePicker(type) {
+    const picker = document.getElementById(`picker-${type}`);
+    if (picker.classList.contains('expanded')) collapsePicker(type);
+    else expandPicker(type);
+}
+
+function expandPicker(type) {
+    const picker = document.getElementById(`picker-${type}`);
+    const input = document.getElementById(`input-${type}`);
+    
+    picker.classList.add('expanded');
+    document.getElementById(`chevron-${type}`).setAttribute('data-feather', 'chevron-up');
+    feather.replace();
+    
+    input.placeholder = input.value || `Search...`;
+    input.value = '';
+    filterPicker(type); 
+    
+    setTimeout(() => handleWheelScroll(type, true), 50);
+}
+
+function collapsePicker(type) {
+    const picker = document.getElementById(`picker-${type}`);
+    picker.classList.remove('expanded');
+    document.getElementById(`chevron-${type}`).setAttribute('data-feather', 'chevron-down');
+    feather.replace();
+}
+
+function filterPicker(type) {
+    const input = document.getElementById(`input-${type}`);
+    const query = input.value.toLowerCase();
+    const filtered = datasets[type].filter(item => item.title.toLowerCase().includes(query));
+    renderWheelItems(type, filtered);
+}
+
+function renderWheelItems(type, items) {
+    const wheel = document.getElementById(`wheel-${type}`);
+    const innerHTML = items.map(item => {
+        const origIdx = datasets[type].indexOf(item);
+        return `<div class="wheel-item" data-orig-idx="${origIdx}" onclick="selectFromWheel('${type}', ${origIdx})">${item.title}</div>`;
+    }).join('');
+    
+    wheel.innerHTML = `<div class="wheel-pad"></div>${innerHTML}<div class="wheel-pad"></div>`;
+    wheel.scrollTop = 0;
+    handleWheelScroll(type, true);
+}
+
+function handleWheelScroll(type, preventRender = false) {
+    const wheel = document.getElementById(`wheel-${type}`);
+    const items = wheel.querySelectorAll('.wheel-item');
+    const wheelCenter = wheel.getBoundingClientRect().top + (wheel.clientHeight / 2);
+    
+    let closestItem = null;
+    let closestDist = Infinity;
+    
+    items.forEach(item => {
+        const rect = item.getBoundingClientRect();
+        if(rect.height === 0) return; 
+        const itemCenter = rect.top + (rect.height / 2);
+        const dist = Math.abs(wheelCenter - itemCenter);
+        
+        if (dist < closestDist) {
+            closestDist = dist;
+            closestItem = item;
+        }
+        item.classList.remove('active');
+    });
+    
+    if (closestItem) {
+        closestItem.classList.add('active');
+        
+        if (!preventRender) {
+            clearTimeout(scrollTimeouts[type]);
+            scrollTimeouts[type] = setTimeout(() => {
+                const origIdx = closestItem.getAttribute('data-orig-idx');
+                renderMediaHTML(type, datasets[type][origIdx]);
+                
+                const input = document.getElementById(`input-${type}`);
+                if (document.activeElement !== input) {
+                    input.value = datasets[type][origIdx].title;
+                }
+            }, 300);
+        }
+    }
+}
+
+function selectFromWheel(type, origIdx) {
+    const title = datasets[type][origIdx].title;
+    document.getElementById(`input-${type}`).value = title;
+    renderMediaHTML(type, datasets[type][origIdx]);
+    collapsePicker(type);
+}
+
+function renderMediaHTML(type, data) {
+    const display = document.getElementById(`display-${type}`);
+    if (type === 'pran') {
+        display.innerHTML = `
+            <div class="card">
+                <div class="video-box"><iframe src="${data.video}" allowfullscreen></iframe></div>
+                <div class="card-body"><h3 class="serif" style="color: var(--gold); margin-bottom: 0;">${data.title}</h3></div>
+            </div>
+        `;
+    } else if (type === 'med') {
+        display.innerHTML = `
+            <div class="card">
+                <img src="${data.img}" loading="lazy" style="width:100%; height:180px; object-fit:cover;">
+                <div class="card-body" style="padding-top: 20px;">
+                    <h3 class="serif" style="color: var(--gold); margin-bottom: 15px;">${data.title}</h3>
+                    <audio controls preload="none" src="${data.audio}" style="width:100%; filter:invert(1); border-radius: 30px;"></audio>
+                </div>
+            </div>
+        `;
+    }
+}
+
+// --- LEARN VSS CIRCULAR TRACKER LOGIC ---
 function renderLearnTab() {
     document.getElementById('learn-video').src = learnLessons[lIdx].url;
-    document.getElementById('learn-title').innerText = learnLessons[lIdx].title;
     const isComp = learnData[lIdx];
     document.getElementById('learn-mode-prog').classList.toggle('active', !isComp);
     document.getElementById('learn-mode-comp').classList.toggle('active', isComp);
@@ -784,23 +977,34 @@ function toggleLearnFS() {
 function updateLearnProgress() {
     let totalMins = 251; 
     let compMins = 0;
-    let milestonesHTML = '';
+    let segmentsHTML = '';
+    
+    const C = 2 * Math.PI * 40; 
+    let currentOffset = 0;
     
     learnLessons.forEach((lesson, i) => {
         const comp = learnData[i];
         if (comp) compMins += lesson.duration;
-        const color = comp ? 'var(--gold)' : 'var(--bg)';
-        const border = comp ? 'var(--gold)' : 'rgba(255,255,255,0.4)';
-        const transform = i === lIdx ? 'scale(1.5)' : 'scale(1)';
-        milestonesHTML += `<div style="width: 12px; height: 12px; border-radius: 50%; background: ${color}; border: 2px solid ${border}; cursor: pointer; transition: 0.3s; transform: ${transform};" onclick="goToLearn(${i})" title="${lesson.title}"></div>`;
+        
+        const color = comp ? 'var(--gold)' : 'rgba(255,255,255,0.2)';
+        const segLength = (lesson.duration / totalMins) * C;
+        const drawLength = Math.max(0, segLength - 2); 
+        const strokeWidth = i === lIdx ? 12 : 8; 
+        
+        segmentsHTML += `<circle cx="50" cy="50" r="40" fill="none" stroke="${color}" stroke-width="${strokeWidth}" stroke-dasharray="${drawLength} ${C}" stroke-dashoffset="${-currentOffset}" style="transition: 0.3s; cursor: pointer;" onclick="goToLearn(${i})"><title>${lesson.title}</title></circle>`;
+        
+        currentOffset += segLength;
     });
     
     let leftMins = totalMins - compMins;
     let hrs = Math.floor(leftMins / 60);
     let mins = leftMins % 60;
-    document.getElementById('learn-progress-text').innerText = leftMins <= 0 ? `Course Completed! 🎉` : `${hrs}h ${mins}m left to complete`;
-    document.getElementById('learn-milestones').innerHTML = milestonesHTML;
-    document.getElementById('learn-progress-fill').style.width = `${(compMins/totalMins)*100}%`;
+    
+    document.getElementById('learn-time-left').innerText = leftMins <= 0 ? '0h 0m' : `${hrs}h ${mins}m`;
+    document.getElementById('learn-donut-segments').innerHTML = segmentsHTML;
+    
+    const curLesson = learnLessons[lIdx];
+    document.getElementById('learn-title').innerText = `Part ${lIdx + 1}: ${curLesson.title} (${curLesson.duration} mins)`;
 }
 
 function goToLearn(idx) { lIdx = idx; renderLearnTab(); }
@@ -849,26 +1053,13 @@ function renderMandalaGrid() {
 function initJitsi() {
     if (typeof JitsiMeetExternalAPI !== 'undefined') {
         new JitsiMeetExternalAPI("8x8.vc", {
-            roomName: "vpaas-magic-cookie-47ba1aabdd84458d9977951213e7d9f0/SampleAppNarrowDriversResistTerribly",
+            roomName: "vpaas-magic-cookie-47ba1aabdd84458d9977951213e7d9f0/VedicSpaceJapaYajna",
             parentNode: document.querySelector('#jaas-container'),
+            jwt: "eyJraWQiOiJ2cGFhcy1tYWdpYy1jb29raWUtNDdiYTFhYWJkZDg0NDU4ZDk5Nzc5NTEyMTNlN2Q5ZjAvOGFmN2YxLVNBTVBMRV9BUFAiLCJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiJqaXRzaSIsImlzcyI6ImNoYXQiLCJpYXQiOjE3NzY0ODE5NDIsImV4cCI6MTc3NjQ4OTE0MiwibmJmIjoxNzc2NDgxOTM3LCJzdWIiOiJ2cGFhcy1tYWdpYy1jb29raWUtNDdiYTFhYWJkZDg0NDU4ZDk5Nzc5NTEyMTNlN2Q5ZjAiLCJjb250ZXh0Ijp7ImZlYXR1cmVzIjp7ImxpdmVzdHJlYW1pbmciOmZhbHNlLCJmaWxlLXVwbG9hZCI6ZmFsc2UsIm91dGJvdW5kLWNhbGwiOmZhbHNlLCJzaXAtb3V0Ym91bmQtY2FsbCI6ZmFsc2UsInRyYW5zY3JpcHRpb24iOmZhbHNlLCJsaXN0LXZpc2l0b3JzIjpmYWxzZSwicmVjb3JkaW5nIjpmYWxzZSwiZmxpcCI6ZmFsc2V9LCJ1c2VyIjp7ImhpZGRlbi1mcm9tLXJlY29yZGVyIjpmYWxzZSwibW9kZXJhdG9yIjp0cnVlLCJuYW1lIjoiVGVzdCBVc2VyIiwiaWQiOiJnb29nbGUtb2F1dGgyfDEwMzg2ODAzNTc2Mzc3MTEwNTA4MSIsImF2YXRhciI6IiIsImVtYWlsIjoidGVzdC51c2VyQGNvbXBhbnkuY29tIn19LCJyb29tIjoiKiJ9.SPEYEBfKcHEbGq8ShrQ4rHVZWgnfUbNThREqSCf0OCuZD0L1_MJSIFaVlGEIOe6ri0zTbV3tCC51cFfUjubnTPVMNYfXxjOrFswfxmgEMsKdynJX9ksN1E0yFkTuS8EJ0ibsp-XQrumsoL9cXXZHZMMcWPMEuRyqbioKYBtdY_kHp-NwXZ3PTL2OCbXqvkqBHZCPllxHPZhsWmW-Q77mum63sUu0OSqmbKeuM7dbfmDbIVbx2i1Ru5S-vS43UTCgmW4UZYJBNsGCBgJ6iODt20dyHVW6NhZgEBlBtOj6AoMFfTSX4C4tM2lBQ7jnVaU-OksIPL3B1Mthod1R-Mo-0Q",
             configOverwrite: { prejoinPageEnabled: false },
             interfaceConfigOverwrite: { SHOW_JITSI_WATERMARK: false }
         });
     } else { setTimeout(initJitsi, 1000); }
-}
-
-function renderMed(data=meditations){
-    document.getElementById('medGrid').innerHTML=data.map(m=>`
-    <div class="card"><img src="${m.img}" loading="lazy" style="width:100%; height:180px; object-fit:cover;">
-    <div class="card-body"><h3 class="serif">${m.title}</h3><audio controls preload="none" src="${m.audio}" style="width:100%; filter:invert(1); margin-top:10px;"></audio></div></div>`).join('');
-    feather.replace();
-}
-
-function renderPran(data=pranayamas){
-    document.getElementById('pranGrid').innerHTML=data.map(p=>`
-    <div class="card"><div class="video-box"><iframe src="${p.video}" allowfullscreen></iframe></div>
-    <div class="card-body"><h3 class="serif">${p.title}</h3></div></div>`).join('');
-    feather.replace();
 }
 
 let pIdx=1, pOn=false, pStart=Date.now(), pDuration=3000; 
@@ -982,10 +1173,10 @@ function flowLoop(){
 }
 
 window.onload=()=>{ 
-    feather.replace(); // Fixed: Activate all SVG icons immediately upon load
+    feather.replace(); 
     updateTimerText();
     document.getElementById('flow-bg-audio').src = "./meditations/vss.mp3";
-    renderTabIfNeeded('sadhana'); // Force load the chart on the home screen
+    renderTabIfNeeded('sadhana'); 
     flowLoop(); 
     loadShrutiKnowledge(); 
     calculateSadhanaSara();
@@ -1033,10 +1224,10 @@ function toggleShruti() {
     const win = document.getElementById('shruti-window');
     if (win.style.display === 'flex') {
         win.style.display = 'none';
-        document.body.classList.remove('chat-open'); // Release background scroll lock
+        document.body.classList.remove('chat-open'); 
     } else {
         win.style.display = 'flex';
-        document.body.classList.add('chat-open'); // Lock background scroll
+        document.body.classList.add('chat-open'); 
         document.getElementById('shruti-input').focus();
     }
 }
@@ -1054,7 +1245,7 @@ function initSpeech() {
         recognition = new window.SpeechRecognition();
         recognition.continuous = false;
         recognition.interimResults = false;
-        recognition.lang = 'en-IN'; // Improved recognition for Sanskrit/Indian English on mobile
+        recognition.lang = 'en-IN'; 
         
         recognition.onstart = () => {
             isListening = true;
