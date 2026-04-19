@@ -16,6 +16,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/feather-icons" defer></script>
     <script src='https://8x8.vc/vpaas-magic-cookie-47ba1aabdd84458d9977951213e7d9f0/external_api.js' async></script>
+    
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
@@ -28,8 +29,9 @@
         
         .header { position: sticky; top: 0; background: rgba(30, 58, 138, 0.9); backdrop-filter: blur(10px); padding: 15px 20px; border-bottom: 1px solid var(--border); z-index: 100; }
         
+        /* Desktop Navigation Links */
         .nav-links { display: none; gap: 25px; list-style: none; margin: 0; padding: 0; align-items: center; }
-        .nav-links a { color: white; text-decoration: none; font-weight: 500; font-size: 13px; text-transform: uppercase; letter-spacing: 0.1em; transition: color 0.3s; cursor: pointer; }
+        .nav-links a { color: white; text-decoration: none; font-weight: 500; font-size: 13px; text-transform: uppercase; letter-spacing: 0.1em; transition: color 0.3s; }
         .nav-links a:hover, .nav-links a.active-link { color: var(--gold); }
         
         .content { padding: 10px; max-width: 800px; margin: auto; padding-left: env(safe-area-inset-left, 10px); padding-right: env(safe-area-inset-right, 10px); }
@@ -86,12 +88,12 @@
         #p-ring-new { fill: none; stroke: var(--gold); stroke-width: 5; stroke-dasharray: 219.9; stroke-dashoffset: 219.9; transform: rotate(-90deg); transform-origin: center; transition: 0.1s linear; }
         #jaas-container { width: 100%; height: 60vh; border-radius: 15px; overflow: hidden; background: #000; }
 
-        /* Fixed: Fullscreen Flow background perfectly matches app background */
-        #flow-container:fullscreen, #learn-container:fullscreen { background: var(--bg) !important; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 0; width: 100vw; height: 100vh; }
+        #flow-container:fullscreen, #learn-container:fullscreen { background: #000; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 0; width: 100vw; height: 100vh; }
         #flow-container:fullscreen .slide-wrapper, #learn-container:fullscreen .slide-wrapper { width: 100vw; height: 100vh; max-width: none; border-radius: 0; }
         #learn-container:fullscreen { padding: 20px; }
         #learn-container:fullscreen .slide-wrapper { height: 80vh; max-height: 80vh; }
         
+        /* Landscape & Fullscreen Horizontal Overlay Optimization */
         @media screen and (max-height: 500px) and (orientation: landscape) {
             #flow-container:fullscreen .flow-controls {
                 position: fixed; bottom: 10px; left: 50%; transform: translateX(-50%); width: auto; max-width: 95%;
@@ -102,6 +104,7 @@
             #flow-container .mode-toggle { height: 35px; min-width: 120px; }
             #flow-container .flow-controls > div { flex-shrink: 0; }
             
+            /* Learn Screen Landscape hide tracker */
             .tracker-section { display: none !important; }
             .gita-verse-container { display: none !important; }
         }
@@ -113,14 +116,17 @@
         .mode-btn { flex: 1; border: none; background: transparent; color: white; border-radius: 8px; cursor: pointer; font-size: 10px; transition: 0.3s; padding: 0 4px; line-height: 1.2; }
         .mode-btn.active { background: var(--gold); color: var(--bg); font-weight: bold; }
 
+        /* Learn VSS Layout Classes */
         .learn-layout { display: flex; flex-direction: column; gap: 20px; }
         .learn-layout .video-section { flex: 1; min-width: 0; }
         .learn-layout .tracker-section { display: flex; flex-direction: column; align-items: center; justify-content: center; background: var(--glass); border: 1px solid var(--border); border-radius: 15px; padding: 20px; }
 
+        /* Flow Section Verse Styling */
         .gita-verse-container { margin-top: 25px; padding: 15px; display: flex; flex-direction: column; align-items: center; gap: 15px; transition: all 0.3s ease; }
         .gita-verse-text { color: var(--gold); font-weight: bold; font-size: 14px; line-height: 1.6; text-align: center; }
         .gita-verse-img { width: 100%; max-width: 320px; border-radius: 12px; display: block; border: 1px solid var(--border); }
 
+        /* Desktop Layout Shifts */
         @media (min-width: 768px) {
             .mobile-nav-wrapper { display: none !important; }
             .nav-links { display: flex !important; }
@@ -129,10 +135,12 @@
             .learn-layout { flex-direction: row; align-items: stretch; }
             .learn-layout .tracker-section { width: 250px; flex-shrink: 0; margin-bottom: 15px; }
 
+            /* Desktop Flow Section: hide image, keep text */
             .gita-verse-img { display: none; }
             .gita-verse-text { font-size: 17px; }
         }
 
+        /* Sleek Scrollable Bottom Navigation */
         .mobile-nav-wrapper {
             position: fixed; bottom: 0; left: 0; width: 100%;
             background: #1e3a8a; border-top: 1px solid var(--border);
@@ -163,6 +171,7 @@
         .mobile-nav-wrapper:hover .nav-arrow { opacity: 1; pointer-events: auto; }
         .left-arrow { left: 0; background: linear-gradient(to right, rgba(30,58,138,1) 40%, rgba(30,58,138,0)); }
         .right-arrow { right: 0; background: linear-gradient(to left, rgba(30,58,138,1) 40%, rgba(30,58,138,0)); }
+        
         @media (hover: none) { .nav-arrow { opacity: 0.8; width: 35px; pointer-events: auto; } }
 
         /* Shruti Chat Companion */
@@ -170,6 +179,8 @@
             position: fixed; bottom: 80px; right: 20px; width: 55px; height: 55px; background: linear-gradient(135deg, var(--gold), #d97706); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(251, 191, 36, 0.4); cursor: pointer; z-index: 1001; transition: transform 0.3s;
         }
         #shruti-fab:hover { transform: scale(1.1); }
+        #shruti-fab i { color: var(--bg); }
+
         #shruti-window {
             position: fixed; bottom: 145px; right: 20px; width: 350px; max-width: calc(100vw - 40px);
             height: 500px; max-height: calc(100vh - 200px); background: rgba(30, 58, 138, 0.95);
@@ -214,8 +225,16 @@
             Vedic Space
         </a>
         
-        <ul class="nav-links" id="desktop-nav-container">
-            </ul>
+        <ul class="nav-links">
+            <li><a href="#" onclick="showTab('flow')" id="t-flow">Flow</a></li>
+            <li><a href="#" onclick="showTab('sadhana')" id="t-sadhana" class="active-link">Sādhanā</a></li>
+            <li><a href="#" onclick="showTab('learn')" id="t-learn">Learn VSS</a></li>
+            <li><a href="#" onclick="showTab('mandala')" id="t-mandala">Mandala</a></li>
+            <li><a href="#" onclick="showTab('pran')" id="t-pran">Prāṇa</a></li>
+            <li><a href="#" onclick="showTab('med')" id="t-med">Dhyāna</a></li>
+            <li><a href="#" onclick="showTab('japa')" id="t-japa">Japa</a></li>
+            <li><a href="#" onclick="showTab('sangha')" id="t-sangha">Sangha</a></li>
+        </ul>
 
         <div style="display: flex; align-items: center;">
             <i data-feather="user" onclick="window.location.href='login.html'" style="cursor: pointer;"></i>
@@ -246,7 +265,55 @@
             </div>
         </div>
 
-        <div id="sadhana-sliders-container"></div>
+        <div class="metric-card">
+            <div class="metric-label-row"><span>Body State</span><span id="label-body" class="active-state-text">Neutral</span></div>
+            <div class="slider-container">
+                <input type="range" class="metric-slider" id="s-body" min="0" max="2" value="1" oninput="updateLabel('body', this.value, ['Tired', 'Neutral', 'Relaxed'])">
+                <div class="slider-labels" id="labels-body">
+                    <span>Tired</span><span class="active-label">Neutral</span><span>Relaxed</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="metric-card">
+            <div class="metric-label-row"><span>Breath Rhythm</span><span id="label-breath" class="active-state-text">Even & Smooth</span></div>
+            <div class="slider-container">
+                <input type="range" class="metric-slider" id="s-breath" min="0" max="3" value="2" oninput="updateLabel('breath', this.value, ['Nostril<br>Dominant', 'Jumbled', 'Even &<br>Smooth', 'Smooth/Both<br>Nostrils'])">
+                <div class="slider-labels" id="labels-breath">
+                    <span>Nostril<br>Dominant</span><span>Jumbled</span><span class="active-label">Even &<br>Smooth</span><span>Smooth/Both<br>Nostrils</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="metric-card">
+            <div class="metric-label-row"><span>State of Mind</span><span id="label-mind" class="active-state-text">Same as before</span></div>
+            <div class="slider-container">
+                <input type="range" class="metric-slider" id="s-mind" min="0" max="4" value="2" oninput="updateLabel('mind', this.value, ['Stressful', 'Full of<br>thoughts', 'Same as<br>before', 'Less<br>thoughts', 'Relaxed &<br>Clear'])">
+                <div class="slider-labels" id="labels-mind">
+                    <span>Stressful</span><span>Full of<br>thoughts</span><span class="active-label">Same as<br>before</span><span>Less<br>thoughts</span><span>Relaxed &<br>Clear</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="metric-card">
+            <div class="metric-label-row"><span>Overall Mood</span><span id="label-mood" class="active-state-text">Neutral</span></div>
+            <div class="slider-container">
+                <input type="range" class="metric-slider" id="s-mood" min="0" max="3" value="1" oninput="updateLabel('mood', this.value, ['Negative', 'Neutral', 'Positive', 'Joyful'])">
+                <div class="slider-labels" id="labels-mood">
+                    <span>Negative</span><span class="active-label">Neutral</span><span>Positive</span><span>Joyful</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="metric-card">
+            <div class="metric-label-row"><span>Stress Resilience</span><span id="label-stress" class="active-state-text">Reaction same</span></div>
+            <div class="slider-container">
+                <input type="range" class="metric-slider" id="s-stress" min="0" max="4" value="1" oninput="updateLabel('stress', this.value, ['Negative', 'Reaction<br>same', 'More<br>composed', 'In<br>control', 'Positive'])">
+                <div class="slider-labels" id="labels-stress">
+                    <span>Negative</span><span class="active-label">Reaction<br>same</span><span>More<br>composed</span><span>In<br>control</span><span>Positive</span>
+                </div>
+            </div>
+        </div>
 
         <textarea id="sadhana-observations" class="search-input" style="min-height: 100px; margin-top: 15px; padding: 15px; line-height: 1.5; box-shadow: inset 0 2px 5px rgba(0,0,0,0.2);" placeholder="Log any spiritual experiences, deep observations, or passing thoughts... (Optional)"></textarea>
         
@@ -270,21 +337,6 @@
     </div>
 </section>
 
-<section id="v-drop" class="view">
-    <div class="card" style="padding: 30px 20px; text-align: center;">
-        <h2 class="serif" style="color: var(--gold); margin-bottom: 15px;">Drop Your Botherations</h2>
-        <p style="font-size: 14px; line-height: 1.6; opacity: 0.8; margin-bottom: 25px;">Surrender your worries, anxieties, and negative thoughts to the vastness of the space. Let them dissolve at the feet of the Divine.</p>
-        
-        <textarea id="botheration-input" class="search-input" style="min-height: 160px; margin-bottom: 20px; font-size: 15px; padding: 15px; box-shadow: inset 0 2px 5px rgba(0,0,0,0.2);" placeholder="Write down what is bothering you right now..."></textarea>
-        
-        <button onclick="dropBotheration()" style="width: 100%; background: linear-gradient(135deg, #1e3a8a, var(--gold)); border: 1px solid var(--gold); color: white; padding: 16px; border-radius: 12px; font-weight: bold; font-size: 15px; cursor: pointer; box-shadow: 0 4px 15px rgba(251, 191, 36, 0.2); transition: transform 0.2s; display: flex; justify-content: center; align-items: center; gap: 10px;">
-            <i data-feather="wind"></i> Drop Botheration
-        </button>
-        
-        <div id="drop-success-msg" style="opacity: 0; color: var(--gold); font-size: 14px; font-style: italic; margin-top: 20px; transition: opacity 0.5s;">Offered to the Divine...</div>
-    </div>
-</section>
-
 <section id="v-sangha" class="view">
     <div class="card" style="padding: 25px 20px; text-align: center;">
         <h2 class="serif" style="color: var(--gold); margin-bottom: 15px;">About Vedic Space</h2>
@@ -294,10 +346,10 @@
             Through learning, experience sharing, and this Sādhanā app, we help each other grow and progress on our spiritual journeys.
         </p>
         
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px; margin-bottom: 25px;">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px;">
             <a href="https://vedicspace.in" target="_blank" style="background: rgba(255,255,255,0.05); border: 1px solid var(--border); padding: 15px 10px; border-radius: 12px; color: white; text-decoration: none; display: flex; flex-direction: column; align-items: center; gap: 8px; transition: 0.3s;">
                 <i data-feather="globe" style="color: var(--gold);"></i>
-                <span style="font-size: 12px; font-weight: 600;">Website<br><span style="font-weight:normal; font-size:9px; opacity:0.7;">vedicspace.in</span></span>
+                <span style="font-size: 12px; font-weight: 600;">Website</span>
             </a>
             <a href="https://vishnu.vedicspace.in/#enroll" target="_blank" style="background: rgba(255,255,255,0.05); border: 1px solid var(--border); padding: 15px 10px; border-radius: 12px; color: white; text-decoration: none; display: flex; flex-direction: column; align-items: center; gap: 8px; transition: 0.3s;">
                 <i data-feather="book-open" style="color: var(--gold);"></i>
@@ -312,10 +364,6 @@
                 <span style="font-size: 12px; font-weight: 600;">Facebook</span>
             </a>
         </div>
-
-        <button onclick="shareApp()" style="display: inline-flex; align-items: center; justify-content: center; gap: 10px; background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: white; padding: 14px 28px; border-radius: 30px; cursor: pointer; font-weight: bold; font-size: 14px; transition: 0.3s; width: 100%; max-width: 300px;">
-            <i data-feather="share-2"></i> Share Vedic Space App
-        </button>
     </div>
 
     <div class="card" style="padding: 25px 20px; text-align: center;">
@@ -342,7 +390,8 @@
         </div>
         <div class="picker-wheel-area">
             <div class="picker-highlight"></div>
-            <div class="picker-wheel" id="wheel-pran" onscroll="handleWheelScroll('pran')"></div>
+            <div class="picker-wheel" id="wheel-pran" onscroll="handleWheelScroll('pran')">
+                </div>
         </div>
     </div>
     <div id="display-pran" class="media-display"></div>
@@ -352,39 +401,16 @@
     <div class="interactive-picker" id="picker-med">
         <div class="picker-search-bar">
             <i data-feather="search" style="width: 16px; color: var(--gold);"></i>
-            <input type="text" id="input-med" placeholder="Choose your meditation..." onfocus="expandPicker('med')" oninput="filterPicker('med')">
-            <i data-feather="x" onclick="clearMedSelection()" style="cursor:pointer; color: rgba(255,255,255,0.4); margin-right: 5px; width: 16px;"></i>
+            <input type="text" id="input-med" placeholder="Search Meditations..." onfocus="expandPicker('med')" oninput="filterPicker('med')">
             <i data-feather="chevron-down" id="chevron-med" onclick="togglePicker('med')" style="cursor:pointer; color: var(--gold);"></i>
         </div>
         <div class="picker-wheel-area">
             <div class="picker-highlight"></div>
-            <div class="picker-wheel" id="wheel-med" onscroll="handleWheelScroll('med')"></div>
+            <div class="picker-wheel" id="wheel-med" onscroll="handleWheelScroll('med')">
+                </div>
         </div>
     </div>
-
-    <div id="med-timer-container" class="card" style="padding: 30px 20px; text-align: center;">
-        <h3 class="serif" style="color: var(--gold); margin-bottom: 25px;">Silent Timer</h3>
-        
-        <div style="position: relative; width: 180px; height: 180px; margin: 0 auto 25px auto;">
-            <svg viewBox="0 0 100 100" style="width: 100%; height: 100%; transform: rotate(-90deg);">
-                <circle cx="50" cy="50" r="45" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="4"></circle>
-                <circle id="med-timer-ring" cx="50" cy="50" r="45" fill="none" stroke="var(--gold)" stroke-width="4" stroke-dasharray="282.7" stroke-dashoffset="0" style="transition: stroke-dashoffset 1s linear;"></circle>
-            </svg>
-            <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center;">
-                <span id="med-timer-display" style="font-size: 32px; font-weight: bold; color: white; font-family: 'Inter', monospace; letter-spacing: 2px;">20:00</span>
-            </div>
-        </div>
-
-        <div style="display: flex; justify-content: center; align-items: center; gap: 20px; margin-bottom: 20px;">
-            <button onclick="adjMedTimer(-1)" style="background: var(--glass); border: 1px solid var(--border); color: var(--gold); border-radius: 50%; width: 45px; height: 45px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s;"><i data-feather="minus"></i></button>
-            <button onclick="toggleMedTimer()" id="med-timer-btn" style="background: linear-gradient(135deg, var(--gold), #d97706); border: none; color: var(--bg); border-radius: 50%; width: 65px; height: 65px; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(251, 191, 36, 0.4);"><i data-feather="play" style="width: 26px; height: 26px; margin-left: 3px;"></i></button>
-            <button onclick="adjMedTimer(1)" style="background: var(--glass); border: 1px solid var(--border); color: var(--gold); border-radius: 50%; width: 45px; height: 45px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s;"><i data-feather="plus"></i></button>
-        </div>
-        <button onclick="resetMedTimer()" style="background: transparent; border: none; color: rgba(255,255,255,0.4); cursor: pointer; font-size: 12px; text-decoration: underline;">Reset Timer</button>
-        <audio id="med-bell" src="https://actions.google.com/sounds/v1/alarms/singing_bowl_strike.ogg" preload="auto"></audio>
-    </div>
-
-    <div id="display-med" class="media-display" style="display:none;"></div>
+    <div id="display-med" class="media-display"></div>
 </section>
 
 <section id="v-flow" class="view">
@@ -393,10 +419,16 @@
             <i data-feather="maximize" id="fs-icon" style="width: 18px; height: 18px;"></i>
         </button>
 
-        <div class="slide-wrapper" id="swipe-zone" style="position: relative; display: block; width: 100%; aspect-ratio: 16/9; min-height: 200px; margin: auto; background: #000; border-radius: 12px; overflow: hidden; touch-action: pan-y; cursor: pointer;">
-            <img id="flow-slide" src="./parayana/Slide1.webp" style="display: block; width: 100%; height: 100%; object-fit: contain; position: absolute; top: 0; left: 0; pointer-events: none;">
+        <div class="slide-wrapper" id="swipe-zone" style="position: relative; display: block; width: 100%; aspect-ratio: 16/9; min-height: 200px; margin: auto; background: #000; border-radius: 12px; overflow: hidden; touch-action: pan-y;">
+            <img id="flow-slide" src="./parayana/Slide1.webp" style="display: block; width: 100%; height: 100%; object-fit: contain; position: absolute; top: 0; left: 0;">
             
-            </div>
+            <button onclick="navSlide(-1)" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.15); border: none; color: white; border-radius: 50%; width: 40px; height: 40px; cursor: pointer; z-index: 10;">
+                <i data-feather="chevron-left"></i>
+            </button>
+            <button onclick="navSlide(1)" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.15); border: none; color: white; border-radius: 50%; width: 40px; height: 40px; cursor: pointer; z-index: 10;">
+                <i data-feather="chevron-right"></i>
+            </button>
+        </div>
 
         <div class="flow-controls" style="margin-top: 15px; display: flex; align-items: center; justify-content: center; gap: 12px; z-index: 100; flex-wrap: nowrap; padding: 10px; transition: all 0.3s ease;">
             <div class="mode-toggle">
@@ -528,7 +560,15 @@
     <button class="nav-arrow left-arrow" onclick="scrollNav(-1)"><i data-feather="chevron-left"></i></button>
     
     <nav class="mobile-nav" id="main-nav">
-        </nav>
+        <div class="nav-item active" onclick="showTab('sadhana')" id="n-sadhana"><i data-feather="edit-3"></i><span style="margin-top: 4px;">Sādhanā</span></div>
+        <div class="nav-item" onclick="showTab('flow')" id="n-flow"><i data-feather="refresh-cw"></i><span style="margin-top: 4px;">Flow</span></div>
+        <div class="nav-item" onclick="showTab('learn')" id="n-learn"><i data-feather="book-open"></i><span style="margin-top: 4px;">Learn</span></div>
+        <div class="nav-item" onclick="showTab('mandala')" id="n-mandala"><i data-feather="zap"></i><span style="margin-top: 4px;">Mandala</span></div>
+        <div class="nav-item" onclick="showTab('pran')" id="n-pran"><i data-feather="wind"></i><span style="margin-top: 4px;">Prāṇa</span></div>
+        <div class="nav-item" onclick="showTab('med')" id="n-med"><i data-feather="moon"></i><span style="margin-top: 4px;">Dhyāna</span></div>
+        <div class="nav-item" onclick="showTab('japa')" id="n-japa"><i data-feather="video"></i><span style="margin-top: 4px;">Japa</span></div>
+        <div class="nav-item" onclick="showTab('sangha')" id="n-sangha"><i data-feather="users"></i><span style="margin-top: 4px;">Sangha</span></div>
+    </nav>
     
     <button class="nav-arrow right-arrow" onclick="scrollNav(1)"><i data-feather="chevron-right"></i></button>
 </div>
@@ -564,108 +604,6 @@
 </div>
 
 <script>
-// --- GLOBAL CONFIGURATION ENGINE (SOFT-CODED ARCHITECTURE) ---
-// This fallback ensures the app runs perfectly even before you create the JSON file.
-// Goal: Host this structure as `./app_config/app_config.json`
-const FALLBACK_CONFIG = {
-    settings: {
-        enableShruti: true,
-        googleSheetUrl: 'https://script.google.com/macros/s/AKfycbxS3fA7rBNW1191FZyGWhIbFAuNh-36uFyEyAaVdDsfZotELuHVn39wGcmZlUhJekLL/exec'
-    },
-    navigation: [
-        {id:'sadhana', title:'Sādhanā', icon:'edit-3'}, {id:'flow', title:'Flow', icon:'refresh-cw'},
-        {id:'drop', title:'Drop', icon:'wind'}, {id:'learn', title:'Learn VSS', icon:'book-open'},
-        {id:'mandala', title:'Mandala', icon:'zap'}, {id:'pran', title:'Prāṇa', icon:'loader'},
-        {id:'med', title:'Dhyāna', icon:'moon'}, {id:'japa', title:'Japa', icon:'video'},
-        {id:'sangha', title:'Sangha', icon:'users'}
-    ],
-    sadhanaMetrics: [
-        {id:'body', label:'Body State', max:2, default:1, options:['Tired','Neutral','Relaxed']},
-        {id:'breath', label:'Breath Rhythm', max:3, default:2, options:['Nostril<br>Dominant','Jumbled','Even &<br>Smooth','Smooth/Both<br>Nostrils']},
-        {id:'mind', label:'State of Mind', max:4, default:2, options:['Stressful','Full of<br>thoughts','Same as<br>before','Less<br>thoughts','Relaxed &<br>Clear']},
-        {id:'mood', label:'Overall Mood', max:3, default:1, options:['Negative','Neutral','Positive','Joyful']},
-        {id:'stress', label:'Stress Resilience', max:4, default:1, options:['Negative','Reaction<br>same','More<br>composed','In<br>control','Positive']}
-    ],
-    meditations: [
-        {title:"Hari Om Meditation",audio:"./meditations/hari_om_meditation.mp3",img:"./meditations/Hari_Om_Chakras.webp"},
-        {title:"Om Namah Shivaya",audio:"./meditations/om_namah_shivaya.mp3",img:"./meditations/Om_Namah_Shivaya.webp"},
-        {title:"Samarpan Meditation",audio:"./meditations/samarpan.mp3",img:"./meditations/Samarpan.webp"},
-        {title:"Silver String",audio:"./meditations/sliver_string.mp3",img:"./meditations/Silver_String.webp"},
-        {title:"Energy Field",audio:"./meditations/strengthen_aura.mp3",img:"./meditations/Strengthen_Energy_Field.webp"},
-        {title:"You Are The Light",audio:"./meditations/you_are_the_light.mp3",img:"./meditations/You_Are_The_Light.webp"}
-    ],
-    pranayamas: [
-        {title:"Bhastrika Pranayama",video:"https://www.youtube.com/embed/iAlojRS6iBM"},
-        {title:"Ujjayi Breathing",video:"https://www.youtube.com/embed/IQrsJ-yZWV8"},
-        {title:"Bhramari Pranayama",video:"https://www.youtube.com/embed/-9CfCIzUw-k"},
-        {title:"Kapalbhati Guide",video:"https://www.youtube.com/embed/WOw55qnKBSo"},
-        {title:"Kapalbhati Advanced",video:"https://www.youtube.com/embed/RxQqFe3Q1AE"},
-        {title:"Bhastrika Pranayama",video:"https://www.youtube.com/embed/kAlOoMbAqNc"},
-        {title:"Chandra Bhedana",video:"https://www.youtube.com/embed/QGN8I7Ydvwo"},
-        {title:"Shitali Cooling Breath",video:"https://www.youtube.com/embed/wWXN9Qx6fO0"},
-        {title:"Surya Bhedana",video:"https://www.youtube.com/embed/4YIlmACF7g8"}
-    ],
-    learnLessons: [
-        { title: "Shlokas 1-10", duration: 22, url: "https://www.youtube.com/embed/XDzlsJ01P_A" },
-        { title: "Shlokas 11-20", duration: 23, url: "https://www.youtube.com/embed/dSPrO6FVEYQ" },
-        { title: "Shlokas 21-35", duration: 38, url: "https://www.youtube.com/embed/QAx2L7-fdKM" },
-        { title: "Shlokas 36-50", duration: 36, url: "https://www.youtube.com/embed/9BE4EkOHi4g" },
-        { title: "Shlokas 51-65", duration: 32, url: "https://www.youtube.com/embed/J3KkNE28nO8" },
-        { title: "Shlokas 66-80", duration: 34, url: "https://www.youtube.com/embed/hM_GMZarFIU" },
-        { title: "Shlokas 81-95", duration: 35, url: "https://www.youtube.com/embed/iyET-Q-dS-A" },
-        { title: "Shlokas 96-108", duration: 31, url: "https://www.youtube.com/embed/fu4JTCv9ybc" }
-    ]
-};
-
-let APP_CONFIG = null;
-
-async function loadConfig() {
-    try {
-        const response = await fetch('./app_config/app_config.json');
-        if (response.ok) APP_CONFIG = await response.json();
-        else throw new Error("Config not found");
-    } catch (e) {
-        console.log("Using built-in fallback config.");
-        APP_CONFIG = FALLBACK_CONFIG;
-    }
-    initDynamicUI();
-}
-
-function initDynamicUI() {
-    // Build Navs
-    const dNav = document.getElementById('desktop-nav-container');
-    const mNav = document.getElementById('main-nav');
-    dNav.innerHTML = ''; mNav.innerHTML = '';
-    
-    APP_CONFIG.navigation.forEach(item => {
-        dNav.innerHTML += `<li><a onclick="showTab('${item.id}')" id="t-${item.id}">${item.title}</a></li>`;
-        mNav.innerHTML += `<div class="nav-item" onclick="showTab('${item.id}')" id="n-${item.id}"><i data-feather="${item.icon}"></i><span style="margin-top: 4px;">${item.title}</span></div>`;
-    });
-
-    // Build Sādhanā Sliders
-    const sliderContainer = document.getElementById('sadhana-sliders-container');
-    sliderContainer.innerHTML = APP_CONFIG.sadhanaMetrics.map(m => `
-        <div class="metric-card">
-            <div class="metric-label-row"><span>${m.label}</span><span id="label-${m.id}" class="active-state-text">${m.options[m.default].replace(/<br>/g, ' ')}</span></div>
-            <div class="slider-container">
-                <input type="range" class="metric-slider" id="s-${m.id}" min="0" max="${m.max}" value="${m.default}" oninput="updateLabel('${m.id}', this.value)">
-                <div class="slider-labels" id="labels-${m.id}">
-                    ${m.options.map((opt, i) => `<span class="${i === m.default ? 'active-label' : ''}">${opt}</span>`).join('')}
-                </div>
-            </div>
-        </div>
-    `).join('');
-
-    // Toggle Shruti
-    if (!APP_CONFIG.settings.enableShruti) {
-        document.getElementById('shruti-fab').style.display = 'none';
-        document.getElementById('shruti-window').style.display = 'none';
-    }
-
-    feather.replace();
-    showTab(APP_CONFIG.navigation[0].id); // Go to default landing
-}
-
 // --- LOGIC & STATE DATA ---
 let sadhanaStore = JSON.parse(localStorage.getItem('vss_sadhana_logs')) || {};
 let currentDailyScore = 0;
@@ -677,10 +615,10 @@ function setSadhanaTiming(timing) {
     document.getElementById('timing-after').classList.toggle('active', timing === 'after');
 }
 
-function updateLabel(id, val) {
-    const metric = APP_CONFIG.sadhanaMetrics.find(m => m.id === id);
-    document.getElementById(`label-${id}`).innerHTML = metric.options[val].replace(/<br>/g, ' '); 
-    const spans = document.getElementById(`labels-${id}`).getElementsByTagName('span');
+function updateLabel(id, val, labels) {
+    document.getElementById(`label-${id}`).innerHTML = labels[val].replace(/<br>/g, ' '); 
+    const labelContainer = document.getElementById(`labels-${id}`);
+    const spans = labelContainer.getElementsByTagName('span');
     for (let i = 0; i < spans.length; i++) {
         if (i == val) spans[i].classList.add('active-label');
         else spans[i].classList.remove('active-label');
@@ -689,20 +627,17 @@ function updateLabel(id, val) {
 
 function logSadhanaSnapshot() {
     const today = new Date().toISOString().split('T')[0];
-    
-    // Dynamically grab all slider values based on config
-    let dynamicData = {};
-    APP_CONFIG.sadhanaMetrics.forEach(m => {
-        dynamicData[m.id] = parseInt(document.getElementById(`s-${m.id}`).value);
-    });
-
     const snapshot = {
         userId: localStorage.getItem('vss_user_id') || 'guest_user',
         date: today,
         time: new Date().toLocaleTimeString(),
         timestamp: new Date().getTime(),
         timing: currentSadhanaTiming,
-        ...dynamicData,
+        body: parseInt(document.getElementById('s-body').value),
+        breath: parseInt(document.getElementById('s-breath').value),
+        mind: parseInt(document.getElementById('s-mind').value),
+        mood: parseInt(document.getElementById('s-mood').value),
+        stress: parseInt(document.getElementById('s-stress').value),
         obs: document.getElementById('sadhana-observations').value
     };
 
@@ -714,14 +649,6 @@ function logSadhanaSnapshot() {
         mandalaData.completed.push(today);
         localStorage.setItem('vss_mandala_tracker', JSON.stringify(mandalaData));
     }
-    
-    // Note to user: Ensure your Google Apps Script handles the added "obs" field properly in appendRow!
-    fetch(APP_CONFIG.settings.googleSheetUrl, {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(snapshot)
-    }).catch(error => console.error("Cloud sync failed:", error));
 
     calculateSadhanaSara();
     renderSadhanaChart();
@@ -741,12 +668,13 @@ function calculateSadhanaSara() {
     let totalWeight = 0;
 
     logs.forEach((log, index) => {
-        let metricSum = 0;
-        APP_CONFIG.sadhanaMetrics.forEach(m => {
-            metricSum += (log[m.id] / m.max) * 100;
-        });
-        let avg = metricSum / APP_CONFIG.sadhanaMetrics.length;
+        const b = (log.body / 2) * 100;
+        const br = (log.breath / 3) * 100;
+        const m = (log.mind / 4) * 100;
+        const mo = (log.mood / 3) * 100;
+        const s = (log.stress / 4) * 100;
         
+        let avg = (b + br + m + mo + s) / 5;
         let weight = 1 + (index * 0.1);
         if (avg < 50) weight = 1; 
 
@@ -785,11 +713,7 @@ function renderSadhanaChart() {
     const data = sortedDates.map(date => {
         const logs = sadhanaStore[date];
         let dailyTotal = 0;
-        logs.forEach(log => {
-            let metricSum = 0;
-            APP_CONFIG.sadhanaMetrics.forEach(m => metricSum += (log[m.id] / m.max) * 100);
-            dailyTotal += metricSum / APP_CONFIG.sadhanaMetrics.length;
-        });
+        logs.forEach(l => dailyTotal += ((l.body/2 + l.breath/3 + l.mind/4 + l.mood/3 + l.stress/4)/5)*100);
         return dailyTotal / logs.length;
     });
 
@@ -821,116 +745,46 @@ function renderSadhanaChart() {
     });
 }
 
-function shareApp() {
-    const shareUrl = 'https://vishnu.vedicspace.in/sadhana.html';
-    if (navigator.share) {
-        navigator.share({
-            title: 'Vedic Space Sādhanā',
-            text: 'Join the Sangha and explore practical Sanatana Dharma with the Vedic Space App!',
-            url: shareUrl
-        }).catch(console.error);
-    } else {
-        prompt("Copy this link to share the Vedic Space App:", shareUrl);
-    }
-}
+const meditations = [
+{title:"Hari Om Meditation",audio:"./meditations/hari_om_meditation.mp3",img:"./meditations/Hari_Om_Chakras.webp"},
+{title:"Om Namah Shivaya",audio:"./meditations/om_namah_shivaya.mp3",img:"./meditations/Om_Namah_Shivaya.webp"},
+{title:"Samarpan Meditation",audio:"./meditations/samarpan.mp3",img:"./meditations/Samarpan.webp"},
+{title:"Silver String",audio:"./meditations/sliver_string.mp3",img:"./meditations/Silver_String.webp"},
+{title:"Energy Field",audio:"./meditations/strengthen_aura.mp3",img:"./meditations/Strengthen_Energy_Field.webp"},
+{title:"You Are The Light",audio:"./meditations/you_are_the_light.mp3",img:"./meditations/You_Are_The_Light.webp"}
+];
 
-function dropBotheration() {
-    const input = document.getElementById('botheration-input');
-    if(!input.value.trim()) return;
-    
-    input.value = '';
-    const msg = document.getElementById('drop-success-msg');
-    msg.style.opacity = '1';
-    setTimeout(() => { msg.style.opacity = '0'; }, 3000);
-}
+const pranayamas = [
+{title:"Bhastrika Pranayama",video:"https://www.youtube.com/embed/iAlojRS6iBM"},
+{title:"Ujjayi Breathing",video:"https://www.youtube.com/embed/IQrsJ-yZWV8"},
+{title:"Bhramari Pranayama",video:"https://www.youtube.com/embed/-9CfCIzUw-k"},
+{title:"Kapalbhati Guide",video:"https://www.youtube.com/embed/WOw55qnKBSo"},
+{title:"Kapalbhati Advanced",video:"https://www.youtube.com/embed/RxQqFe3Q1AE"},
+{title:"Bhastrika Pranayama",video:"https://www.youtube.com/embed/kAlOoMbAqNc"},
+{title:"Chandra Bhedana",video:"https://www.youtube.com/embed/QGN8I7Ydvwo"},
+{title:"Shitali Cooling Breath",video:"https://www.youtube.com/embed/wWXN9Qx6fO0"},
+{title:"Surya Bhedana",video:"https://www.youtube.com/embed/4YIlmACF7g8"}
+];
 
-// --- MEDITATION TIMER LOGIC ---
-let medTotalSecs = 20 * 60;
-let medSecsLeft = 20 * 60;
-let medTimerRunning = false;
-let medTimerInterval;
+const learnLessons = [
+    { title: "Shlokas 1-10", duration: 22, url: "https://www.youtube.com/embed/XDzlsJ01P_A" },
+    { title: "Shlokas 11-20", duration: 23, url: "https://www.youtube.com/embed/dSPrO6FVEYQ" },
+    { title: "Shlokas 21-35", duration: 38, url: "https://www.youtube.com/embed/QAx2L7-fdKM" },
+    { title: "Shlokas 36-50", duration: 36, url: "https://www.youtube.com/embed/9BE4EkOHi4g" },
+    { title: "Shlokas 51-65", duration: 32, url: "https://www.youtube.com/embed/J3KkNE28nO8" },
+    { title: "Shlokas 66-80", duration: 34, url: "https://www.youtube.com/embed/hM_GMZarFIU" },
+    { title: "Shlokas 81-95", duration: 35, url: "https://www.youtube.com/embed/iyET-Q-dS-A" },
+    { title: "Shlokas 96-108", duration: 31, url: "https://www.youtube.com/embed/fu4JTCv9ybc" }
+];
 
-function updateMedTimerDisplay() {
-    let m = Math.floor(medSecsLeft / 60);
-    let s = medSecsLeft % 60;
-    const display = document.getElementById('med-timer-display');
-    if (display) display.innerText = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
-    
-    let ring = document.getElementById('med-timer-ring');
-    if (ring) {
-        let progress = medSecsLeft / medTotalSecs;
-        ring.style.strokeDashoffset = 282.7 * (1 - progress);
-    }
-}
-
-function adjMedTimer(mins) {
-    if (medTimerRunning) return;
-    let newMins = Math.floor(medTotalSecs / 60) + mins;
-    if (newMins < 1) newMins = 1;
-    if (newMins > 120) newMins = 120;
-    medTotalSecs = newMins * 60;
-    medSecsLeft = medTotalSecs;
-    updateMedTimerDisplay();
-}
-
-function toggleMedTimer() {
-    medTimerRunning = !medTimerRunning;
-    let btn = document.getElementById('med-timer-btn');
-    let bell = document.getElementById('med-bell');
-    
-    if (medTimerRunning) {
-        bell.load(); // Crucial: prime audio on user click to bypass autoplay restrictions
-        btn.innerHTML = '<i data-feather="pause" style="width: 26px; height: 26px;"></i>';
-        feather.replace();
-        medTimerInterval = setInterval(() => {
-            medSecsLeft--;
-            if (medSecsLeft <= 0) {
-                clearInterval(medTimerInterval);
-                medTimerRunning = false;
-                medSecsLeft = 0;
-                updateMedTimerDisplay();
-                bell.play().catch(e => console.log("Audio block", e));
-                btn.innerHTML = '<i data-feather="play" style="width: 26px; height: 26px; margin-left: 3px;"></i>';
-                feather.replace();
-            } else {
-                updateMedTimerDisplay();
-            }
-        }, 1000);
-    } else {
-        clearInterval(medTimerInterval);
-        btn.innerHTML = '<i data-feather="play" style="width: 26px; height: 26px; margin-left: 3px;"></i>';
-        feather.replace();
-    }
-}
-
-function resetMedTimer() {
-    clearInterval(medTimerInterval);
-    medTimerRunning = false;
-    medSecsLeft = medTotalSecs;
-    updateMedTimerDisplay();
-    let btn = document.getElementById('med-timer-btn');
-    if (btn) {
-        btn.innerHTML = '<i data-feather="play" style="width: 26px; height: 26px; margin-left: 3px;"></i>';
-        feather.replace();
-    }
-}
-
-function clearMedSelection() {
-    document.getElementById('input-med').value = '';
-    document.getElementById('display-med').style.display = 'none';
-    if(currentCardAudio) {
-        currentCardAudio.pause();
-    }
-    document.getElementById('med-timer-container').style.display = 'block';
-}
-
+const datasets = { pran: pranayamas, med: meditations };
 let mandalaData = JSON.parse(localStorage.getItem('vss_mandala_tracker')) || { completed: [], specialDays: [1, 15, 30, 45] };
 let learnData = JSON.parse(localStorage.getItem('vss_learn_tracker')) || Array(8).fill(false);
 let currentMode = 'chanting';
 let lIdx = 0; 
 let scrollTimeouts = {};
 
-const renderedTabs = { med: false, pran: false, flow: false, japa: false, mandala: false, learn: false, sangha: false, drop: false };
+const renderedTabs = { med: false, pran: false, flow: false, japa: false, mandala: false, learn: false, sangha: false };
 
 function showTab(t){
     document.querySelectorAll('.view,.nav-item').forEach(el=>el.classList.remove('active'));
@@ -959,7 +813,7 @@ function scrollNav(dir) {
 
 function renderTabIfNeeded(tab){
     if(renderedTabs[tab]) return;
-    if(tab === 'med') { initPicker('med'); updateMedTimerDisplay(); }
+    if(tab === 'med') initPicker('med');
     if(tab === 'pran') initPicker('pran');
     if(tab === 'flow'){ preloadNearby(); feather.replace(); }
     if(tab === 'japa') initJitsi();
@@ -971,13 +825,10 @@ function renderTabIfNeeded(tab){
 
 // INTERACTIVE PICKER LOGIC FOR PRĀṆA & DHYĀNA 
 function initPicker(type) {
-    const sourceData = type === 'pran' ? APP_CONFIG.pranayamas : APP_CONFIG.meditations;
-    renderWheelItems(type, sourceData);
-    if (type === 'pran') {
-        const initialData = sourceData[0];
-        document.getElementById(`input-${type}`).value = initialData.title;
-        renderMediaHTML(type, initialData);
-    }
+    renderWheelItems(type, datasets[type]);
+    const initialData = datasets[type][0];
+    document.getElementById(`input-${type}`).value = initialData.title;
+    renderMediaHTML(type, initialData);
 }
 
 function togglePicker(type) {
@@ -994,7 +845,7 @@ function expandPicker(type) {
     document.getElementById(`chevron-${type}`).setAttribute('data-feather', 'chevron-up');
     feather.replace();
     
-    input.placeholder = input.value || (type === 'med' ? `Choose your meditation...` : `Search...`);
+    input.placeholder = input.value || `Search...`;
     input.value = '';
     filterPicker(type); 
     
@@ -1009,18 +860,16 @@ function collapsePicker(type) {
 }
 
 function filterPicker(type) {
-    const sourceData = type === 'pran' ? APP_CONFIG.pranayamas : APP_CONFIG.meditations;
     const input = document.getElementById(`input-${type}`);
     const query = input.value.toLowerCase();
-    const filtered = sourceData.filter(item => item.title.toLowerCase().includes(query));
+    const filtered = datasets[type].filter(item => item.title.toLowerCase().includes(query));
     renderWheelItems(type, filtered);
 }
 
 function renderWheelItems(type, items) {
-    const sourceData = type === 'pran' ? APP_CONFIG.pranayamas : APP_CONFIG.meditations;
     const wheel = document.getElementById(`wheel-${type}`);
     const innerHTML = items.map(item => {
-        const origIdx = sourceData.indexOf(item);
+        const origIdx = datasets[type].indexOf(item);
         return `<div class="wheel-item" data-orig-idx="${origIdx}" onclick="selectFromWheel('${type}', ${origIdx})">${item.title}</div>`;
     }).join('');
     
@@ -1030,7 +879,6 @@ function renderWheelItems(type, items) {
 }
 
 function handleWheelScroll(type, preventRender = false) {
-    const sourceData = type === 'pran' ? APP_CONFIG.pranayamas : APP_CONFIG.meditations;
     const wheel = document.getElementById(`wheel-${type}`);
     const items = wheel.querySelectorAll('.wheel-item');
     const wheelCenter = wheel.getBoundingClientRect().top + (wheel.clientHeight / 2);
@@ -1058,11 +906,11 @@ function handleWheelScroll(type, preventRender = false) {
             clearTimeout(scrollTimeouts[type]);
             scrollTimeouts[type] = setTimeout(() => {
                 const origIdx = closestItem.getAttribute('data-orig-idx');
-                renderMediaHTML(type, sourceData[origIdx]);
+                renderMediaHTML(type, datasets[type][origIdx]);
                 
                 const input = document.getElementById(`input-${type}`);
                 if (document.activeElement !== input) {
-                    input.value = sourceData[origIdx].title;
+                    input.value = datasets[type][origIdx].title;
                 }
             }, 300);
         }
@@ -1070,44 +918,10 @@ function handleWheelScroll(type, preventRender = false) {
 }
 
 function selectFromWheel(type, origIdx) {
-    const sourceData = type === 'pran' ? APP_CONFIG.pranayamas : APP_CONFIG.meditations;
-    const title = sourceData[origIdx].title;
+    const title = datasets[type][origIdx].title;
     document.getElementById(`input-${type}`).value = title;
-    renderMediaHTML(type, sourceData[origIdx]);
+    renderMediaHTML(type, datasets[type][origIdx]);
     collapsePicker(type);
-}
-
-// CUSTOM MEDITATION AUDIO PLAYER
-let currentCardAudio = new Audio();
-
-function toggleCardAudio(src) {
-    let btnIcon = document.getElementById('card-audio-icon');
-    
-    if (currentCardAudio.src && currentCardAudio.src.includes(src) && !currentCardAudio.paused) {
-        currentCardAudio.pause();
-        btnIcon.setAttribute('data-feather', 'play');
-    } else {
-        if (!currentCardAudio.src || !currentCardAudio.src.includes(src)) {
-            currentCardAudio.src = src;
-        }
-        currentCardAudio.play().catch(e => console.log(e));
-        btnIcon.setAttribute('data-feather', 'pause');
-    }
-    feather.replace();
-
-    currentCardAudio.ontimeupdate = () => {
-        let rem = currentCardAudio.duration - currentCardAudio.currentTime;
-        if(isNaN(rem)) return;
-        let m = Math.floor(rem / 60);
-        let s = Math.floor(rem % 60);
-        const display = document.getElementById('card-audio-time');
-        if(display) display.innerText = `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')} remaining`;
-    };
-    
-    currentCardAudio.onended = () => {
-        btnIcon.setAttribute('data-feather', 'play');
-        feather.replace();
-    };
 }
 
 function renderMediaHTML(type, data) {
@@ -1120,33 +934,20 @@ function renderMediaHTML(type, data) {
             </div>
         `;
     } else if (type === 'med') {
-        document.getElementById('med-timer-container').style.display = 'none';
-        display.style.display = 'block';
-        if(currentCardAudio) currentCardAudio.pause(); // Reset any playing audio
-        
         display.innerHTML = `
             <div class="card">
                 <img src="${data.img}" loading="lazy" style="width:100%; height:180px; object-fit:cover;">
                 <div class="card-body" style="padding-top: 20px;">
-                    <h3 class="serif" style="color: var(--gold); margin-bottom: 25px;">${data.title}</h3>
-                    
-                    <div style="display: flex; justify-content: center; align-items: center; gap: 20px; margin-bottom: 10px;">
-                        <button onclick="toggleCardAudio('${data.audio}')" style="background: linear-gradient(135deg, var(--gold), #d97706); border: none; color: var(--bg); border-radius: 50%; width: 65px; height: 65px; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(251, 191, 36, 0.4);">
-                            <i data-feather="play" id="card-audio-icon" style="width: 26px; height: 26px; margin-left: 3px;"></i>
-                        </button>
-                        <span id="card-audio-time" style="font-size: 20px; font-weight: bold; color: white; font-family: 'Inter', monospace; opacity: 0.9;">--:-- remaining</span>
-                    </div>
-
+                    <h3 class="serif" style="color: var(--gold); margin-bottom: 15px;">${data.title}</h3>
+                    <audio controls preload="none" src="${data.audio}" style="width:100%; filter:invert(1); border-radius: 30px;"></audio>
                 </div>
             </div>
         `;
-        feather.replace();
     }
 }
 
 // --- LEARN VSS CIRCULAR TRACKER LOGIC ---
 function renderLearnTab() {
-    const learnLessons = APP_CONFIG.learnLessons;
     document.getElementById('learn-video').src = learnLessons[lIdx].url;
     const isComp = learnData[lIdx];
     document.getElementById('learn-mode-prog').classList.toggle('active', !isComp);
@@ -1155,7 +956,6 @@ function renderLearnTab() {
 }
 
 function navLearn(dir) {
-    const learnLessons = APP_CONFIG.learnLessons;
     lIdx += dir;
     if (lIdx < 0) lIdx = learnLessons.length - 1;
     if (lIdx >= learnLessons.length) lIdx = 0;
@@ -1175,10 +975,7 @@ function toggleLearnFS() {
 }
 
 function updateLearnProgress() {
-    const learnLessons = APP_CONFIG.learnLessons;
-    let totalMins = 0;
-    learnLessons.forEach(l => totalMins += l.duration);
-     
+    let totalMins = 251; 
     let compMins = 0;
     let segmentsHTML = '';
     
@@ -1253,6 +1050,9 @@ function renderMandalaGrid() {
     feather.replace();
 }
 
+// -----------------------
+// JWT REMOVED HERE TO FIX EXPIRATION/CRASH ISSUE
+// -----------------------
 function initJitsi() {
     if (typeof JitsiMeetExternalAPI !== 'undefined') {
         new JitsiMeetExternalAPI("8x8.vc", {
@@ -1323,16 +1123,15 @@ document.addEventListener('fullscreenchange', () => {
     feather.replace();
 });
 
-// Flow Zone Mobile/Desktop Screen Tap Navigation Logic
+let touchStartX = 0;
 const swipeZone = document.getElementById('swipe-zone');
 if (swipeZone) {
-    swipeZone.addEventListener('click', (e) => {
-        if(e.target.closest('button')) return; // Ignore actual button clicks
-        const rect = swipeZone.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        if (x < rect.width / 2) navSlide(-1);
-        else navSlide(1);
-    });
+    swipeZone.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; }, {passive: true});
+    swipeZone.addEventListener('touchend', e => {
+        const touchEndX = e.changedTouches[0].screenX;
+        if (touchStartX - touchEndX > 50) navSlide(1);
+        if (touchEndX - touchStartX > 50) navSlide(-1);
+    }, {passive: true});
 }
 
 function toggleAudioMute() {
@@ -1376,7 +1175,13 @@ function flowLoop(){
 }
 
 window.onload=()=>{ 
-    loadConfig(); // Initialization moves to config loader
+    feather.replace(); 
+    updateTimerText();
+    document.getElementById('flow-bg-audio').src = "./meditations/vss.mp3";
+    renderTabIfNeeded('sadhana'); 
+    flowLoop(); 
+    loadShrutiKnowledge(); 
+    calculateSadhanaSara();
 };
 
 document.getElementById('main-nav').addEventListener('wheel', (evt) => {
@@ -1400,12 +1205,16 @@ let vishnuKnowledgeBase = "";
 let chatHistory = [];
 
 async function loadShrutiKnowledge() {
+    console.log("Shruti is reading the sacred texts...");
     for (const fileUrl of knowledgeFiles) {
         try {
             const response = await fetch(fileUrl);
             if (response.ok) {
                 const text = await response.text();
                 vishnuKnowledgeBase += `\n\n--- Source: ${fileUrl} ---\n` + text;
+                console.log(`Successfully memorized: ${fileUrl}`);
+            } else {
+                console.warn(`Could not find ${fileUrl} on the server.`);
             }
         } catch (error) {
             console.error(`Error reading ${fileUrl}:`, error);
@@ -1453,6 +1262,7 @@ function initSpeech() {
         };
         
         recognition.onerror = (event) => {
+            console.error("Speech error:", event.error);
             resetMicUI();
             if (event.error === 'not-allowed' || event.error === 'service-not-allowed') {
                 alert("Microphone access denied. Please allow microphone permissions in your browser to speak with Shruti.");
@@ -1480,7 +1290,9 @@ function toggleSpeech() {
     try {
         if (isListening) recognition.stop();
         else recognition.start();
-    } catch(e) {}
+    } catch(e) {
+        console.error("Mic toggle error", e);
+    }
 }
 
 async function sendToShruti() {
@@ -1547,6 +1359,7 @@ async function sendToShruti() {
             throw new Error("Empty response from Groq.");
         }
     } catch (error) {
+        console.error("API Error:", error);
         if(document.body.contains(typingMsg)) chat.removeChild(typingMsg);
         const errorMsg = document.createElement('div');
         errorMsg.className = 'msg msg-shruti';
