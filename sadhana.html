@@ -86,12 +86,16 @@
         #p-ring-new { fill: none; stroke: var(--gold); stroke-width: 5; stroke-dasharray: 219.9; stroke-dashoffset: 219.9; transform: rotate(-90deg); transform-origin: center; transition: 0.1s linear; }
         #jaas-container { width: 100%; height: 60vh; border-radius: 15px; overflow: hidden; background: #000; }
 
-        /* Fixed: Fullscreen Flow background perfectly matches app background */
-        #flow-container:fullscreen, #learn-container:fullscreen { background: var(--bg) !important; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 0; width: 100vw; height: 100vh; }
-        #flow-container:fullscreen .slide-wrapper, #learn-container:fullscreen .slide-wrapper { width: 100vw; height: 100vh; max-width: none; border-radius: 0; }
+        /* Flow Pane: Fill space, no blue flicker */
+        #flow-container:fullscreen, #learn-container:fullscreen { background: var(--bg); display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 0; width: 100vw; height: 100vh; }
+        #flow-container:fullscreen .slide-wrapper { width: 100vw; height: 100vh; max-height: 100vh; aspect-ratio: auto; border-radius: 0; }
+        #learn-container:fullscreen .slide-wrapper { width: 100vw; height: 100vh; max-width: none; border-radius: 0; }
         #learn-container:fullscreen { padding: 20px; }
-        #learn-container:fullscreen .slide-wrapper { height: 80vh; max-height: 80vh; }
         
+        /* Flow Slide Image Adjustments to remove black space */
+        #flow-container .slide-wrapper { width: 100%; height: 65vh; max-height: 500px; aspect-ratio: auto; border-radius: 12px; }
+        #flow-container img { object-fit: contain; width: 100%; height: 100%; }
+
         @media screen and (max-height: 500px) and (orientation: landscape) {
             #flow-container:fullscreen .flow-controls {
                 position: fixed; bottom: 10px; left: 50%; transform: translateX(-50%); width: auto; max-width: 95%;
@@ -101,7 +105,6 @@
             }
             #flow-container .mode-toggle { height: 35px; min-width: 120px; }
             #flow-container .flow-controls > div { flex-shrink: 0; }
-            
             .tracker-section { display: none !important; }
             .gita-verse-container { display: none !important; }
         }
@@ -110,7 +113,7 @@
         #flow-container:fullscreen .gita-verse-container { display: none !important; }
 
         .mode-toggle { display: flex; background: var(--glass); border-radius: 12px; padding: 2px; border: 1px solid var(--border); height: 40px; min-width: 140px; }
-        .mode-btn { flex: 1; border: none; background: transparent; color: white; border-radius: 8px; cursor: pointer; font-size: 10px; transition: 0.3s; padding: 0 4px; line-height: 1.2; }
+        .mode-btn { flex: 1; border: none; background: transparent; color: white; border-radius: 8px; cursor: pointer; font-size: 10px; transition: 0.3s; padding: 0 4px; line-height: 1.2; font-family: 'Inter', sans-serif;}
         .mode-btn.active { background: var(--gold); color: var(--bg); font-weight: bold; }
 
         .learn-layout { display: flex; flex-direction: column; gap: 20px; }
@@ -120,6 +123,12 @@
         .gita-verse-container { margin-top: 25px; padding: 15px; display: flex; flex-direction: column; align-items: center; gap: 15px; transition: all 0.3s ease; }
         .gita-verse-text { color: var(--gold); font-weight: bold; font-size: 14px; line-height: 1.6; text-align: center; }
         .gita-verse-img { width: 100%; max-width: 320px; border-radius: 12px; display: block; border: 1px solid var(--border); }
+
+        /* Yajna Fullscreen Overlay */
+        .yajna-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: var(--bg); z-index: 2000; display: none; flex-direction: column; opacity: 0; transition: opacity 0.3s ease; overflow: hidden;}
+        .yajna-overlay.active { display: flex; opacity: 1; }
+        .yajna-header { display: flex; justify-content: space-between; align-items: center; padding: 20px; background: rgba(0,0,0,0.2); border-bottom: 1px solid var(--border); padding-top: max(20px, env(safe-area-inset-top)); }
+        .yajna-content-area { flex: 1; overflow-y: auto; padding: 25px 20px; font-size: 16px; line-height: 1.8; color: white; text-align: left; padding-bottom: 120px; }
 
         @media (min-width: 768px) {
             .mobile-nav-wrapper { display: none !important; }
@@ -131,8 +140,12 @@
 
             .gita-verse-img { display: none; }
             .gita-verse-text { font-size: 17px; }
+            
+            #flow-container .slide-wrapper { height: 75vh; }
+            .yajna-content-area { padding: 40px 10%; font-size: 18px; }
         }
 
+        /* Sleek Scrollable Bottom Navigation */
         .mobile-nav-wrapper {
             position: fixed; bottom: 0; left: 0; width: 100%;
             background: #1e3a8a; border-top: 1px solid var(--border);
@@ -153,6 +166,7 @@
             font-size: 10px; cursor: pointer; padding: 12px 0; transition: 0.3s ease;
         }
         .nav-item.active { opacity: 1; color: var(--gold); transform: scale(1.05); }
+        .nav-item i { width: 24px; height: 24px; } /* Fix: Force original icon size */
 
         .nav-arrow {
             position: absolute; top: 0; height: 100%; width: 45px;
@@ -170,6 +184,8 @@
             position: fixed; bottom: 80px; right: 20px; width: 55px; height: 55px; background: linear-gradient(135deg, var(--gold), #d97706); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(251, 191, 36, 0.4); cursor: pointer; z-index: 1001; transition: transform 0.3s;
         }
         #shruti-fab:hover { transform: scale(1.1); }
+        #shruti-fab i { color: var(--bg); }
+
         #shruti-window {
             position: fixed; bottom: 145px; right: 20px; width: 350px; max-width: calc(100vw - 40px);
             height: 500px; max-height: calc(100vh - 200px); background: rgba(30, 58, 138, 0.95);
@@ -265,7 +281,6 @@
                 <i data-feather="mail" style="width: 14px;"></i> Email
             </button>
         </div>
-
         <p style="text-align: center; font-size: 11px; opacity: 0.6; margin-top: 15px;">Logging multiple times a day increases your Sādhana Sāra weightage.</p>
     </div>
 </section>
@@ -380,8 +395,8 @@
             <button onclick="toggleMedTimer()" id="med-timer-btn" style="background: linear-gradient(135deg, var(--gold), #d97706); border: none; color: var(--bg); border-radius: 50%; width: 65px; height: 65px; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(251, 191, 36, 0.4);"><i data-feather="play" style="width: 26px; height: 26px; margin-left: 3px;"></i></button>
             <button onclick="adjMedTimer(1)" style="background: var(--glass); border: 1px solid var(--border); color: var(--gold); border-radius: 50%; width: 45px; height: 45px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s;"><i data-feather="plus"></i></button>
         </div>
-        <button onclick="resetMedTimer()" style="background: transparent; border: none; color: rgba(255,255,255,0.4); cursor: pointer; font-size: 12px; text-decoration: underline;">Reset Timer</button>
-        <audio id="med-bell" src="https://actions.google.com/sounds/v1/alarms/singing_bowl_strike.ogg" preload="auto"></audio>
+        <button onclick="resetMedTimer()" style="background: transparent; border: none; color: rgba(255,255,255,0.4); cursor: pointer; font-size: 12px; text-decoration: underline; font-family: 'Inter', sans-serif;">Reset Timer</button>
+        <audio id="med-bell" preload="auto"></audio>
     </div>
 
     <div id="display-med" class="media-display" style="display:none;"></div>
@@ -393,10 +408,16 @@
             <i data-feather="maximize" id="fs-icon" style="width: 18px; height: 18px;"></i>
         </button>
 
-        <div class="slide-wrapper" id="swipe-zone" style="position: relative; display: block; width: 100%; aspect-ratio: 16/9; min-height: 200px; margin: auto; background: #000; border-radius: 12px; overflow: hidden; touch-action: pan-y; cursor: pointer;">
-            <img id="flow-slide" src="./parayana/Slide1.webp" style="display: block; width: 100%; height: 100%; object-fit: contain; position: absolute; top: 0; left: 0; pointer-events: none;">
+        <div class="slide-wrapper" id="swipe-zone" style="position: relative; display: block; overflow: hidden; touch-action: pan-y; cursor: pointer; margin: auto;">
+            <img id="flow-slide" src="./parayana/Slide1.webp" style="display: block; pointer-events: none;">
             
-            </div>
+            <button onclick="navSlide(-1)" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.15); border: none; color: white; border-radius: 50%; width: 40px; height: 40px; cursor: pointer; z-index: 10;">
+                <i data-feather="chevron-left"></i>
+            </button>
+            <button onclick="navSlide(1)" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.15); border: none; color: white; border-radius: 50%; width: 40px; height: 40px; cursor: pointer; z-index: 10;">
+                <i data-feather="chevron-right"></i>
+            </button>
+        </div>
 
         <div class="flow-controls" style="margin-top: 15px; display: flex; align-items: center; justify-content: center; gap: 12px; z-index: 100; flex-wrap: nowrap; padding: 10px; transition: all 0.3s ease;">
             <div class="mode-toggle">
@@ -450,25 +471,46 @@
                 <span style="font-size: 0.8em; opacity: 0.8; font-weight: normal; margin-top: 5px; display: block;">- Bhagavad Gita 10.25</span>
             </div>
         </div>
-
     </div>
 </section>
 
 <section id="v-japa" class="view">
     <div class="card" style="padding: 15px;">
-        <h3 class="serif" style="margin-bottom: 15px; color: var(--gold); text-align: center;">Japa Yajna Online</h3>
+        <h3 class="serif" style="margin-bottom: 5px; color: var(--gold); text-align: center;">Japa Yajna Online</h3>
+        
+        <button onclick="openYajnaOverlay()" style="width: 100%; max-width: 400px; margin: 0 auto 15px auto; background: linear-gradient(135deg, var(--gold), #d97706); border: none; color: var(--bg); padding: 12px; border-radius: 20px; font-weight: bold; font-size: 13px; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; box-shadow: 0 4px 15px rgba(251, 191, 36, 0.3); transition: transform 0.2s;">
+            <i data-feather="sun" style="width: 16px;"></i> What is Yajna?.. Gurudev enlightens . .
+        </button>
+
         <div id="jaas-container"></div>
     </div>
 </section>
 
+<div id="yajna-overlay" class="yajna-overlay">
+    <div class="yajna-header">
+        <h3 class="serif" style="color: var(--gold); margin: 0; font-size: 1.2rem;">What is Yajna?</h3>
+        <i data-feather="x" style="cursor: pointer; color: white;" onclick="closeYajnaOverlay()"></i>
+    </div>
+    <div id="yajna-content" class="yajna-content-area serif">
+        Loading wisdom...
+    </div>
+    
+    <div style="position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); padding: 10px 20px; border-radius: 30px; border: 1px solid var(--border); display: flex; align-items: center; gap: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+        <button onclick="toggleYajnaAudio()" id="yajna-audio-btn" style="background: var(--gold); border: none; color: var(--bg); border-radius: 50%; width: 45px; height: 45px; cursor: pointer; display: flex; justify-content: center; align-items: center;">
+            <i data-feather="play" id="yajna-audio-icon" style="margin-left: 2px;"></i>
+        </button>
+        <span style="font-family: 'Inter', sans-serif; font-size: 12px; opacity: 0.8;">Listen to Gurudev</span>
+    </div>
+</div>
+
 <section id="v-mandala" class="view">
     <div class="card" style="padding: 20px;">
         <h2 class="serif" style="color: var(--gold); text-align: center; margin-bottom: 5px;">Mandala Console</h2>
-        <p id="mandalaStats" style="text-align: center; font-size: 0.8rem; opacity: 0.7; margin-bottom: 15px;">0/45 Days Completed</p>
+        <p id="mandalaStats" style="text-align: center; font-size: 0.8rem; opacity: 0.7; margin-bottom: 15px; font-family: 'Inter', sans-serif;">0/45 Days Completed</p>
         
         <div id="mandalaStatus" class="mandala-grid"></div>
 
-        <div style="margin-top: 20px; padding: 10px; border-radius: 10px; background: rgba(255,255,255,0.05); font-size: 0.8rem;">
+        <div style="margin-top: 20px; padding: 10px; border-radius: 10px; background: rgba(255,255,255,0.05); font-size: 0.8rem; font-family: 'Inter', sans-serif;">
             <div style="display: flex; gap: 15px; justify-content: center;">
                 <span><i data-feather="moon" style="width:12px; color:#ff4757;"></i> Poornima/Amavasya</span>
                 <span><i data-feather="check" style="width:12px; color:var(--gold);"></i> Logged</span>
@@ -506,8 +548,8 @@
                         <g id="learn-donut-segments"></g>
                     </svg>
                     <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center;">
-                        <span id="learn-time-left" style="color: var(--gold); font-weight: bold; font-size: 18px;"></span>
-                        <span style="font-size: 10px; opacity: 0.7;">Left</span>
+                        <span id="learn-time-left" style="color: var(--gold); font-weight: bold; font-size: 18px; font-family: 'Inter', sans-serif;"></span>
+                        <span style="font-size: 10px; opacity: 0.7; font-family: 'Inter', sans-serif;">Left</span>
                     </div>
                 </div>
                 
@@ -526,10 +568,7 @@
 
 <div class="mobile-nav-wrapper">
     <button class="nav-arrow left-arrow" onclick="scrollNav(-1)"><i data-feather="chevron-left"></i></button>
-    
-    <nav class="mobile-nav" id="main-nav">
-        </nav>
-    
+    <nav class="mobile-nav" id="main-nav"></nav>
     <button class="nav-arrow right-arrow" onclick="scrollNav(1)"><i data-feather="chevron-right"></i></button>
 </div>
 
@@ -564,19 +603,20 @@
 </div>
 
 <script>
-// --- GLOBAL CONFIGURATION ENGINE (SOFT-CODED ARCHITECTURE) ---
-// This fallback ensures the app runs perfectly even before you create the JSON file.
-// Goal: Host this structure as `./app_config/app_config.json`
+// --- CONFIGURATION ENGINE ---
+let APP_CONFIG = null;
+
 const FALLBACK_CONFIG = {
     settings: {
         enableShruti: true,
-        googleSheetUrl: 'https://script.google.com/macros/s/AKfycbxS3fA7rBNW1191FZyGWhIbFAuNh-36uFyEyAaVdDsfZotELuHVn39wGcmZlUhJekLL/exec'
+        googleSheetUrl: 'https://script.google.com/macros/s/AKfycbxS3fA7rBNW1191FZyGWhIbFAuNh-36uFyEyAaVdDsfZotELuHVn39wGcmZlUhJekLL/exec',
+        meditationBellUrl: './assets/taala.mp3'
     },
     navigation: [
         {id:'sadhana', title:'Sādhanā', icon:'edit-3'}, {id:'flow', title:'Flow', icon:'refresh-cw'},
-        {id:'drop', title:'Drop', icon:'wind'}, {id:'learn', title:'Learn VSS', icon:'book-open'},
+        {id:'drop', title:'Drop', icon:'wind'}, {id:'learn', title:'Learn', icon:'book-open'},
         {id:'mandala', title:'Mandala', icon:'zap'}, {id:'pran', title:'Prāṇa', icon:'loader'},
-        {id:'med', title:'Dhyāna', icon:'moon'}, {id:'japa', title:'Japa', icon:'video'},
+        {id:'med', title:'Dhyāna', icon:'moon'}, {id:'japa', title:'Yajna', icon:'video'},
         {id:'sangha', title:'Sangha', icon:'users'}
     ],
     sadhanaMetrics: [
@@ -617,8 +657,6 @@ const FALLBACK_CONFIG = {
     ]
 };
 
-let APP_CONFIG = null;
-
 async function loadConfig() {
     try {
         const response = await fetch('./app_config/app_config.json');
@@ -632,38 +670,37 @@ async function loadConfig() {
 }
 
 function initDynamicUI() {
-    // Build Navs
     const dNav = document.getElementById('desktop-nav-container');
     const mNav = document.getElementById('main-nav');
     dNav.innerHTML = ''; mNav.innerHTML = '';
     
     APP_CONFIG.navigation.forEach(item => {
         dNav.innerHTML += `<li><a onclick="showTab('${item.id}')" id="t-${item.id}">${item.title}</a></li>`;
-        mNav.innerHTML += `<div class="nav-item" onclick="showTab('${item.id}')" id="n-${item.id}"><i data-feather="${item.icon}"></i><span style="margin-top: 4px;">${item.title}</span></div>`;
+        mNav.innerHTML += `<div class="nav-item" onclick="showTab('${item.id}')" id="n-${item.id}"><i data-feather="${item.icon}"></i><span style="margin-top: 4px; font-family:'Inter', sans-serif;">${item.title}</span></div>`;
     });
 
-    // Build Sādhanā Sliders
     const sliderContainer = document.getElementById('sadhana-sliders-container');
     sliderContainer.innerHTML = APP_CONFIG.sadhanaMetrics.map(m => `
         <div class="metric-card">
-            <div class="metric-label-row"><span>${m.label}</span><span id="label-${m.id}" class="active-state-text">${m.options[m.default].replace(/<br>/g, ' ')}</span></div>
+            <div class="metric-label-row"><span style="font-family:'Inter', sans-serif;">${m.label}</span><span id="label-${m.id}" class="active-state-text" style="font-family:'Inter', sans-serif;">${m.options[m.default].replace(/<br>/g, ' ')}</span></div>
             <div class="slider-container">
                 <input type="range" class="metric-slider" id="s-${m.id}" min="0" max="${m.max}" value="${m.default}" oninput="updateLabel('${m.id}', this.value)">
                 <div class="slider-labels" id="labels-${m.id}">
-                    ${m.options.map((opt, i) => `<span class="${i === m.default ? 'active-label' : ''}">${opt}</span>`).join('')}
+                    ${m.options.map((opt, i) => `<span class="${i === m.default ? 'active-label' : ''}" style="font-family:'Inter', sans-serif;">${opt}</span>`).join('')}
                 </div>
             </div>
         </div>
     `).join('');
 
-    // Toggle Shruti
     if (!APP_CONFIG.settings.enableShruti) {
         document.getElementById('shruti-fab').style.display = 'none';
         document.getElementById('shruti-window').style.display = 'none';
     }
 
+    document.getElementById('med-bell').src = APP_CONFIG.settings.meditationBellUrl;
+
     feather.replace();
-    showTab(APP_CONFIG.navigation[0].id); // Go to default landing
+    showTab(APP_CONFIG.navigation[0].id); 
 }
 
 // --- LOGIC & STATE DATA ---
@@ -689,8 +726,8 @@ function updateLabel(id, val) {
 
 function logSadhanaSnapshot() {
     const today = new Date().toISOString().split('T')[0];
+    const obsText = document.getElementById('sadhana-observations').value || "";
     
-    // Dynamically grab all slider values based on config
     let dynamicData = {};
     APP_CONFIG.sadhanaMetrics.forEach(m => {
         dynamicData[m.id] = parseInt(document.getElementById(`s-${m.id}`).value);
@@ -703,7 +740,7 @@ function logSadhanaSnapshot() {
         timestamp: new Date().getTime(),
         timing: currentSadhanaTiming,
         ...dynamicData,
-        obs: document.getElementById('sadhana-observations').value
+        obs: obsText
     };
 
     if (!sadhanaStore[today]) sadhanaStore[today] = [];
@@ -715,8 +752,11 @@ function logSadhanaSnapshot() {
         localStorage.setItem('vss_mandala_tracker', JSON.stringify(mandalaData));
     }
     
-    // Note to user: Ensure your Google Apps Script handles the added "obs" field properly in appendRow!
-    fetch(APP_CONFIG.settings.googleSheetUrl, {
+    // Fix: Send Observation string directly in URL as a fallback if Google overrides JSON body
+    let fetchUrl = APP_CONFIG.settings.googleSheetUrl;
+    if(obsText) fetchUrl += `?obs=${encodeURIComponent(obsText)}`;
+
+    fetch(fetchUrl, {
         method: 'POST',
         mode: 'no-cors',
         headers: { 'Content-Type': 'application/json' },
@@ -787,7 +827,9 @@ function renderSadhanaChart() {
         let dailyTotal = 0;
         logs.forEach(log => {
             let metricSum = 0;
-            APP_CONFIG.sadhanaMetrics.forEach(m => metricSum += (log[m.id] / m.max) * 100);
+            APP_CONFIG.sadhanaMetrics.forEach(m => {
+                if(log[m.id] !== undefined) metricSum += (log[m.id] / m.max) * 100;
+            });
             dailyTotal += metricSum / APP_CONFIG.sadhanaMetrics.length;
         });
         return dailyTotal / logs.length;
@@ -814,8 +856,8 @@ function renderSadhanaChart() {
             responsive: true, maintainAspectRatio: false,
             plugins: { legend: { display: false } },
             scales: {
-                y: { min: 0, max: 100, ticks: { color: 'rgba(255,255,255,0.5)', stepSize: 25 }, grid: { color: 'rgba(255,255,255,0.1)' } },
-                x: { ticks: { color: 'rgba(255,255,255,0.5)' }, grid: { display: false } }
+                y: { min: 0, max: 100, ticks: { color: 'rgba(255,255,255,0.5)', stepSize: 25, font: {family: 'Inter'} }, grid: { color: 'rgba(255,255,255,0.1)' } },
+                x: { ticks: { color: 'rgba(255,255,255,0.5)', font: {family: 'Inter'} }, grid: { display: false } }
             }
         }
     });
@@ -879,15 +921,15 @@ function toggleMedTimer() {
     let bell = document.getElementById('med-bell');
     
     if (medTimerRunning) {
-        bell.load(); // Crucial: prime audio on user click to bypass autoplay restrictions
-        btn.innerHTML = '<i data-feather="pause" style="width: 26px; height: 26px;"></i>';
+        bell.load(); // Prime audio
+        btn.innerHTML = '<i data-feather="square" style="width: 20px; height: 20px; fill: white;"></i>'; // Stop icon
         feather.replace();
         medTimerInterval = setInterval(() => {
             medSecsLeft--;
             if (medSecsLeft <= 0) {
                 clearInterval(medTimerInterval);
                 medTimerRunning = false;
-                medSecsLeft = 0;
+                medSecsLeft = medTotalSecs; // Reset to top
                 updateMedTimerDisplay();
                 bell.play().catch(e => console.log("Audio block", e));
                 btn.innerHTML = '<i data-feather="play" style="width: 26px; height: 26px; margin-left: 3px;"></i>';
@@ -897,7 +939,12 @@ function toggleMedTimer() {
             }
         }, 1000);
     } else {
+        // STOP LOGIC
         clearInterval(medTimerInterval);
+        bell.pause();
+        bell.currentTime = 0;
+        medSecsLeft = medTotalSecs; // Reset timer to top
+        updateMedTimerDisplay();
         btn.innerHTML = '<i data-feather="play" style="width: 26px; height: 26px; margin-left: 3px;"></i>';
         feather.replace();
     }
@@ -906,6 +953,8 @@ function toggleMedTimer() {
 function resetMedTimer() {
     clearInterval(medTimerInterval);
     medTimerRunning = false;
+    let bell = document.getElementById('med-bell');
+    if(bell) { bell.pause(); bell.currentTime = 0; }
     medSecsLeft = medTotalSecs;
     updateMedTimerDisplay();
     let btn = document.getElementById('med-timer-btn');
@@ -918,9 +967,7 @@ function resetMedTimer() {
 function clearMedSelection() {
     document.getElementById('input-med').value = '';
     document.getElementById('display-med').style.display = 'none';
-    if(currentCardAudio) {
-        currentCardAudio.pause();
-    }
+    if(currentCardAudio) currentCardAudio.pause();
     document.getElementById('med-timer-container').style.display = 'block';
 }
 
@@ -944,6 +991,9 @@ function showTab(t){
         const iframe = document.getElementById('learn-video');
         if (iframe) iframe.src = iframe.src;
     }
+    
+    // Auto-close overlay if navigating away
+    if (t !== 'japa') closeYajnaOverlay();
     
     const nItem = document.getElementById('n-'+t);
     if(nItem) nItem.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
@@ -969,7 +1019,6 @@ function renderTabIfNeeded(tab){
     renderedTabs[tab] = true;
 }
 
-// INTERACTIVE PICKER LOGIC FOR PRĀṆA & DHYĀNA 
 function initPicker(type) {
     const sourceData = type === 'pran' ? APP_CONFIG.pranayamas : APP_CONFIG.meditations;
     renderWheelItems(type, sourceData);
@@ -1077,9 +1126,7 @@ function selectFromWheel(type, origIdx) {
     collapsePicker(type);
 }
 
-// CUSTOM MEDITATION AUDIO PLAYER
 let currentCardAudio = new Audio();
-
 function toggleCardAudio(src) {
     let btnIcon = document.getElementById('card-audio-icon');
     
@@ -1122,7 +1169,7 @@ function renderMediaHTML(type, data) {
     } else if (type === 'med') {
         document.getElementById('med-timer-container').style.display = 'none';
         display.style.display = 'block';
-        if(currentCardAudio) currentCardAudio.pause(); // Reset any playing audio
+        if(currentCardAudio) currentCardAudio.pause(); 
         
         display.innerHTML = `
             <div class="card">
@@ -1136,7 +1183,6 @@ function renderMediaHTML(type, data) {
                         </button>
                         <span id="card-audio-time" style="font-size: 20px; font-weight: bold; color: white; font-family: 'Inter', monospace; opacity: 0.9;">--:-- remaining</span>
                     </div>
-
                 </div>
             </div>
         `;
@@ -1264,6 +1310,63 @@ function initJitsi() {
     } else { setTimeout(initJitsi, 1000); }
 }
 
+// --- YAJNA WISDOM OVERLAY LOGIC ---
+let yajnaSynth = window.speechSynthesis;
+let yajnaUtterance = null;
+
+async function openYajnaOverlay() {
+    const overlay = document.getElementById('yajna-overlay');
+    const content = document.getElementById('yajna-content');
+    overlay.classList.add('active');
+    
+    try {
+        const res = await fetch('./assets/what_is_yajna.txt');
+        if (res.ok) {
+            const text = await res.text();
+            content.innerHTML = text.replace(/\n/g, '<br>');
+            
+            // Prepare audio
+            if(yajnaSynth.speaking) yajnaSynth.cancel();
+            yajnaUtterance = new SpeechSynthesisUtterance(text);
+            yajnaUtterance.lang = 'en-IN'; // Indian English
+            yajnaUtterance.onend = () => {
+                document.getElementById('yajna-audio-icon').setAttribute('data-feather', 'play');
+                feather.replace();
+            };
+        } else {
+            content.innerHTML = "Wisdom text could not be loaded.";
+        }
+    } catch(e) {
+        content.innerHTML = "Error loading wisdom.";
+    }
+}
+
+function closeYajnaOverlay() {
+    document.getElementById('yajna-overlay').classList.remove('active');
+    if(yajnaSynth.speaking) yajnaSynth.cancel();
+    document.getElementById('yajna-audio-icon').setAttribute('data-feather', 'play');
+    feather.replace();
+}
+
+function toggleYajnaAudio() {
+    if(!yajnaUtterance) return;
+    const icon = document.getElementById('yajna-audio-icon');
+    
+    if (yajnaSynth.speaking) {
+        if (yajnaSynth.paused) {
+            yajnaSynth.resume();
+            icon.setAttribute('data-feather', 'pause');
+        } else {
+            yajnaSynth.pause();
+            icon.setAttribute('data-feather', 'play');
+        }
+    } else {
+        yajnaSynth.speak(yajnaUtterance);
+        icon.setAttribute('data-feather', 'pause');
+    }
+    feather.replace();
+}
+
 let pIdx=1, pOn=false, pStart=Date.now(), pDuration=3000; 
 
 function preloadNearby(){
@@ -1323,11 +1426,10 @@ document.addEventListener('fullscreenchange', () => {
     feather.replace();
 });
 
-// Flow Zone Mobile/Desktop Screen Tap Navigation Logic
 const swipeZone = document.getElementById('swipe-zone');
 if (swipeZone) {
     swipeZone.addEventListener('click', (e) => {
-        if(e.target.closest('button')) return; // Ignore actual button clicks
+        if(e.target.closest('button')) return; 
         const rect = swipeZone.getBoundingClientRect();
         const x = e.clientX - rect.left;
         if (x < rect.width / 2) navSlide(-1);
@@ -1374,10 +1476,6 @@ function flowLoop(){
     }
     requestAnimationFrame(flowLoop);
 }
-
-window.onload=()=>{ 
-    loadConfig(); // Initialization moves to config loader
-};
 
 document.getElementById('main-nav').addEventListener('wheel', (evt) => {
     evt.preventDefault();
@@ -1556,6 +1654,15 @@ async function sendToShruti() {
     }
     chat.scrollTop = chat.scrollHeight;
 }
+
+window.onload=()=>{ 
+    loadConfig(); 
+    document.getElementById('flow-bg-audio').src = "./meditations/vss.mp3";
+    updateTimerText();
+    flowLoop(); 
+    loadShrutiKnowledge(); 
+    calculateSadhanaSara();
+};
 </script>
 </body>
 </html>

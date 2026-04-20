@@ -1,0 +1,54 @@
+{
+    "settings": {
+        "enableShruti": true,
+        "googleSheetUrl": "https://script.google.com/macros/s/AKfycbxS3fA7rBNW1191FZyGWhIbFAuNh-36uFyEyAaVdDsfZotELuHVn39wGcmZlUhJekLL/exec",
+        "meditationBellUrl": "./assets/taala.mp3"
+    },
+    "navigation": [
+        {"id":"sadhana", "title":"Sādhanā", "icon":"edit-3"}, 
+        {"id":"flow", "title":"Japa", "icon":"refresh-cw"},
+        {"id":"drop", "title":"Drop", "icon":"wind"}, 
+        {"id":"learn", "title":"Learn", "icon":"book-open"},
+        {"id":"mandala", "title":"Mandala", "icon":"zap"}, 
+        {"id":"pran", "title":"Prāṇa", "icon":"loader"},
+        {"id":"med", "title":"Dhyāna", "icon":"moon"}, 
+        {"id":"japa", "title":"Yajna", "icon":"video"},
+        {"id":"sangha", "title":"Sangha", "icon":"users"}
+    ],
+    "sadhanaMetrics": [
+        {"id":"body", "label":"Body State", "max":2, "default":1, "options":["Tired","Neutral","Relaxed"]},
+        {"id":"breath", "label":"Breath Rhythm", "max":3, "default":2, "options":["Nostril<br>Dominant","Jumbled","Even &<br>Smooth","Smooth/Both<br>Nostrils"]},
+        {"id":"mind", "label":"State of Mind", "max":4, "default":2, "options":["Stressful","Full of<br>thoughts","Same as<br>before","Less<br>thoughts","Relaxed &<br>Clear"]},
+        {"id":"mood", "label":"Overall Mood", "max":3, "default":1, "options":["Negative","Neutral","Positive","Joyful"]},
+        {"id":"stress", "label":"Stress Resilience", "max":4, "default":1, "options":["Negative","Reaction<br>same","More<br>composed","In<br>control","Positive"]}
+    ],
+    "meditations": [
+        {"title":"Hari Om Meditation","audio":"./meditations/hari_om_meditation.mp3","img":"./meditations/Hari_Om_Chakras.webp"},
+        {"title":"Om Namah Shivaya","audio":"./meditations/om_namah_shivaya.mp3","img":"./meditations/Om_Namah_Shivaya.webp"},
+        {"title":"Samarpan Meditation","audio":"./meditations/samarpan.mp3","img":"./meditations/Samarpan.webp"},
+        {"title":"Silver String","audio":"./meditations/sliver_string.mp3","img":"./meditations/Silver_String.webp"},
+        {"title":"Energy Field","audio":"./meditations/strengthen_aura.mp3","img":"./meditations/Strengthen_Energy_Field.webp"},
+        {"title":"You Are The Light","audio":"./meditations/you_are_the_light.mp3","img":"./meditations/You_Are_The_Light.webp"}
+    ],
+    "pranayamas": [
+        {"title":"Bhastrika Pranayama","video":"https://www.youtube.com/embed/iAlojRS6iBM"},
+        {"title":"Ujjayi Breathing","video":"https://www.youtube.com/embed/IQrsJ-yZWV8"},
+        {"title":"Bhramari Pranayama","video":"https://www.youtube.com/embed/-9CfCIzUw-k"},
+        {"title":"Kapalbhati Guide","video":"https://www.youtube.com/embed/WOw55qnKBSo"},
+        {"title":"Kapalbhati Advanced","video":"https://www.youtube.com/embed/RxQqFe3Q1AE"},
+        {"title":"Bhastrika Pranayama","video":"https://www.youtube.com/embed/kAlOoMbAqNc"},
+        {"title":"Chandra Bhedana","video":"https://www.youtube.com/embed/QGN8I7Ydvwo"},
+        {"title":"Shitali Cooling Breath","video":"https://www.youtube.com/embed/wWXN9Qx6fO0"},
+        {"title":"Surya Bhedana","video":"https://www.youtube.com/embed/4YIlmACF7g8"}
+    ],
+    "learnLessons": [
+        { "title": "Shlokas 1-10", "duration": 22, "url": "https://www.youtube.com/embed/XDzlsJ01P_A" },
+        { "title": "Shlokas 11-20", "duration": 23, "url": "https://www.youtube.com/embed/dSPrO6FVEYQ" },
+        { "title": "Shlokas 21-35", "duration": 38, "url": "https://www.youtube.com/embed/QAx2L7-fdKM" },
+        { "title": "Shlokas 36-50", "duration": 36, "url": "https://www.youtube.com/embed/9BE4EkOHi4g" },
+        { "title": "Shlokas 51-65", "duration": 32, "url": "https://www.youtube.com/embed/J3KkNE28nO8" },
+        { "title": "Shlokas 66-80", "duration": 34, "url": "https://www.youtube.com/embed/hM_GMZarFIU" },
+        { "title": "Shlokas 81-95", "duration": 35, "url": "https://www.youtube.com/embed/iyET-Q-dS-A" },
+        { "title": "Shlokas 96-108", "duration": 31, "url": "https://www.youtube.com/embed/fu4JTCv9ybc" }
+    ]
+}
