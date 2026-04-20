@@ -6,13 +6,13 @@
     },
     "navigation": [
         {"id":"sadhana", "title":"Sādhanā", "icon":"edit-3"}, 
-        {"id":"flow", "title":"Japa", "icon":"refresh-cw"},
+        {"id":"flow", "title":"Flow", "icon":"refresh-cw"},
         {"id":"drop", "title":"Drop", "icon":"wind"}, 
         {"id":"learn", "title":"Learn", "icon":"book-open"},
         {"id":"mandala", "title":"Mandala", "icon":"zap"}, 
         {"id":"pran", "title":"Prāṇa", "icon":"loader"},
         {"id":"med", "title":"Dhyāna", "icon":"moon"}, 
-        {"id":"japa", "title":"Yajna", "icon":"video"},
+        {"id":"yajna", "title":"Yajna", "icon":"video"},
         {"id":"sangha", "title":"Sangha", "icon":"users"}
     ],
     "sadhanaMetrics": [
