@@ -13,9 +13,10 @@ function shouldHandleRequest(request) {
     return false;
   }
 
-  if (request.mode === 'navigate') {
-    return false;
-  }
+if (request.mode === 'navigate') {
+  event.respondWith(fetch(event.request).catch(() => caches.match('/sadhana.html')));
+  return;
+}
 
   return ['style', 'script', 'image', 'font', 'audio'].includes(request.destination);
 }
