@@ -227,7 +227,8 @@
 </header>
 
 <div class="content" id="app-content-container">
-    </div>
+    <!-- Panes injected here via JS -->
+</div>
 
 <div class="mobile-nav-wrapper">
     <button class="nav-arrow left-arrow" onclick="scrollNav(-1)"><i data-feather="chevron-left"></i></button>
@@ -235,6 +236,7 @@
     <button class="nav-arrow right-arrow" onclick="scrollNav(1)"><i data-feather="chevron-right"></i></button>
 </div>
 
+<!-- YAJNA FULLSCREEN WISDOM OVERLAY -->
 <div id="yajna-overlay" class="yajna-overlay">
     <div class="yajna-header">
         <h3 class="serif" style="color: var(--gold); margin: 0; font-size: 1.2rem;">What is Yajna?</h3>
@@ -293,11 +295,11 @@ const FALLBACK_CONFIG = {
         meditationBellUrl: './assets/taala.mp3'
     },
     navigation: [
-        {id:'mandala', title:'Mandala', icon:'zap'}, 
         {id:'sadhana', title:'Sādhanā', icon:'edit-3'}, 
         {id:'flow', title:'Flow', icon:'refresh-cw'},
         {id:'drop', title:'Drop', icon:'wind'}, 
         {id:'learn', title:'Learn', icon:'book-open'},
+        {id:'mandala', title:'Mandala', icon:'zap'}, 
         {id:'pran', title:'Prāṇa', icon:'loader'},
         {id:'med', title:'Dhyāna', icon:'moon'}, 
         {id:'yajna', title:'Yajna', icon:'video'},
@@ -324,11 +326,8 @@ async function loadConfig() {
 
     try {
         const manResponse = await fetch('./app_config/mandala_config.json');
-        if (manResponse.ok) {
-            MANDALA_CONFIG = await manResponse.json();
-        } else {
-            throw new Error("Mandala Config not found");
-        }
+        if (manResponse.ok) MANDALA_CONFIG = await manResponse.json();
+        else throw new Error("Mandala Config not found");
     } catch(e) {
         MANDALA_CONFIG = [];
         let d = new Date(2026, 4, 1); 
@@ -493,7 +492,7 @@ function getPaneHTML(id) {
                 </div>
 
                 <div class="mandala-orb-container">
-                    <svg viewBox="0 0 140 140" id="mandala-orb-svg"></svg>
+                    <svg viewBox="0 0 120 120" id="mandala-orb-svg"></svg>
                     <div class="orb-center-content" onclick="showTodayTithi()">
                         <img src="../assets/logo.webp" class="orb-logo" alt="Vedic Space">
                     </div>
@@ -784,14 +783,13 @@ function renderMandala() {
     if(!svg) return;
 
     let segmentsHTML = '';
-    const cx = 70, cy = 70, r = 50; 
+    const cx = 60, cy = 60, r = 50; 
     const circumference = 2 * Math.PI * r;
     const segmentArc = circumference / totalDays;
     const gap = 1; 
     const dashArray = Math.max(0.1, segmentArc - gap);
     const dashSpace = circumference - dashArray;
 
-    // Base subtle golden glowing track
     segmentsHTML += `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="rgba(251, 191, 36, 0.4)" stroke-width="1.5" filter="drop-shadow(0 0 2px rgba(251, 191, 36, 0.5))"></circle>`;
 
     for (let i = 0; i < totalDays; i++) {
@@ -813,28 +811,23 @@ function renderMandala() {
         if (isPoornima || isAmavasya) {
             let angleDeg = rotation + ((360 / totalDays) / 2); 
             let angleRad = angleDeg * (Math.PI / 180);
-            
-            // Push dots further out to avoid overlap with text
-            let dotRadius = r + 8; 
+            let dotRadius = r + 6; 
             let dotX = cx + dotRadius * Math.cos(angleRad);
             let dotY = cy + dotRadius * Math.sin(angleRad);
             
             let markerColor = isPoornima ? "#ffffff" : "#ff4757";
             let labelText = isPoornima ? "Pūrṇimā" : "Amāvasyā";
             
-            // Bigger Dots
-            segmentsHTML += `<circle cx="${dotX}" cy="${dotY}" r="4" fill="${markerColor}" filter="drop-shadow(0 0 6px ${markerColor})"></circle>`;
+            segmentsHTML += `<circle cx="${dotX}" cy="${dotY}" r="3" fill="${markerColor}" filter="drop-shadow(0 0 4px ${markerColor})"></circle>`;
             
-            // Push text even further out
-            let textRadius = r + 18;
+            let textRadius = r + 13;
             let textX = cx + textRadius * Math.cos(angleRad);
             let textY = cy + textRadius * Math.sin(angleRad);
             
-            // Dynamic text anchoring
-            let visualX = textY; // Since SVG is rotated -90deg, Y is the visual horizontal axis
+            let visualX = textY; 
             let align = visualX > 75 ? "start" : (visualX < 65 ? "end" : "middle");
             
-            segmentsHTML += `<text x="${textX}" y="${textY}" fill="${markerColor}" font-size="5" font-weight="bold" font-family="Inter, sans-serif" text-anchor="${align}" dominant-baseline="middle" transform="rotate(90 ${textX} ${textY})" style="pointer-events:none; opacity:0.9;">${labelText}</text>`;
+            segmentsHTML += `<text x="${textX}" y="${textY}" fill="${markerColor}" font-size="4.5" font-weight="bold" font-family="Inter, sans-serif" text-anchor="${align}" dominant-baseline="middle" transform="rotate(90 ${textX} ${textY})" style="pointer-events:none; opacity:0.9;">${labelText}</text>`;
         }
     }
     
@@ -843,7 +836,7 @@ function renderMandala() {
         segmentsHTML += `<circle cx="${cx}" cy="${cy}" r="${r-10}" fill="rgba(255, 80, 0, ${glowOpacity})" filter="blur(12px)" style="pointer-events:none;"></circle>`;
     }
 
-    svg.setAttribute('viewBox', '0 0 140 140'); 
+    svg.setAttribute('viewBox', '0 0 120 120'); 
     svg.innerHTML = segmentsHTML;
 
     const counterText = document.getElementById('mandala-counter-text');
@@ -875,7 +868,6 @@ function showTodayTithi(forceShow = false) {
         displayEl.setAttribute('data-active', 'false');
     } else {
         const todayConfig = MANDALA_CONFIG[currentDayIdx];
-        // Requested Order: Day, Tithi, Date
         displayEl.innerHTML = `
             <span style="color:var(--gold); font-weight:bold; font-size:14px;">Day ${currentDayIdx + 1}</span><br>
             <span style="font-size:12px; font-weight:600; color:white; margin: 3px 0; display:block;">${todayConfig.tithi}</span>
@@ -910,7 +902,6 @@ function startSadhana() {
     }).catch(e => console.error(e));
     
     showTab('flow');
-    setTimeout(() => { setMode('sadhana'); }, 100); // Automatically trigger Sadhana toggle
 }
 
 function commitMandala() {
@@ -930,7 +921,7 @@ function commitMandala() {
     if (targetDate.getFullYear() !== nowIST.getFullYear() || 
         targetDate.getMonth() !== nowIST.getMonth() || 
         targetDate.getDate() !== nowIST.getDate()) {
-        alert(`Sādhanā can only be committed on its scheduled date in India.\\n\\nExpected date for Day ${completedDays + 1}: ${targetDateStr}`);
+        alert(`Sādhanā can only be committed on its scheduled date in India.\n\nExpected date for Day ${completedDays + 1}: ${targetDateStr}`);
         return;
     }
     
