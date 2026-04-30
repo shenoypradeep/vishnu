@@ -45,6 +45,7 @@
         .video-box { position: relative; padding-bottom: 56.25%; height: 0; background: #000; }
         .video-box iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
 
+        /* Interactive Wheel Picker */
         .interactive-picker { background: var(--glass); border: 1px solid var(--border); border-radius: 15px; margin-bottom: 20px; overflow: hidden; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
         .picker-search-bar { display: flex; align-items: center; padding: 14px 15px; gap: 10px; background: rgba(0,0,0,0.2); position: relative; z-index: 2; }
         .picker-search-bar input { flex: 1; background: transparent; border: none; color: var(--gold); font-size: 15px; font-weight: 600; outline: none; font-family: 'Inter', sans-serif; text-overflow: ellipsis; }
@@ -59,6 +60,7 @@
         .picker-highlight { position: absolute; top: 55px; left: 15px; right: 15px; height: 40px; border-top: 1px solid var(--gold); border-bottom: 1px solid var(--gold); background: rgba(251, 191, 36, 0.1); border-radius: 8px; pointer-events: none; z-index: 1; }
         .media-display { animation: scaleIn 0.4s ease; transform-origin: top center; }
 
+        /* Custom Sādhanā Slider UI */
         .metric-card { margin-bottom: 30px; background: rgba(0,0,0,0.15); padding: 15px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); }
         .metric-label-row { display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 13px; font-weight: 600; color: white; font-family: 'Inter', sans-serif; }
         .metric-label-row .active-state-text { color: var(--gold); font-weight: bold; font-family: 'Inter', sans-serif; }
@@ -75,14 +77,18 @@
         .slider-labels span.active-label::before { color: var(--gold); }
         .sara-score-badge { display: inline-block; padding: 8px 20px; border-radius: 30px; background: rgba(251, 191, 36, 0.15); border: 1px solid var(--border); color: var(--gold); font-weight: bold; font-size: 28px; margin-bottom: 5px; }
         
-        .mandala-orb-container { position: relative; width: 280px; height: 280px; margin: 20px auto; }
-        #mandala-orb-svg { width: 100%; height: 100%; transform: rotate(-90deg); overflow: visible; }
-        .orb-center-content { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); display:flex; flex-direction:column; align-items:center; justify-content:center; cursor: pointer; transition: 0.3s; z-index: 10; }
+        /* Mandala Orb Specific CSS */
+        .mandala-orb-container { position: relative; width: 240px; height: 240px; margin: 20px auto; }
+        #mandala-orb-svg { width: 100%; height: 100%; transform: rotate(-90deg); filter: drop-shadow(0 0 6px rgba(251, 191, 36, 0.4)); overflow: visible; }
+        .orb-center-content { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); display:flex; flex-direction:column; align-items:center; justify-content:center; cursor: pointer; transition: 0.3s; z-index: 10; border-radius: 50%; }
         .orb-center-content:hover { transform: translate(-50%, -50%) scale(1.05); }
-        .orb-logo { width: 95px; height: auto; opacity: 0.95; filter: drop-shadow(0 0 15px rgba(251, 191, 36, 0.6)); }
-        
+        .orb-logo { width: 90px; height: 90px; opacity: 0.95; filter: drop-shadow(0 0 10px rgba(255, 165, 0, 0.5)); border-radius: 50%; }
+
+        /* Layouts & Fullscreen matching reference */
+        #p-ring-new { fill: none; stroke: var(--gold); stroke-width: 5; stroke-dasharray: 219.9; stroke-dashoffset: 219.9; transform: rotate(-90deg); transform-origin: center; transition: 0.1s linear; }
         #jaas-container { width: 100%; height: 60vh; border-radius: 15px; overflow: hidden; background: #000; }
 
+        /* Flow Pane: Fill space, match reference precisely */
         #flow-container:fullscreen, #learn-container:fullscreen { background: var(--bg) !important; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 0; width: 100vw; height: 100vh; }
         #flow-container:fullscreen .slide-wrapper { width: 100vw; height: 100vh; max-height: 100vh; aspect-ratio: auto; border-radius: 0; }
         #learn-container:fullscreen .slide-wrapper { width: 100vw; height: 100vh; max-width: none; border-radius: 0; }
@@ -100,6 +106,7 @@
             }
             #flow-container .mode-toggle { height: 35px; min-width: 120px; }
             #flow-container .flow-controls > div { flex-shrink: 0; }
+            
             .tracker-section { display: none !important; }
             .gita-verse-container { display: none !important; }
         }
@@ -111,6 +118,7 @@
         .mode-btn { flex: 1; border: none; background: transparent; color: white; border-radius: 8px; cursor: pointer; font-size: 10px; transition: 0.3s; padding: 0 4px; line-height: 1.2; font-family: 'Inter', sans-serif;}
         .mode-btn.active { background: var(--gold); color: var(--bg); font-weight: bold; }
 
+        /* Learn VSS Desktop/Mobile Layout */
         .learn-layout { display: flex; flex-direction: column; gap: 20px; }
         .learn-layout .video-section { flex: 1; min-width: 0; }
         .learn-layout .video-section .slide-wrapper { width: 100%; aspect-ratio: 16/9; max-height: 75vh; border-radius: 12px; overflow: hidden; border: 1px solid var(--border); background: #000; position: relative;}
@@ -120,6 +128,7 @@
         .gita-verse-text { color: var(--gold); font-weight: bold; font-size: 14px; line-height: 1.6; text-align: center; font-family: 'Inter', sans-serif; }
         .gita-verse-img { width: 100%; max-width: 320px; border-radius: 12px; display: block; border: 1px solid var(--border); }
 
+        /* Yajna Fullscreen Overlay */
         .yajna-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: var(--bg); z-index: 2000; display: none; flex-direction: column; opacity: 0; transition: opacity 0.3s ease; overflow: hidden;}
         .yajna-overlay.active { display: flex; opacity: 1; }
         .yajna-header { display: flex; justify-content: space-between; align-items: center; padding: 20px; background: rgba(0,0,0,0.2); border-bottom: 1px solid var(--border); padding-top: max(20px, env(safe-area-inset-top)); }
@@ -132,11 +141,14 @@
             
             .learn-layout { flex-direction: row; align-items: stretch; }
             .learn-layout .tracker-section { width: 250px; flex-shrink: 0; margin-bottom: 0; }
+
             .gita-verse-img { display: none; }
             .gita-verse-text { font-size: 17px; }
+            
             .yajna-content-area { padding: 40px 10%; font-size: 18px; }
         }
 
+        /* Sleek Scrollable Bottom Navigation exactly matched to reference */
         .mobile-nav-wrapper {
             position: fixed; bottom: 0; left: 0; width: 100%;
             background: #1e3a8a; border-top: 1px solid var(--border);
@@ -157,7 +169,7 @@
             font-size: 10px; cursor: pointer; padding: 12px 0; transition: 0.3s ease; font-family: 'Inter', sans-serif;
         }
         .nav-item.active { opacity: 1; color: var(--gold); transform: scale(1.05); }
-        .nav-item i { width: 24px; height: 24px; } 
+        .nav-item i { width: 24px; height: 24px; } /* Enforce strict size from reference */
 
         .nav-arrow {
             position: absolute; top: 0; height: 100%; width: 45px;
@@ -170,6 +182,7 @@
         .right-arrow { right: 0; background: linear-gradient(to left, rgba(30,58,138,1) 40%, rgba(30,58,138,0)); }
         @media (hover: none) { .nav-arrow { opacity: 0.8; width: 35px; pointer-events: auto; } }
 
+        /* Shruti Chat Companion */
         #shruti-fab {
             position: fixed; bottom: 80px; right: 20px; width: 55px; height: 55px; background: linear-gradient(135deg, var(--gold), #d97706); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(251, 191, 36, 0.4); cursor: pointer; z-index: 1001; transition: transform 0.3s;
         }
@@ -219,7 +232,10 @@
             <img src="../assets/logo.webp" alt="Vedic Space" style="height: 40px;">
             Vedic Space
         </a>
-        <ul class="nav-links" id="desktop-nav-container"></ul>
+        
+        <ul class="nav-links" id="desktop-nav-container">
+            </ul>
+
         <div style="display: flex; align-items: center;">
             <i data-feather="user" onclick="window.location.href='login.html'" style="cursor: pointer;"></i>
         </div>
@@ -227,8 +243,7 @@
 </header>
 
 <div class="content" id="app-content-container">
-    <!-- Panes injected here via JS -->
-</div>
+    </div>
 
 <div class="mobile-nav-wrapper">
     <button class="nav-arrow left-arrow" onclick="scrollNav(-1)"><i data-feather="chevron-left"></i></button>
@@ -236,7 +251,6 @@
     <button class="nav-arrow right-arrow" onclick="scrollNav(1)"><i data-feather="chevron-right"></i></button>
 </div>
 
-<!-- YAJNA FULLSCREEN WISDOM OVERLAY -->
 <div id="yajna-overlay" class="yajna-overlay">
     <div class="yajna-header">
         <h3 class="serif" style="color: var(--gold); margin: 0; font-size: 1.2rem;">What is Yajna?</h3>
@@ -245,6 +259,7 @@
     <div id="yajna-content" class="yajna-content-area serif">
         Loading wisdom...
     </div>
+    
     <div style="position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); padding: 10px 20px; border-radius: 30px; border: 1px solid var(--border); display: flex; align-items: center; gap: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
         <button onclick="toggleYajnaAudio()" id="yajna-audio-btn" style="background: var(--gold); border: none; color: var(--bg); border-radius: 50%; width: 45px; height: 45px; cursor: pointer; display: flex; justify-content: center; align-items: center;">
             <i data-feather="play" id="yajna-audio-icon" style="margin-left: 2px;"></i>
@@ -329,12 +344,13 @@ async function loadConfig() {
         if (manResponse.ok) MANDALA_CONFIG = await manResponse.json();
         else throw new Error("Mandala Config not found");
     } catch(e) {
+        // Dynamic fallback generation for 45 days starting May 1st 2026
         MANDALA_CONFIG = [];
         let d = new Date(2026, 4, 1); 
         for(let i=0; i<45; i++) {
             MANDALA_CONFIG.push({
                 date: d.toLocaleDateString('en-GB', {day: '2-digit', month: 'short', year: 'numeric'}),
-                tithi: i === 0 ? "Viśākha Pūrṇimā" : i === 15 ? "Vaiśākha Amāvasyā" : `Tithi ${i+1}`
+                tithi: i === 0 ? "Viśākha Pūrṇimā" : i === 15 ? "Vaiśākha Amāvasyā" : `Day ${i+1}`
             });
             d.setDate(d.getDate() + 1);
         }
@@ -492,13 +508,13 @@ function getPaneHTML(id) {
                 </div>
 
                 <div class="mandala-orb-container">
-                    <svg viewBox="0 0 120 120" id="mandala-orb-svg"></svg>
+                    <svg viewBox="0 0 100 100" id="mandala-orb-svg"></svg>
                     <div class="orb-center-content" onclick="showTodayTithi()">
                         <img src="../assets/logo.webp" class="orb-logo" alt="Vedic Space">
                     </div>
                 </div>
 
-                <div id="orb-tithi-display" class="orb-tithi" data-active="false" style="min-height: 45px; margin-bottom: 15px; color: var(--gold); font-family: 'Inter', sans-serif;">
+                <div id="orb-tithi-display" class="orb-tithi" style="min-height: 40px; margin-bottom: 15px; color: var(--gold); font-family: 'Inter', sans-serif;">
                     Tap the lotus for today's tithi
                 </div>
 
@@ -594,10 +610,10 @@ function bindTouchEvents() {
     }
 }
 
+// --- LOGIC & STATE DATA ---
 let sadhanaStore = JSON.parse(localStorage.getItem('vss_sadhana_logs')) || {};
 let currentDailyScore = 0;
 let currentSadhanaTiming = 'before';
-let mandalaData = JSON.parse(localStorage.getItem('vss_mandala_tracker')) || { completed: [] };
 
 function setSadhanaTiming(timing) {
     currentSadhanaTiming = timing;
@@ -618,6 +634,7 @@ function updateLabel(id, val) {
 function logSadhanaSnapshot() {
     const today = new Date().toISOString().split('T')[0];
     const obsText = document.getElementById('sadhana-observations').value || "";
+    const userName = localStorage.getItem('vss_user_name') || 'guest_user';
     
     let dynamicData = {};
     APP_CONFIG.sadhanaMetrics.forEach(m => {
@@ -626,7 +643,7 @@ function logSadhanaSnapshot() {
 
     const snapshot = {
         userId: localStorage.getItem('vss_user_id') || 'guest_user',
-        userName: localStorage.getItem('vss_user_name') || 'guest_user',
+        userName: userName,
         date: today,
         time: new Date().toLocaleTimeString(),
         timestamp: new Date().getTime(),
@@ -783,60 +800,40 @@ function renderMandala() {
     if(!svg) return;
 
     let segmentsHTML = '';
-    const cx = 60, cy = 60, r = 50; 
+    const r = 46; 
     const circumference = 2 * Math.PI * r;
-    const segmentArc = circumference / totalDays;
-    const gap = 1; 
-    const dashArray = Math.max(0.1, segmentArc - gap);
+    const dashArray = (circumference / totalDays) - 0.5; 
     const dashSpace = circumference - dashArray;
 
-    segmentsHTML += `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="rgba(251, 191, 36, 0.4)" stroke-width="1.5" filter="drop-shadow(0 0 2px rgba(251, 191, 36, 0.5))"></circle>`;
+    segmentsHTML += `<circle cx="50" cy="50" r="${r}" fill="none" stroke="rgba(251, 191, 36, 0.2)" stroke-width="1"></circle>`;
 
     for (let i = 0; i < totalDays; i++) {
         let isCompleted = i < completedDays;
         
-        let hue = 50 - (i * (50 / totalDays)); 
-        let color = isCompleted ? `hsl(${hue}, 100%, 50%)` : 'transparent';
-        let strokeWidth = isCompleted ? 3.5 : 0;
+        let hue = 45 - (i * (45 / totalDays)); 
+        let color = isCompleted ? `hsl(${hue}, 100%, 50%)` : 'rgba(251, 191, 36, 0.3)';
+        let strokeWidth = isCompleted ? 3 : 1.5;
         let rotation = (i * 360) / totalDays;
         
-        if (isCompleted) {
-            segmentsHTML += `<circle class="segment" cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${color}" stroke-width="${strokeWidth}" stroke-dasharray="${dashArray} ${dashSpace}" stroke-linecap="round" transform="rotate(${rotation} ${cx} ${cy})" style="transition: all 0.5s ease; pointer-events: none;" filter="drop-shadow(0 0 3px ${color})"></circle>`;
-        }
+        segmentsHTML += `<circle class="segment" cx="50" cy="50" r="${r}" fill="none" stroke="${color}" stroke-width="${strokeWidth}" stroke-dasharray="${dashArray} ${dashSpace}" stroke-linecap="round" transform="rotate(${rotation} 50 50)" style="pointer-events: none;"></circle>`;
 
         let tithi = MANDALA_CONFIG[i].tithi.toLowerCase();
-        let isPoornima = tithi.includes("pūrṇimā") || tithi.includes("poornima");
-        let isAmavasya = tithi.includes("amāvasyā") || tithi.includes("amavasya");
-        
-        if (isPoornima || isAmavasya) {
-            let angleDeg = rotation + ((360 / totalDays) / 2); 
+        if (tithi.includes("pūrṇimā") || tithi.includes("amāvasyā") || tithi.includes("poornima") || tithi.includes("amavasya")) {
+            let angleDeg = rotation + (360 / totalDays) / 2; 
             let angleRad = angleDeg * (Math.PI / 180);
-            let dotRadius = r + 6; 
-            let dotX = cx + dotRadius * Math.cos(angleRad);
-            let dotY = cy + dotRadius * Math.sin(angleRad);
+            let dotX = 50 + r * Math.cos(angleRad);
+            let dotY = 50 + r * Math.sin(angleRad);
             
-            let markerColor = isPoornima ? "#ffffff" : "#ff4757";
-            let labelText = isPoornima ? "Pūrṇimā" : "Amāvasyā";
-            
-            segmentsHTML += `<circle cx="${dotX}" cy="${dotY}" r="3" fill="${markerColor}" filter="drop-shadow(0 0 4px ${markerColor})"></circle>`;
-            
-            let textRadius = r + 13;
-            let textX = cx + textRadius * Math.cos(angleRad);
-            let textY = cy + textRadius * Math.sin(angleRad);
-            
-            let visualX = textY; 
-            let align = visualX > 75 ? "start" : (visualX < 65 ? "end" : "middle");
-            
-            segmentsHTML += `<text x="${textX}" y="${textY}" fill="${markerColor}" font-size="4.5" font-weight="bold" font-family="Inter, sans-serif" text-anchor="${align}" dominant-baseline="middle" transform="rotate(90 ${textX} ${textY})" style="pointer-events:none; opacity:0.9;">${labelText}</text>`;
+            let markerColor = tithi.includes("pūrṇimā") || tithi.includes("poornima") ? "#ffffff" : "#ff4757";
+            segmentsHTML += `<circle cx="${dotX}" cy="${dotY}" r="1.5" fill="${markerColor}" filter="drop-shadow(0 0 2px ${markerColor})"></circle>`;
         }
     }
     
     if (completedDays > 0) {
-        let glowOpacity = (completedDays / totalDays) * 0.4;
-        segmentsHTML += `<circle cx="${cx}" cy="${cy}" r="${r-10}" fill="rgba(255, 80, 0, ${glowOpacity})" filter="blur(12px)" style="pointer-events:none;"></circle>`;
+        let glowOpacity = (completedDays / totalDays) * 0.5;
+        segmentsHTML += `<circle cx="50" cy="50" r="35" fill="rgba(255, 100, 0, ${glowOpacity})" filter="blur(10px)" style="pointer-events:none;"></circle>`;
     }
 
-    svg.setAttribute('viewBox', '0 0 120 120'); 
     svg.innerHTML = segmentsHTML;
 
     const counterText = document.getElementById('mandala-counter-text');
@@ -855,25 +852,13 @@ function renderMandala() {
     }
 }
 
-function showTodayTithi(forceShow = false) {
+function showTodayTithi() {
     if (!MANDALA_CONFIG || MANDALA_CONFIG.length === 0) return;
     let currentDayIdx = mandalaData.completed.length;
     if (currentDayIdx >= MANDALA_CONFIG.length) currentDayIdx = MANDALA_CONFIG.length - 1; 
     
-    const displayEl = document.getElementById('orb-tithi-display');
-    const isActive = displayEl.getAttribute('data-active') === 'true';
-
-    if (isActive && !forceShow) {
-        displayEl.innerHTML = "Tap the lotus for today's tithi";
-        displayEl.setAttribute('data-active', 'false');
-    } else {
-        const todayConfig = MANDALA_CONFIG[currentDayIdx];
-        displayEl.innerHTML = `
-            <span style="color:var(--gold); font-weight:bold; font-size:14px;">Day ${currentDayIdx + 1}</span><br>
-            <span style="font-size:12px; font-weight:600; color:white; margin: 3px 0; display:block;">${todayConfig.tithi}</span>
-            <span style="font-size:10px; opacity:0.8;">${todayConfig.date}</span>`;
-        displayEl.setAttribute('data-active', 'true');
-    }
+    const todayConfig = MANDALA_CONFIG[currentDayIdx];
+    document.getElementById('orb-tithi-display').innerHTML = `<span style="color:var(--gold); font-weight:bold; font-size:14px;">Day ${currentDayIdx + 1}</span><br>${todayConfig.date}<br><span style="font-size:11px; opacity:0.8;">${todayConfig.tithi}</span>`;
 }
 
 function resetMandala() {
@@ -881,7 +866,6 @@ function resetMandala() {
         mandalaData.completed = [];
         localStorage.setItem('vss_mandala_tracker', JSON.stringify(mandalaData));
         document.getElementById('orb-tithi-display').innerHTML = "Tap the lotus for today's tithi";
-        document.getElementById('orb-tithi-display').setAttribute('data-active', 'false');
         renderMandala();
     }
 }
@@ -910,30 +894,11 @@ function commitMandala() {
         alert("Mandala is fully complete!");
         return;
     }
-
-    // STRICT DATE LOGIC (India Time)
-    let targetDateStr = MANDALA_CONFIG[completedDays].date;
-    let targetDate = new Date(targetDateStr);
     
-    let nowStr = new Date().toLocaleString("en-US", {timeZone: "Asia/Kolkata"});
-    let nowIST = new Date(nowStr);
-
-    if (targetDate.getFullYear() !== nowIST.getFullYear() || 
-        targetDate.getMonth() !== nowIST.getMonth() || 
-        targetDate.getDate() !== nowIST.getDate()) {
-        alert(`Sādhanā can only be committed on its scheduled date in India.\n\nExpected date for Day ${completedDays + 1}: ${targetDateStr}`);
-        return;
-    }
-    
-    // UI Update instantly
     const today = new Date().toISOString().split('T')[0];
     mandalaData.completed.push(today + "-" + Date.now());
     localStorage.setItem('vss_mandala_tracker', JSON.stringify(mandalaData));
     
-    renderMandala(); 
-    showTodayTithi(true); // Forces the next day's details to appear
-    
-    // Backend Sync
     const userName = localStorage.getItem('vss_user_name') || 'guest_user';
     const snapshot = {
         userId: localStorage.getItem('vss_user_id') || 'guest_user',
@@ -948,6 +913,8 @@ function commitMandala() {
     fetch(APP_CONFIG.settings.googleSheetUrl + `?action=commit_mandala&day=${completedDays + 1}`, {
         method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(snapshot)
     }).catch(e => console.error(e));
+    
+    renderMandala();
 }
 
 function offerSankalpa() {
@@ -1401,7 +1368,6 @@ async function openYajnaOverlay() {
             if(yajnaSynth.speaking) yajnaSynth.cancel();
             yajnaUtterance = new SpeechSynthesisUtterance(text);
             
-            // Force Indian Female Voice match
             const voices = yajnaSynth.getVoices();
             let indianVoice = voices.find(v => v.lang === 'en-IN' && (v.name.includes('Female') || v.name.includes('Rishi') || v.name.includes('Veena')));
             if(!indianVoice) indianVoice = voices.find(v => v.lang === 'en-IN'); 
