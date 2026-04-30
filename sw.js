@@ -1,4 +1,4 @@
-const CACHE_NAME = 'sadhana-cache-v4';
+const CACHE_NAME = 'sadhana-cache-v5';
 
 function shouldHandleRequest(request) {
   if (request.method !== 'GET') {
