@@ -1,15 +1,15 @@
 {
     "settings": {
-        "enableShruti": true,
+        "enableShruti": false,
         "googleSheetUrl": "https://script.google.com/macros/s/AKfycbxS3fA7rBNW1191FZyGWhIbFAuNh-36uFyEyAaVdDsfZotELuHVn39wGcmZlUhJekLL/exec",
         "meditationBellUrl": "./assets/taala.mp3"
     },
     "navigation": [
-        {"id":"sadhana", "title":"Sādhanā", "icon":"edit-3"}, 
+        {"id":"mandala", "title":"Mandala", "icon":"zap"},
+		{"id":"sadhana", "title":"Sādhanā", "icon":"edit-3"}, 
         {"id":"flow", "title":"Flow", "icon":"refresh-cw"},
         {"id":"drop", "title":"Drop", "icon":"wind"}, 
-        {"id":"learn", "title":"Learn", "icon":"book-open"},
-        {"id":"mandala", "title":"Mandala", "icon":"zap"}, 
+        {"id":"learn", "title":"Learn", "icon":"book-open"}, 
         {"id":"pran", "title":"Prāṇa", "icon":"loader"},
         {"id":"med", "title":"Dhyāna", "icon":"moon"}, 
         {"id":"yajna", "title":"Yajna", "icon":"video"},
