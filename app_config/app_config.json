@@ -12,7 +12,7 @@
         {"id":"anubhava", "title":"Anubhava", "icon":"edit-3", "enabled": false}, 
         {"id":"yajna", "title":"Yajna", "icon":"video", "enabled": true},
         {"id":"drop", "title":"Drop", "icon":"wind", "enabled": false}, 
-        {"id":"learn", "title":"Learn", "icon":"book-open", "enabled": true},
+        {"id":"learn", "title":"Learn", "icon":"book-open", "enabled": false},
         {"id":"sangha", "title":"Sangha", "icon":"users", "enabled": false}
     ],
     "anubhavaMetrics": [
