@@ -1,19 +1,19 @@
 {
     "settings": {
-        "enableShruti": false,
+        "enableShruti": true,
         "googleSheetUrl": "https://script.google.com/macros/s/AKfycbxS3fA7rBNW1191FZyGWhIbFAuNh-36uFyEyAaVdDsfZotELuHVn39wGcmZlUhJekLL/exec",
         "meditationBellUrl": "./assets/taala.mp3"
     },
     "navigation": [
-        {"id":"mandala", "title":"Mandala", "icon":"zap"},
-		{"id":"sadhana", "title":"Sādhanā", "icon":"edit-3"}, 
-        {"id":"flow", "title":"Flow", "icon":"refresh-cw"},
-        {"id":"drop", "title":"Drop", "icon":"wind"}, 
-        {"id":"learn", "title":"Learn", "icon":"book-open"}, 
-        {"id":"pran", "title":"Prāṇa", "icon":"loader"},
-        {"id":"med", "title":"Dhyāna", "icon":"moon"}, 
-        {"id":"yajna", "title":"Yajna", "icon":"video"},
-        {"id":"sangha", "title":"Sangha", "icon":"users"}
+        {"id":"mandala", "title":"Mandala", "icon":"zap", "enabled": true}, 
+        {"id":"anubhava", "title":"Anubhava", "icon":"edit-3", "enabled": true}, 
+        {"id":"sadhana", "title":"Sādhanā", "icon":"refresh-cw", "enabled": true},
+        {"id":"drop", "title":"Drop", "icon":"wind", "enabled": true}, 
+        {"id":"learn", "title":"Learn", "icon":"book-open", "enabled": true},
+        {"id":"pran", "title":"Prāṇa", "icon":"loader", "enabled": true},
+        {"id":"med", "title":"Dhyāna", "icon":"moon", "enabled": true}, 
+        {"id":"yajna", "title":"Yajna", "icon":"video", "enabled": true},
+        {"id":"sangha", "title":"Sangha", "icon":"users", "enabled": true}
     ],
     "sadhanaMetrics": [
         {"id":"body", "label":"Body State", "max":2, "default":1, "options":["Tired","Neutral","Relaxed"]},
