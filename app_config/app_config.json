@@ -1,6 +1,6 @@
 {
     "settings": {
-        "enableShruti": true,
+        "enableShruti": false,
         "googleSheetUrl": "https://script.google.com/macros/s/AKfycbxS3fA7rBNW1191FZyGWhIbFAuNh-36uFyEyAaVdDsfZotELuHVn39wGcmZlUhJekLL/exec",
         "meditationBellUrl": "./assets/taala.mp3"
     },
