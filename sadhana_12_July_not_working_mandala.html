@@ -129,6 +129,7 @@
             .mobile-nav-wrapper { display: none !important; }
             .nav-links { display: flex !important; }
             body { padding-bottom: 20px; }
+            
             .learn-layout { flex-direction: row; align-items: stretch; }
             .learn-layout .tracker-section { width: 250px; flex-shrink: 0; margin-bottom: 0; }
             .gita-verse-img { display: none; }
@@ -244,13 +245,13 @@ let APP_CONFIG = null;
 let MANDALA_CONFIG = [];
 
 const FALLBACK_CONFIG = {
-    settings: { enableShruti: true, googleSheetUrl: 'https://script.google.com/macros/s/AKfycbxS3fA7rBNW1191FZyGWhIbFAuNh-36uFyEyAaVdDsfZotELuHVn39wGcmZlUhJekLL/exec', meditationBellUrl: './assets/taala.mp3' },
+    settings: { enableShruti: false, googleSheetUrl: 'https://script.google.com/macros/s/AKfycbxS3fA7rBNW1191FZyGWhIbFAuNh-36uFyEyAaVdDsfZotELuHVn39wGcmZlUhJekLL/exec', meditationBellUrl: './assets/taala.mp3' },
     navigation: [
         {id:'mandala', title:'Mandala', icon:'zap', enabled:true}, {id:'sadhana', title:'Sādhanā', icon:'refresh-cw', enabled:true},
-        {id:'pran', title:'Prāṇa', icon:'loader', enabled:true}, {id:'med', title:'Dhyāna', icon:'moon', enabled:true}, 
-        {id:'anubhava', title:'Anubhava', icon:'edit-3', enabled:true}, {id:'yajna', title:'Yajna', icon:'video', enabled:true},
-        {id:'drop', title:'Drop', icon:'wind', enabled:true}, {id:'learn', title:'Learn', icon:'book-open', enabled:true},
-        {id:'sangha', title:'Sangha', icon:'users', enabled:true}
+        {id:'pran', title:'Prāṇa', icon:'loader', enabled:false}, {id:'med', title:'Dhyāna', icon:'moon', enabled:false}, 
+        {id:'anubhava', title:'Anubhava', icon:'edit-3', enabled:false}, {id:'yajna', title:'Yajna', icon:'video', enabled:true},
+        {id:'drop', title:'Drop', icon:'wind', enabled:false}, {id:'learn', title:'Learn', icon:'book-open', enabled:false},
+        {id:'sangha', title:'Sangha', icon:'users', enabled:false}
     ],
     anubhavaMetrics: [
         {id:'body', label:'Body State', max:2, default:1, options:['Tired','Neutral','Relaxed']}, {id:'breath', label:'Breath Rhythm', max:3, default:2, options:['Nostril<br>Dominant','Jumbled','Even &<br>Smooth','Smooth/Both<br>Nostrils']},
@@ -336,12 +337,6 @@ function initDynamicUI() {
 function getPaneHTML(id) {
     if(id === 'anubhava') return `
         <section id="v-anubhava" class="view">
-            <div class="card" style="text-align: center;">
-                <h2 class="serif" style="color: var(--gold); margin-bottom: 5px;">Anubhava Sāra</h2>
-                <div id="dailyScoreBadge" class="sara-score-badge">--</div>
-                <p style="font-size: 12px; opacity: 0.7; font-family:'Inter',sans-serif;">Daily Score & Transformation Tracking</p>
-                <div style="height: 220px; width: 100%; margin-top: 15px;"><canvas id="anubhavaChart"></canvas></div>
-            </div>
             <div class="card" style="padding: 15px 20px;">
                 <h3 class="serif" style="color: var(--gold); margin-bottom: 25px; font-size: 1.3rem; text-align: center;">Daily State Observation</h3>
                 <div class="metric-card" style="padding-bottom: 5px;">
@@ -360,6 +355,12 @@ function getPaneHTML(id) {
                     <button onclick="shareAnubhavaLogs('email')" style="flex: 1; background: #1e3a8a; border: 1px solid #3b82f6; color: white; padding: 12px; border-radius: 12px; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; transition: 0.3s;"><i data-feather="mail" style="width: 14px;"></i> Email</button>
                 </div>
                 <p style="text-align: center; font-size: 11px; opacity: 0.6; margin-top: 15px; font-family:'Inter',sans-serif;">Logging multiple times a day increases your Anubhava Sāra weightage.</p>
+            </div>
+            <div class="card" style="text-align: center;">
+                <h2 class="serif" style="color: var(--gold); margin-bottom: 5px;">Anubhava Sāra</h2>
+                <div id="dailyScoreBadge" class="sara-score-badge">--</div>
+                <p style="font-size: 12px; opacity: 0.7; font-family:'Inter',sans-serif;">Daily Score & Transformation Tracking</p>
+                <div style="position: relative; height: 220px; width: 100%; margin-top: 15px;"><canvas id="saraChart"></canvas></div>
             </div>
         </section>`;
         
@@ -421,9 +422,12 @@ function getPaneHTML(id) {
                         <svg viewBox="0 0 100 100" style="width: 100%; height: 100%; transform: rotate(-90deg);"><circle cx="50" cy="50" r="45" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="4"></circle><circle id="sadhana-timer-ring" cx="50" cy="50" r="45" fill="none" stroke="var(--gold)" stroke-width="4" stroke-dasharray="282.7" stroke-dashoffset="0" style="transition: stroke-dashoffset 1s linear;"></circle></svg>
                         <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center;"><span id="sadhana-timer-display" style="font-size: 32px; font-weight: bold; color: white; font-family: 'Inter', monospace; letter-spacing: 2px;">20:00</span></div>
                     </div>
-                    <div style="display: flex; justify-content: center; align-items: center; gap: 20px;">
-                        <div id="sadhana-timer-btn" style="background: linear-gradient(135deg, var(--gold), #d97706); border: none; color: var(--bg); border-radius: 50%; width: 65px; height: 65px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(251, 191, 36, 0.4);"><i data-feather="clock" style="width: 26px; height: 26px;"></i></div>
+                    <div style="display: flex; justify-content: center; align-items: center; gap: 20px; margin-bottom: 20px;">
+                        <button onclick="adjSadhanaTimer(-1)" style="background: var(--glass); border: 1px solid var(--border); color: var(--gold); border-radius: 50%; width: 45px; height: 45px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s;"><i data-feather="minus"></i></button>
+                        <button onclick="toggleSadhanaTimer()" id="sadhana-timer-btn" style="background: linear-gradient(135deg, var(--gold), #d97706); border: none; color: var(--bg); border-radius: 50%; width: 65px; height: 65px; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(251, 191, 36, 0.4);"><i data-feather="play" style="width: 26px; height: 26px; margin-left: 3px;"></i></button>
+                        <button onclick="adjSadhanaTimer(1)" style="background: var(--glass); border: 1px solid var(--border); color: var(--gold); border-radius: 50%; width: 45px; height: 45px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s;"><i data-feather="plus"></i></button>
                     </div>
+                    <button onclick="resetSadhanaTimer()" style="background: transparent; border: none; color: rgba(255,255,255,0.4); cursor: pointer; font-size: 12px; text-decoration: underline; font-family: 'Inter', sans-serif;">Reset Timer</button>
                     <audio id="sadhana-bell" preload="auto"></audio>
                 </div>
 
@@ -475,11 +479,10 @@ function getPaneHTML(id) {
     if(id === 'mandala') return `
         <section id="v-mandala" class="view">
             <div class="card" style="padding: 20px; text-align: center;">
-                <h2 class="serif" style="color: var(--gold); margin-bottom: 20px;">Mandala Orb</h2>
                 
                 <div style="margin-bottom: 30px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1);">
                     <h3 class="serif" style="color: var(--gold); font-size: 1.1rem; margin-bottom: 10px;">Offer Sankalpa</h3>
-                    <textarea id="sankalpa-input" class="search-input" style="min-height: 80px; margin-bottom: 10px; box-shadow: inset 0 2px 5px rgba(0,0,0,0.2);" placeholder="Set your intention or offer a prayer to the Divine..."></textarea>
+                    <textarea id="sankalpa-input" class="search-input" style="min-height: 45px; padding: 10px 15px; margin-bottom: 10px; box-shadow: inset 0 2px 5px rgba(0,0,0,0.2);" placeholder="Set your intention or offer a prayer to the Divine..."></textarea>
                     <button onclick="offerSankalpa()" style="width: 100%; background: transparent; border: 1px solid var(--gold); color: var(--gold); padding: 12px; border-radius: 12px; font-weight: bold; cursor: pointer; transition: 0.2s; font-family:'Inter',sans-serif;">Offer to Divine</button>
                     <div id="sankalpa-success-msg" style="opacity: 0; color: var(--gold); font-size: 13px; font-style: italic; margin-top: 10px; transition: opacity 0.5s;">Sankalpa Offered.</div>
                 </div>
@@ -812,6 +815,7 @@ function renderMandala() {
     const dashArray = Math.max(0.1, segmentArc - gap);
     const dashSpace = circumference - dashArray;
 
+    // Base subtle golden glowing track
     segmentsHTML += `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="rgba(251, 191, 36, 0.4)" stroke-width="1.5" filter="drop-shadow(0 0 2px rgba(251, 191, 36, 0.5))"></circle>`;
 
     for (let i = 0; i < totalDays; i++) {
@@ -834,6 +838,7 @@ function renderMandala() {
             let angleDeg = rotation + ((360 / totalDays) / 2); 
             let angleRad = angleDeg * (Math.PI / 180);
             
+            // Bigger Dots pushed further out
             let dotRadius = r + 8; 
             let dotX = cx + dotRadius * Math.cos(angleRad);
             let dotY = cy + dotRadius * Math.sin(angleRad);
@@ -841,9 +846,10 @@ function renderMandala() {
             let markerColor = isPoornima ? "#ffffff" : "#ff4757";
             let labelText = isPoornima ? "Pūrṇimā" : "Amāvasyā";
             
-            segmentsHTML += `<circle cx="${dotX}" cy="${dotY}" r="4" fill="${markerColor}" filter="drop-shadow(0 0 6px ${markerColor})"></circle>`;
+            segmentsHTML += `<circle cx="${dotX}" cy="${dotY}" r="5" fill="${markerColor}" filter="drop-shadow(0 0 6px ${markerColor})"></circle>`;
             
-            let textRadius = r + 18;
+            // Radially stagger text to prevent overlap at the top
+            let textRadius = isPoornima ? r + 24 : r + 12;
             let textX = cx + textRadius * Math.cos(angleRad);
             let textY = cy + textRadius * Math.sin(angleRad);
             
@@ -891,6 +897,7 @@ function showTodayTithi(forceShow = false) {
         displayEl.setAttribute('data-active', 'false');
     } else {
         const todayConfig = MANDALA_CONFIG[currentDayIdx];
+        // Day, Tithi, Date
         displayEl.innerHTML = `
             <span style="color:var(--gold); font-weight:bold; font-size:14px;">Day ${currentDayIdx + 1}</span><br>
             <span style="font-size:12px; font-weight:600; color:white; margin: 3px 0; display:block;">${todayConfig.tithi}</span>
@@ -935,6 +942,7 @@ function commitMandala() {
         return;
     }
 
+    // STRICT DATE LOGIC (India Time)
     let targetDateStr = MANDALA_CONFIG[completedDays].date;
     let targetDate = new Date(targetDateStr);
     
@@ -948,6 +956,7 @@ function commitMandala() {
         return;
     }
     
+    // UI Update instantly before network
     const today = new Date().toISOString().split('T')[0];
     mandalaData.completed.push(today + "-" + Date.now());
     localStorage.setItem('vss_mandala_tracker', JSON.stringify(mandalaData));
@@ -955,6 +964,7 @@ function commitMandala() {
     renderMandala(); 
     showTodayTithi(true); 
     
+    // Background Sync
     const userName = localStorage.getItem('vss_user_name') || 'guest_user';
     const snapshot = {
         userId: localStorage.getItem('vss_user_id') || 'guest_user',
@@ -1015,7 +1025,7 @@ function setPresetTimer(type, mins) {
         sadhanaTimerTotalSecs = mins * 60;
         sadhanaTimerSecsLeft = sadhanaTimerTotalSecs;
         updateSadhanaTimerDisplay();
-        document.getElementById('sadhana-timer-btn').innerHTML = '<i data-feather="clock" style="width: 26px; height: 26px;"></i>';
+        document.getElementById('sadhana-timer-btn').innerHTML = '<i data-feather="play" style="width: 26px; height: 26px; margin-left: 3px;"></i>';
         feather.replace();
     } else if (type === 'pran') {
         clearInterval(pranTimerInterval);
@@ -1082,8 +1092,7 @@ function togglePranTimer() {
         }, 1000);
     } else {
         clearInterval(pranTimerInterval);
-        if(bell) bell.pause();
-        if(bell) bell.currentTime = 0;
+        if(bell) { bell.pause(); bell.currentTime = 0; }
         pranSecsLeft = pranTotalSecs; 
         updatePranTimerDisplay();
         btn.innerHTML = '<i data-feather="play" style="width: 26px; height: 26px; margin-left: 3px;"></i>';
@@ -1204,7 +1213,7 @@ function clearSadhanaMedSelection() {
     isSadhanaTimerActive = true;
 }
 
-// --- SADHANA AUDIO SEQUENCE ---
+// --- SADHANA AUDIO SEQUENCE & TIMER LOGIC ---
 let sadhanaStep = 'idle'; 
 let sadhanaSequenceTimeout = null;
 
@@ -1226,6 +1235,56 @@ function setSadhanaVolume(val) {
             audio.muted = false;
             document.getElementById('audio-icon').setAttribute('data-feather', 'volume-2');
         }
+        feather.replace();
+    }
+}
+
+function toggleSadhanaTimer() {
+    sadhanaTimerRunning = !sadhanaTimerRunning;
+    let btn = document.getElementById('sadhana-timer-btn');
+    let bell = document.getElementById('sadhana-bell');
+    
+    if (sadhanaTimerRunning) {
+        if(bell) bell.load(); 
+        btn.innerHTML = '<i data-feather="square" style="width: 20px; height: 20px; fill: white;"></i>'; 
+        feather.replace();
+        sadhanaTimerInterval = setInterval(() => {
+            sadhanaTimerSecsLeft--;
+            if (sadhanaTimerSecsLeft <= 0) {
+                clearInterval(sadhanaTimerInterval);
+                sadhanaTimerRunning = false;
+                sadhanaTimerSecsLeft = sadhanaTimerTotalSecs; 
+                updateSadhanaTimerDisplay();
+                if(bell) bell.play().catch(e => console.log(e));
+                btn.innerHTML = '<i data-feather="play" style="width: 26px; height: 26px; margin-left: 3px;"></i>';
+                feather.replace();
+                sadhanaStep = 'idle';
+                document.getElementById('audio-play-icon').setAttribute('data-feather', 'play');
+                feather.replace();
+            } else {
+                updateSadhanaTimerDisplay();
+            }
+        }, 1000);
+    } else {
+        clearInterval(sadhanaTimerInterval);
+        if(bell) { bell.pause(); bell.currentTime = 0; }
+        sadhanaTimerSecsLeft = sadhanaTimerTotalSecs; 
+        updateSadhanaTimerDisplay();
+        btn.innerHTML = '<i data-feather="play" style="width: 26px; height: 26px; margin-left: 3px;"></i>';
+        feather.replace();
+    }
+}
+
+function resetSadhanaTimer() {
+    clearInterval(sadhanaTimerInterval);
+    sadhanaTimerRunning = false;
+    let bell = document.getElementById('sadhana-bell');
+    if(bell) { bell.pause(); bell.currentTime = 0; }
+    sadhanaTimerSecsLeft = sadhanaTimerTotalSecs;
+    updateSadhanaTimerDisplay();
+    let btn = document.getElementById('sadhana-timer-btn');
+    if (btn) {
+        btn.innerHTML = '<i data-feather="play" style="width: 26px; height: 26px; margin-left: 3px;"></i>';
         feather.replace();
     }
 }
@@ -1282,7 +1341,7 @@ function handleAudioEnd() {
                 sadhanaStep = 'taala2';
                 audio.src = APP_CONFIG.settings.meditationBellUrl || "./assets/taala.mp3";
                 audio.play();
-            }, 10 * 60 * 1000); 
+            }, 7 * 60 * 1000); 
         } else if (sadhanaStep === 'taala2') {
             sadhanaStep = 'wait2';
             sadhanaSequenceTimeout = setTimeout(() => {
@@ -1323,7 +1382,7 @@ function startSadhanaTimerAuto() {
             let bell = document.getElementById('sadhana-bell');
             if(bell) bell.play().catch(e => console.log(e));
             if(btn) {
-                btn.innerHTML = '<i data-feather="clock" style="width: 26px; height: 26px;"></i>';
+                btn.innerHTML = '<i data-feather="play" style="width: 26px; height: 26px; margin-left: 3px;"></i>';
                 feather.replace();
             }
             sadhanaStep = 'idle';
@@ -1804,39 +1863,6 @@ document.addEventListener('fullscreenchange', () => {
     feather.replace();
 });
 
-function toggleAudioMute() {
-    const audio = document.getElementById('sadhana-bg-audio');
-    audio.muted = !audio.muted;
-    document.getElementById('audio-icon').setAttribute('data-feather', audio.muted ? 'volume-x' : 'volume-2');
-    
-    const slider = document.getElementById('sadhana-volume');
-    if (audio.muted) {
-        slider.value = 0;
-    } else {
-        slider.value = audio.volume > 0 ? audio.volume : 1;
-        audio.volume = slider.value;
-    }
-    feather.replace();
-}
-
-function flowLoop(){
-    const flowView=document.getElementById('v-sadhana');
-    if(pOn&&flowView&&flowView.classList.contains('active')){
-        let progress=(Date.now()-pStart)/pDuration;
-        if(progress>=1){ 
-            pIdx=(pIdx%109)+1; document.getElementById('sadhana-slide').src=`./parayana/Slide${pIdx}.webp`; 
-            preloadNearby(); pStart=Date.now(); progress=0; 
-        }
-        const ring = document.getElementById('p-ring-new');
-        if(ring){ 
-            const circum=113.1; 
-            ring.style.strokeDasharray = circum;
-            ring.style.strokeDashoffset = circum * (1 - progress); 
-        }
-    }
-    requestAnimationFrame(flowLoop);
-}
-
 document.getElementById('main-nav').addEventListener('wheel', (evt) => {
     evt.preventDefault();
     document.getElementById('main-nav').scrollLeft += evt.deltaY;
@@ -1974,7 +2000,7 @@ window.onload = async () => {
     const flowAudio = document.getElementById('sadhana-bg-audio');
     if (flowAudio) flowAudio.src = "./meditations/vss.mp3";
     updateTimerText();
-    flowLoop(); 
+    sadhanaLoop(); 
     loadShrutiKnowledge(); 
     calculateAnubhavaSara();
     window.speechSynthesis.getVoices(); 
