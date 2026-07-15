@@ -239,11 +239,6 @@
 </div>
 
 <script>
-let pIdx = 1;
-let pOn = false;
-let pStart = Date.now();
-let pDuration = 5000; // Time in ms if you ever use auto-play
-
 // --- CONFIGURATION ENGINE ---
 let APP_CONFIG = null;
 let MANDALA_CONFIG = [];
@@ -1770,16 +1765,6 @@ function toggleYajnaAudio() {
     feather.replace();
 }
 
-function preloadNearby() {
-    for(let i = -2; i <= 2; i++) {
-        let idx = pIdx + i; 
-        if(idx < 1) idx = 109 + idx; 
-        if(idx > 109) idx = idx - 109;
-        let img = new Image();
-        img.src = `./parayana/Slide${idx}.webp`;
-    }
-}
-
 function navSlide(dir){ 
     pIdx+=dir; if(pIdx>109) pIdx=1; if(pIdx<1) pIdx=109; 
     document.getElementById('sadhana-slide').src=`./parayana/Slide${pIdx}.webp`; 
@@ -1859,9 +1844,9 @@ document.getElementById('main-nav').addEventListener('wheel', (evt) => {
 
 if('serviceWorker'in navigator){ navigator.serviceWorker.register('sw.js'); }
 
-let GROQ_API_KEY = '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'; 
-const SHRUTI_SYSTEM = `You are Shruti, a serene, deeply knowledgeable, and digital companion within the Vedic Space Sādhanā app, answering strictly based on data in vishnuKnowledgeBase variable`;
-const knowledgeFiles = ['./data/vss_1000.txt'];
+let GROQ_API_KEY = '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'; 
+const SHRUTI_SYSTEM = `You are Shruti, a serene, deeply knowledgeable, and digital companion within the Vedic Space Sādhanā app...`;
+const knowledgeFiles = ['./data/vss_bhashya.txt', './data/shruti_knowledge.txt'];
 let vishnuKnowledgeBase = "";
 let chatHistory = [];
 
