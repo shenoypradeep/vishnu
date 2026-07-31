@@ -1,0 +1,20 @@
+{
+  "name": "Vedic Space | Learn VSS",
+  "short_name": "Learn VSS",
+  "start_url": "learnvss.html",
+  "display": "standalone",
+  "background_color": "#1e3a8a",
+  "theme_color": "#1e3a8a",
+  "icons": [
+    {
+      "src": "./assets/logo.webp",
+      "sizes": "192x192",
+      "type": "image/webp"
+    },
+    {
+      "src": "./assets/logo.webp",
+      "sizes": "512x512",
+      "type": "image/webp"
+    }
+  ]
+}
