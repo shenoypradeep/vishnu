@@ -1,0 +1,51 @@
+{
+    "settings": {
+        "enableShruti": false,
+        "googleSheetUrl": "https://script.google.com/macros/s/AKfycbxS3fA7rBNW1191FZyGWhIbFAuNh-36uFyEyAaVdDsfZotELuHVn39wGcmZlUhJekLL/exec",
+        "meditationBellUrl": "./assets/taala.mp3"
+    },
+    "navigation": [
+        {"id":"mandala", "title":"Mandala", "icon":"zap", "enabled": false}, 
+        {"id":"sadhana", "title":"Learn VSS", "icon":"refresh-cw", "enabled": true},
+        {"id":"pran", "title":"Prāṇa", "icon":"loader", "enabled": true},
+        {"id":"med", "title":"Dhyāna", "icon":"moon", "enabled": true}, 
+        {"id":"anubhava", "title":"Anubhava", "icon":"edit-3", "enabled": true}, 
+        {"id":"yajna", "title":"Yajna", "icon":"video", "enabled": true},
+        {"id":"drop", "title":"Drop", "icon":"wind", "enabled": false}, 
+        {"id":"learn", "title":"Learn", "icon":"book-open", "enabled": false},
+        {"id":"sangha", "title":"Sangha", "icon":"users", "enabled": false}
+    ],
+    "anubhavaMetrics": [
+        {"id":"body", "label":"Body State", "max":2, "default":1, "options":["Tired","Neutral","Relaxed"]}, 
+        {"id":"breath", "label":"Breath Rhythm", "max":3, "default":2, "options":["Nostril<br>Dominant","Jumbled","Even &<br>Smooth","Smooth/Both<br>Nostrils"]},
+        {"id":"mind", "label":"State of Mind", "max":4, "default":2, "options":["Stressful","Full of<br>thoughts","Same as<br>before","Less<br>thoughts","Relaxed &<br>Clear"]}, 
+        {"id":"mood", "label":"Overall Mood", "max":3, "default":1, "options":["Negative","Neutral","Positive","Joyful"]},
+        {"id":"stress", "label":"Stress Resilience", "max":4, "default":1, "options":["Negative","Reaction<br>same","More<br>composed","In<br>control","Positive"]}
+    ],
+    "meditations": [
+        {"title":"Hari Om Meditation","audio":"./meditations/hari_om_meditation.mp3","img":"./meditations/Hari_Om_Chakras.webp"}, 
+        {"title":"Om Namah Shivaya","audio":"./meditations/om_namah_shivaya.mp3","img":"./meditations/Om_Namah_Shivaya.webp"},
+        {"title":"Samarpan Meditation","audio":"./meditations/samarpan.mp3","img":"./meditations/Samarpan.webp"}
+    ],
+    "pranayamas": [
+        {"title":"Bhastrika Pranayama","video":"https://www.youtube.com/embed/iAlojRS6iBM"}, 
+        {"title":"Ujjayi Breathing","video":"https://www.youtube.com/embed/IQrsJ-yZWV8"},
+        {"title":"Bhramari Pranayama","video":"https://www.youtube.com/embed/-9CfCIzUw-k"},
+        {"title":"Kapalbhati Guide","video":"https://www.youtube.com/embed/WOw55qnKBSo"},
+        {"title":"Kapalbhati Advanced","video":"https://www.youtube.com/embed/RxQqFe3Q1AE"},
+        {"title":"Bhastrika Pranayama","video":"https://www.youtube.com/embed/kAlOoMbAqNc"},
+        {"title":"Chandra Bhedana","video":"https://www.youtube.com/embed/QGN8I7Ydvwo"},
+        {"title":"Shitali Cooling Breath","video":"https://www.youtube.com/embed/wWXN9Qx6fO0"},
+        {"title":"Surya Bhedana","video":"https://www.youtube.com/embed/4YIlmACF7g8"}
+    ],
+    "learnLessons": [
+        { "title": "Shlokas 1-10", "duration": 22, "url": "https://www.youtube.com/embed/XDzlsJ01P_A" },
+        { "title": "Shlokas 11-20", "duration": 23, "url": "https://www.youtube.com/embed/dSPrO6FVEYQ" },
+        { "title": "Shlokas 21-35", "duration": 38, "url": "https://www.youtube.com/embed/QAx2L7-fdKM" },
+        { "title": "Shlokas 36-50", "duration": 31, "url": "https://www.youtube.com/embed/1B6S1yA1104" },
+        { "title": "Shlokas 51-60", "duration": 18, "url": "https://www.youtube.com/embed/V4fXm3wG9p0" },
+        { "title": "Shlokas 61-75", "duration": 26, "url": "https://www.youtube.com/embed/yQ5uAIfTf6I" },
+        { "title": "Shlokas 76-90", "duration": 26, "url": "https://www.youtube.com/embed/H0nJ7B7XmD0" },
+        { "title": "Shlokas 91-108", "duration": 32, "url": "https://www.youtube.com/embed/8oM4Z5hQ_5M" }
+    ]
+}
