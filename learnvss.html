@@ -171,6 +171,12 @@
 </div>
 
 <script>
+// ==========================================
+// 1. PASTE YOUR NEW APP SCRIPT URL HERE
+// ==========================================
+const GOOGLE_APP_URL = "https://script.google.com/macros/s/AKfycbwa1iD0VegGa5EnJNGzCVvtIWyiwwtBRTV38lFZfp6zFHpJPmapLT4F6UhJ66-7fqgNlg/exec";
+
+
 // --- GLOBAL RECORDING VARIABLES ---
 window.globalAudioBlob = null;
 let mediaRecorder;
@@ -251,7 +257,7 @@ let APP_CONFIG = null;
 let pIdx = 1;
 
 const FALLBACK_CONFIG = {
-    settings: { enableShruti: false, googleSheetUrl: 'https://script.google.com/macros/s/AKfycbxS3fA7rBNW1191FZyGWhIbFAuNh-36uFyEyAaVdDsfZotELuHVn39wGcmZlUhJekLL/exec', meditationBellUrl: './assets/taala.mp3' },
+    settings: { enableShruti: false, googleSheetUrl: GOOGLE_APP_URL, meditationBellUrl: './assets/taala.mp3' },
     navigation: [
         {id:'sadhana', title:'Learn VSS', icon:'refresh-cw', enabled:true},
         {id:'pran', title:'Prāṇa', icon:'loader', enabled:true}, 
@@ -274,15 +280,12 @@ async function loadConfig() {
         const response = await fetch('./app_config/learnvss_config.json');
         if (response.ok) {
             APP_CONFIG = await response.json();
-            window.APP_CONFIG = APP_CONFIG; 
         } else {
             throw new Error("Config not found");
         }
     } catch (e) { 
         APP_CONFIG = FALLBACK_CONFIG;
-        window.APP_CONFIG = APP_CONFIG;
     }
-
     initDynamicUI();
 }
 
@@ -506,7 +509,7 @@ function logAnubhavaSnapshot() {
     anubhavaStore[today].push(snapshot);
     localStorage.setItem('vss_anubhava_logs', JSON.stringify(anubhavaStore));
     
-    let fetchUrl = window.APP_CONFIG.settings.googleSheetUrl;
+    let fetchUrl = GOOGLE_APP_URL; // Re-routed to the single Google App URL
     fetchUrl += `?obs=${encodeURIComponent(obsText)}`;
 
     fetch(fetchUrl, {
@@ -1212,94 +1215,68 @@ function toggleMicrophone() {
         feather.replace();
     }
 }
-</script>
 
-<!-- FIREBASE STORAGE UPLOAD LOGIC -->
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-    import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-storage.js";
+// --- DIRECT GOOGLE DRIVE UPLOAD LOGIC ---
+window.submitAudioRecording = async () => {
+    const submitBtn = document.getElementById('submit-audio-btn');
+    const statusText = document.getElementById('audio-status');
+    const audioPreview = document.getElementById('audio-preview');
+    const timerDisplay = document.getElementById('record-timer');
 
-    // *** REPLACE WITH YOUR EXACT FIREBASE CONFIG ***
-    const firebaseConfig = {
-        apiKey: "AIzaSyDNODSDmwHVfqt2CSb0tPDZwJGYjov7Lt0",
-        authDomain: "vedic-space.firebaseapp.com",
-        projectId: "vedic-space",
-        storageBucket: "vedic-space.firebasestorage.app",
-        messagingSenderId: "305492860613",
-        appId: "1:305492860613:web:701d9c3ab0cd4c5a3edaac"
-    };
-
-    let storage;
-    try {
-        const app = initializeApp(firebaseConfig);
-        storage = getStorage(app);
-    } catch(e) {
-        console.error("Firebase init failed: ", e);
+    if(!window.globalAudioBlob) return;
+    if(window.globalAudioBlob.size === 0) {
+        alert("Recording failed. Your microphone did not pick up any audio.");
+        return;
     }
 
-    // Attach function globally so it can be called by the HTML button
-    window.submitAudioRecording = async () => {
-        const submitBtn = document.getElementById('submit-audio-btn');
-        const statusText = document.getElementById('audio-status');
-        const audioPreview = document.getElementById('audio-preview');
-        const timerDisplay = document.getElementById('record-timer');
+    const userId = localStorage.getItem('vss_user_id') || 'guest_user';
+    const userName = localStorage.getItem('vss_user_name') || 'Guest';
 
-        if(!window.globalAudioBlob) return;
-        if(window.globalAudioBlob.size === 0) {
-            alert("Recording failed. Your microphone did not pick up any audio.");
-            return;
-        }
+    if (userId === 'guest_user') {
+        alert("Please log in to submit your recording.");
+        return;
+    }
+
+    if(GOOGLE_APP_URL === "YOUR_NEW_APPS_SCRIPT_URL_HERE") {
+        alert("Teacher Action Required: Please set the GOOGLE_APP_URL in the HTML file.");
+        return;
+    }
+
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = "Processing Audio...";
+    statusText.innerText = "Converting file to secure format...";
+    statusText.style.color = "var(--gold)";
+
+    try {
+        // Convert Audio Blob to Base64
+        const reader = new FileReader();
+        reader.readAsDataURL(window.globalAudioBlob);
         
-        if(!storage) {
-            alert("Firebase is not configured properly. Check API keys.");
-            return;
-        }
-        
-        const userId = localStorage.getItem('vss_user_id') || 'guest_user';
-        const userName = localStorage.getItem('vss_user_name') || 'Guest';
-        
-        if (userId === 'guest_user') {
-            alert("Please log in to submit your recording for review.");
-            return;
-        }
+        reader.onloadend = async () => {
+            const base64data = reader.result.split(',')[1]; 
 
-        submitBtn.disabled = true;
-        submitBtn.innerHTML = "Uploading securely...";
-        statusText.innerText = "Saving to server...";
-        statusText.style.color = "var(--gold)";
+            statusText.innerText = "Saving directly to Google Drive...";
 
-        try {
-            const fileName = `recordings/${userId}/chant_${Date.now()}.webm`;
-            const storageRef = ref(storage, fileName);
-            
-            // Added 15-second strict timeout so it never hangs indefinitely
-            const uploadTask = uploadBytes(storageRef, window.globalAudioBlob);
-            const timeoutTask = new Promise((_, reject) => setTimeout(() => reject(new Error("Upload Timeout")), 15000));
-            
-            await Promise.race([uploadTask, timeoutTask]);
-            const downloadUrl = await getDownloadURL(storageRef);
-
-            // Log the Audio URL to Google Sheets
-            let googleUrl = window.APP_CONFIG?.settings?.googleSheetUrl || 'https://script.google.com/macros/s/AKfycbxS3fA7rBNW1191FZyGWhIbFAuNh-36uFyEyAaVdDsfZotELuHVn39wGcmZlUhJekLL/exec';
             const payload = {
                 userId: userId,
                 userName: userName,
                 date: new Date().toISOString().split('T')[0],
                 time: new Date().toLocaleTimeString(),
                 action: "AUDIO_SUBMIT",
-                obs: "Audio Recording Submitted: " + downloadUrl
+                audioBase64: base64data,
+                mimeType: window.globalAudioBlob.type
             };
 
-            await fetch(googleUrl, {
+            await fetch(GOOGLE_APP_URL, {
                 method: 'POST',
-                mode: 'no-cors',
+                mode: 'no-cors', 
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
 
-            // Clean UI and Show Success
-            statusText.innerHTML = "✅ Recording successfully submitted!";
-            statusText.style.color = "#2ed573"; 
+            // Clean UI and Show Success immediately after fetch completes
+            statusText.innerHTML = "✅ Recording successfully submitted to the teacher!";
+            statusText.style.color = "#2ed573";
             
             submitBtn.style.display = 'none';
             audioPreview.style.display = 'none';
@@ -1307,23 +1284,20 @@ function toggleMicrophone() {
             window.globalAudioBlob = null;
             timerDisplay.innerText = "00:00";
             
-            setTimeout(() => { statusText.innerHTML = ""; }, 4000);
-            
-        } catch(error) {
-            console.error(error);
-            if (error.message.includes("Timeout")) {
-                statusText.innerText = "Upload timed out. Please ensure Firebase Storage is enabled in your Firebase Console.";
-            } else {
-                statusText.innerText = "Error uploading recording. Check your internet connection and Firebase Storage Rules.";
-            }
-            statusText.style.color = "#ff4757"; 
-            submitBtn.style.display = 'flex'; // Ensure button comes back if it fails
-        } finally {
-            submitBtn.disabled = false;
-            submitBtn.innerHTML = `<i data-feather="upload-cloud" style="width: 18px; margin-right: 8px;"></i> Submit Recording`;
-            feather.replace();
-        }
-    };
+            setTimeout(() => { statusText.innerHTML = ""; }, 5000);
+        };
+
+        reader.onerror = () => { throw new Error("File conversion failed"); };
+
+    } catch(error) {
+        console.error(error);
+        statusText.innerText = "Error uploading. Please check your internet connection.";
+        statusText.style.color = "#ff4757";
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = `<i data-feather="upload-cloud" style="width: 18px; margin-right: 8px;"></i> Submit Recording`;
+        feather.replace();
+    }
+};
 </script>
 
 </body>
