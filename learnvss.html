@@ -171,7 +171,7 @@
 </div>
 
 <script>
-// --- GLOBAL RECORDING VARIABLES (ACCESSIBLE TO BOTH SCRIPTS) ---
+// --- GLOBAL RECORDING VARIABLES ---
 window.globalAudioBlob = null;
 let mediaRecorder;
 let audioChunks = [];
@@ -186,7 +186,7 @@ function checkUserSession() {
     const nameDisplay = document.getElementById('user-first-name');
     
     if (userId && userName && userName !== 'guest_user') {
-        const firstName = userName.split(' ')[0]; // Extract just the first name
+        const firstName = userName.split(' ')[0];
         nameDisplay.innerText = firstName;
         nameDisplay.style.display = 'inline-block';
     } else {
@@ -197,7 +197,7 @@ function checkUserSession() {
 function handleUserIconClick() {
     const userId = localStorage.getItem('vss_user_id');
     if (!userId || userId === 'guest_user') {
-        window.location.href = 'login.html'; // Go to login if not logged in
+        window.location.href = 'login.html';
     } else {
         const dropdown = document.getElementById('logout-dropdown');
         dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
@@ -210,7 +210,6 @@ function logoutUser() {
     window.location.href = 'login.html';
 }
 
-// Close dropdown if clicking outside
 window.addEventListener('click', function(e) {
     if (!e.target.closest('.user-menu-container')) {
         const dropdown = document.getElementById('logout-dropdown');
@@ -249,8 +248,6 @@ window.addEventListener('appinstalled', () => {
 
 // --- CONFIGURATION ENGINE ---
 let APP_CONFIG = null;
-
-// SLIDER VARIABLES
 let pIdx = 1;
 
 const FALLBACK_CONFIG = {
@@ -296,7 +293,6 @@ function initDynamicUI() {
     
     dNav.innerHTML = ''; mNav.innerHTML = ''; contentContainer.innerHTML = '';
     
-    // Filter out disabled items, and enforce ignoring of mandala, learn, sangha
     APP_CONFIG.navigation.filter(item => item.enabled !== false && !['mandala', 'learn', 'sangha'].includes(item.id)).forEach(item => {
         dNav.innerHTML += `<li><a onclick="showTab('${item.id}')" id="t-${item.id}">${item.id === 'drop' ? 'Arpanam' : item.title}</a></li>`;
         mNav.innerHTML += `<div class="nav-item" onclick="showTab('${item.id}')" id="n-${item.id}"><i data-feather="${item.icon}"></i><span style="margin-top: 4px; font-family:'Inter', sans-serif;">${item.id === 'drop' ? 'Arpanam' : item.title}</span></div>`;
@@ -375,12 +371,11 @@ function getPaneHTML(id) {
 
                     <audio id="audio-preview" controls style="width: 100%; display: none; margin-bottom: 15px; height: 40px; border-radius: 8px;"></audio>
 
-                    <button id="submit-audio-btn" style="display: none; width: 100%; max-width: 250px; margin: 0 auto; background: linear-gradient(135deg, var(--gold), #d97706); border: none; color: var(--bg); padding: 14px; border-radius: 12px; font-weight: bold; cursor: pointer; font-family: 'Inter', sans-serif; align-items: center; justify-content: center;">
+                    <button id="submit-audio-btn" onclick="submitAudioRecording()" style="display: none; width: 100%; max-width: 250px; margin: 0 auto; background: linear-gradient(135deg, var(--gold), #d97706); border: none; color: var(--bg); padding: 14px; border-radius: 12px; font-weight: bold; cursor: pointer; font-family: 'Inter', sans-serif; align-items: center; justify-content: center;">
                         <i data-feather="upload-cloud" style="width: 18px; margin-right: 8px;"></i> Submit Recording
                     </button>
                     <div id="audio-status" style="font-size: 13px; margin-top: 15px; color: var(--gold); font-weight: 500; font-family:'Inter', sans-serif;"></div>
                 </div>
-
             </div>
         </section>`;
 
