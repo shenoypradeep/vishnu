@@ -70,51 +70,50 @@
     </div>
 
     <script type="module">
-		// Google Login
-		document.getElementById('google-btn').onclick = async () => {
-			try {
-				const result = await signInWithPopup(auth, provider);
-				const user = result.user;
-				// Save to local storage for the main apps to read
-				localStorage.setItem('vss_user_id', user.uid);
-				localStorage.setItem('vss_user_name', user.displayName || user.email);
-				
-				window.location.href = "learnvss.html"; // Or learnvss.html
-			} catch (e) { 
-				err.innerText = "Google Sign-in failed. Check console for details.";
-				console.error(e);
-			}
-		};
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-		// Email Login
-		document.getElementById('login-btn').onclick = async () => {
-			try {
-				const email = document.getElementById('email').value;
-				const password = document.getElementById('password').value;
-				const result = await signInWithEmailAndPassword(auth, email, password);
-				const user = result.user;
-				
-				localStorage.setItem('vss_user_id', user.uid);
-				localStorage.setItem('vss_user_name', user.displayName || email);
-				
-				window.location.href = "learnvss.html";
-			} catch (e) { err.innerText = "Invalid login credentials."; }
-		};
+        const firebaseConfig = {
+            apiKey: "AIzaSyDNODSDmwHVfqt2CSb0tPDZwJGYjov7Lt0",
+            authDomain: "vedic-space.firebaseapp.com",
+            projectId: "vedic-space",
+            storageBucket: "vedic-space.firebasestorage.app",
+            messagingSenderId: "465492860613",
+            appId: "1:465492860613:web:701d9c3ab0cd4c5a3edaac"
+        };
 
-		// Email Signup
-		document.getElementById('signup-btn').onclick = async () => {
-			try {
-				const email = document.getElementById('email').value;
-				const password = document.getElementById('password').value;
-				const result = await createUserWithEmailAndPassword(auth, email, password);
-				const user = result.user;
-				
-				localStorage.setItem('vss_user_id', user.uid);
-				localStorage.setItem('vss_user_name', email);
-				
-				window.location.href = "learnvss.html";
-			} catch (e) { err.innerText = e.message.replace("Firebase: ", ""); }
-		};
-</script>
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const provider = new GoogleAuthProvider();
+
+        const err = document.getElementById('error-msg');
+
+        // Google Login
+        document.getElementById('google-btn').onclick = async () => {
+            try {
+                await signInWithPopup(auth, provider);
+                window.location.href = "sadhana.html";
+            } catch (e) { 
+                err.innerText = "Google Sign-in failed. Check console for details.";
+                console.error(e);
+            }
+        };
+
+        // Email Login
+        document.getElementById('login-btn').onclick = async () => {
+            try {
+                await signInWithEmailAndPassword(auth, document.getElementById('email').value, document.getElementById('password').value);
+                window.location.href = "sadhana.html";
+            } catch (e) { err.innerText = "Invalid login credentials."; }
+        };
+
+        // Email Signup
+        document.getElementById('signup-btn').onclick = async () => {
+            try {
+                await createUserWithEmailAndPassword(auth, document.getElementById('email').value, document.getElementById('password').value);
+                window.location.href = "sadhana.html";
+            } catch (e) { err.innerText = e.message.replace("Firebase: ", ""); }
+        };
+    </script>
 </body>
 </html>

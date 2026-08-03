@@ -123,18 +123,7 @@
             <button id="install-app-btn" style="display: none; background: var(--gold); border: none; color: var(--bg); padding: 6px 12px; border-radius: 20px; font-weight: bold; cursor: pointer; font-size: 12px; font-family: 'Inter', sans-serif; align-items: center; box-shadow: 0 2px 10px rgba(251, 191, 36, 0.3);">
                 <i data-feather="download" style="width: 14px; margin-right: 5px;"></i> Install App
             </button>
-            
-            <div class="user-menu-container" style="display: flex; align-items: center; gap: 8px; position: relative;">
-                <span id="user-first-name" style="font-size: 13px; font-weight: 600; color: var(--gold); font-family: 'Inter', sans-serif; display: none;"></span>
-                <i data-feather="user" onclick="handleUserIconClick()" style="cursor: pointer; color: white; transition: 0.2s;"></i>
-                
-                <div id="logout-dropdown" style="display: none; position: absolute; top: 120%; right: 0; background: rgba(30, 58, 138, 0.95); backdrop-filter: blur(10px); border: 1px solid var(--border); border-radius: 8px; padding: 10px 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); z-index: 1000; min-width: 120px;">
-                    <a href="#" onclick="logoutUser()" style="color: white; text-decoration: none; font-size: 13px; font-family: 'Inter', sans-serif; display: flex; align-items: center; gap: 8px; font-weight: 500;">
-                        <i data-feather="log-out" style="width: 14px; color: #ff4757;"></i> Logout
-                    </a>
-                </div>
-            </div>
-
+            <i data-feather="user" onclick="window.location.href='login.html'" style="cursor: pointer;"></i>
         </div>
     </div>
 </header>
@@ -162,55 +151,19 @@
 </div>
 
 <script>
-// --- USER SESSION MANAGEMENT ---
-function checkUserSession() {
-    const userName = localStorage.getItem('vss_user_name');
-    const userId = localStorage.getItem('vss_user_id');
-    const nameDisplay = document.getElementById('user-first-name');
-    
-    if (userId && userName && userName !== 'guest_user') {
-        const firstName = userName.split(' ')[0]; // Extract just the first name
-        nameDisplay.innerText = firstName;
-        nameDisplay.style.display = 'inline-block';
-    } else {
-        nameDisplay.style.display = 'none';
-    }
-}
-
-function handleUserIconClick() {
-    const userId = localStorage.getItem('vss_user_id');
-    if (!userId || userId === 'guest_user') {
-        window.location.href = 'login.html'; // Go to login if not logged in
-    } else {
-        const dropdown = document.getElementById('logout-dropdown');
-        dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
-    }
-}
-
-function logoutUser() {
-    localStorage.removeItem('vss_user_id');
-    localStorage.removeItem('vss_user_name');
-    window.location.href = 'login.html';
-}
-
-// Close dropdown if clicking outside
-window.addEventListener('click', function(e) {
-    if (!e.target.closest('.user-menu-container')) {
-        const dropdown = document.getElementById('logout-dropdown');
-        if (dropdown) dropdown.style.display = 'none';
-    }
-});
-
 // --- PWA INSTALLATION LOGIC ---
 let deferredPrompt;
 const installBtn = document.getElementById('install-app-btn');
 
 window.addEventListener('beforeinstallprompt', (e) => {
+    // Prevent the mini-infobar from appearing on mobile
     e.preventDefault();
+    // Stash the event so it can be triggered later.
     deferredPrompt = e;
+    // Show our custom Install button
     if (installBtn) {
         installBtn.style.display = 'flex';
-        feather.replace(); 
+        feather.replace(); // re-render icon
     }
 });
 
@@ -219,6 +172,9 @@ if (installBtn) {
         if (deferredPrompt) {
             deferredPrompt.prompt();
             const { outcome } = await deferredPrompt.userChoice;
+            if (outcome === 'accepted') {
+                console.log('User installed the Learn VSS PWA');
+            }
             deferredPrompt = null;
             installBtn.style.display = 'none';
         }
@@ -305,8 +261,8 @@ function getPaneHTML(id) {
         <section id="v-sadhana" class="view">
             <div id="sadhana-container" class="card" style="padding: 20px 10px; text-align: center; position: relative; border: none; background: transparent;">
                 <div class="vss-heading-img">
-                    <h3 class="serif" style="color: var(--gold); margin: 0 0 15px 0;">Learn VSS</h3>
-                    <img src="./assets/shri_vishnu.jpg" alt="Shri Vishnu" style="width: 120px; height: auto; object-fit: contain; margin: 0 auto 20px auto; display: block;">
+                    <img src="./assets/shri_vishnu.png" alt="Shri Vishnu" style="width: 180px; height: auto; object-fit: contain; margin: 0 auto 20px auto; display: block;">
+					<h3 class="serif" style="color: var(--gold); margin: 0 0 15px 0;">श्री विष्णु सहस्रनाम स्तोत्रम्</h3>
                 </div>
                 
                 <button onclick="toggleFS()" class="fs-btn" style="position: absolute; top: 15px; right: 15px; background: rgba(0,0,0,0.3); border: 1px solid var(--border); color: white; padding: 8px; border-radius: 8px; z-index: 100; cursor: pointer;"><i data-feather="maximize" id="fs-icon" style="width: 18px; height: 18px;"></i></button>
@@ -1102,7 +1058,6 @@ if('serviceWorker'in navigator){ navigator.serviceWorker.register('sw.js'); }
 
 window.onload = async () => { 
     await loadConfig(); 
-    checkUserSession(); // Check local storage for user details
     const flowAudio = document.getElementById('sadhana-bg-audio');
     if (flowAudio) flowAudio.src = "./meditations/vss.mp3";
 };
