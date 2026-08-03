@@ -89,7 +89,6 @@
             }
             #sadhana-container .flow-controls > div { flex-shrink: 0; }
             #sadhana-container:fullscreen .vss-heading-img { display: none !important; }
-            #sadhana-container:fullscreen .recording-section { display: none !important; }
         }
 
         .yajna-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: linear-gradient(135deg, #0f172a, #1e3a8a); z-index: 2000; display: none; flex-direction: column; opacity: 0; transition: opacity 0.3s ease; overflow: hidden;}
@@ -267,16 +266,9 @@ const FALLBACK_CONFIG = {
 async function loadConfig() {
     try {
         const response = await fetch('./app_config/learnvss_config.json');
-        if (response.ok) {
-            APP_CONFIG = await response.json();
-            window.APP_CONFIG = APP_CONFIG; // Expose globally for Firebase Module
-        } else {
-            throw new Error("Config not found");
-        }
-    } catch (e) { 
-        APP_CONFIG = FALLBACK_CONFIG;
-        window.APP_CONFIG = APP_CONFIG;
-    }
+        if (response.ok) APP_CONFIG = await response.json();
+        else throw new Error("Config not found");
+    } catch (e) { APP_CONFIG = FALLBACK_CONFIG; }
 
     initDynamicUI();
 }
@@ -351,28 +343,7 @@ function getPaneHTML(id) {
                         <input type="range" id="sadhana-volume" min="0" max="1" step="0.01" value="1" oninput="setSadhanaVolume(this.value)" style="width: 60px; height: 4px; -webkit-appearance: none; background: rgba(255,255,255,0.2); border-radius: 2px;">
                     </div>
                 </div>
-                
                 <audio id="sadhana-bg-audio" preload="auto"></audio>
-
-                <div class="recording-section card" style="margin-top: 25px; padding: 20px 15px; border-radius: 15px; background: rgba(0,0,0,0.2);">
-                    <h4 class="serif" style="color: var(--gold); font-size: 16px; margin-bottom: 5px;">Record Your Chanting</h4>
-                    <p style="font-size: 12px; opacity: 0.7; margin-bottom: 20px; font-family:'Inter', sans-serif;">Submit audio for teacher review</p>
-                    
-                    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 15px; margin-bottom: 15px;">
-                        <button id="record-btn" style="background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: white; border-radius: 50%; width: 60px; height: 60px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.3s; box-shadow: 0 4px 15px rgba(0,0,0,0.3);">
-                            <i data-feather="mic" id="record-icon" style="width: 24px; height: 24px;"></i>
-                        </button>
-                        <span id="record-timer" style="font-family: monospace; font-size: 24px; color: var(--gold); font-weight: bold; letter-spacing: 2px;">00:00</span>
-                    </div>
-
-                    <audio id="audio-preview" controls style="width: 100%; display: none; margin-bottom: 15px; height: 40px; border-radius: 8px;"></audio>
-
-                    <button id="submit-audio-btn" style="display: none; width: 100%; max-width: 250px; margin: 0 auto; background: linear-gradient(135deg, var(--gold), #d97706); border: none; color: var(--bg); padding: 14px; border-radius: 12px; font-weight: bold; cursor: pointer; font-family: 'Inter', sans-serif; align-items: center; justify-content: center;">
-                        <i data-feather="upload-cloud" style="width: 18px; margin-right: 8px;"></i> Submit Recording
-                    </button>
-                    <div id="audio-status" style="font-size: 13px; margin-top: 15px; color: var(--gold); font-weight: 500; font-family:'Inter', sans-serif;"></div>
-                </div>
-
             </div>
         </section>`;
 
@@ -503,7 +474,7 @@ function logAnubhavaSnapshot() {
     anubhavaStore[today].push(snapshot);
     localStorage.setItem('vss_anubhava_logs', JSON.stringify(anubhavaStore));
     
-    let fetchUrl = window.APP_CONFIG.settings.googleSheetUrl;
+    let fetchUrl = APP_CONFIG.settings.googleSheetUrl;
     fetchUrl += `?obs=${encodeURIComponent(obsText)}`;
 
     fetch(fetchUrl, {
@@ -1144,158 +1115,5 @@ window.onload = async () => {
     if (flowAudio) flowAudio.src = "./meditations/vss.mp3";
 };
 </script>
-
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-    import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-storage.js";
-
-    // *** REPLACE WITH YOUR EXACT FIREBASE CONFIG ***
-    const firebaseConfig = {
-        apiKey: "AIzaSyDNODSDmwHVfqt2CSb0tPDZwJGYjov7Lt0",
-        authDomain: "vedic-space.firebaseapp.com",
-        projectId: "vedic-space",
-        storageBucket: "vedic-space.firebasestorage.app",
-        messagingSenderId: "305492860613",
-        appId: "1:305492860613:web:701d9c3ab0cd4c5a3edaac"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const storage = getStorage(app);
-
-    let mediaRecorder;
-    let audioChunks = [];
-    let audioBlob = null;
-    let isRecording = false;
-    let timerInterval;
-    let seconds = 0;
-
-    const recordBtn = document.getElementById('record-btn');
-    const recordIcon = document.getElementById('record-icon');
-    const timerDisplay = document.getElementById('record-timer');
-    const audioPreview = document.getElementById('audio-preview');
-    const submitBtn = document.getElementById('submit-audio-btn');
-    const statusText = document.getElementById('audio-status');
-
-    if(recordBtn) {
-        recordBtn.addEventListener('click', async () => {
-            if(!isRecording) {
-                // START RECORDING
-                try {
-                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                    mediaRecorder = new MediaRecorder(stream);
-                    audioChunks = [];
-
-                    mediaRecorder.ondataavailable = e => {
-                        if (e.data.size > 0) audioChunks.push(e.data);
-                    };
-
-                    mediaRecorder.onstop = () => {
-                        audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
-                        const audioUrl = URL.createObjectURL(audioBlob);
-                        audioPreview.src = audioUrl;
-                        audioPreview.style.display = 'block';
-                        submitBtn.style.display = 'flex';
-                        
-                        stream.getTracks().forEach(track => track.stop());
-                    };
-
-                    mediaRecorder.start();
-                    isRecording = true;
-                    
-                    recordBtn.style.background = '#ff4757';
-                    recordBtn.style.borderColor = '#ff4757';
-                    recordIcon.setAttribute('data-feather', 'square');
-                    feather.replace();
-                    audioPreview.style.display = 'none';
-                    submitBtn.style.display = 'none';
-                    statusText.innerText = "";
-                    
-                    seconds = 0;
-                    timerDisplay.innerText = "00:00";
-                    timerInterval = setInterval(() => {
-                        seconds++;
-                        let m = Math.floor(seconds / 60).toString().padStart(2, '0');
-                        let s = (seconds % 60).toString().padStart(2, '0');
-                        timerDisplay.innerText = `${m}:${s}`;
-                    }, 1000);
-
-                } catch(err) {
-                    alert("Microphone access denied or not available on this device.");
-                    console.error(err);
-                }
-            } else {
-                // STOP RECORDING
-                mediaRecorder.stop();
-                isRecording = false;
-                clearInterval(timerInterval);
-                
-                recordBtn.style.background = 'rgba(255,255,255,0.1)';
-                recordBtn.style.borderColor = 'var(--border)';
-                recordIcon.setAttribute('data-feather', 'mic');
-                feather.replace();
-            }
-        });
-    }
-
-    if(submitBtn) {
-        submitBtn.addEventListener('click', async () => {
-            if(!audioBlob) return;
-            
-            const userId = localStorage.getItem('vss_user_id') || 'guest_user';
-            const userName = localStorage.getItem('vss_user_name') || 'Guest';
-            
-            if (userId === 'guest_user') {
-                alert("Please log in to submit your recording for review.");
-                return;
-            }
-
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = "Uploading securely...";
-            statusText.innerText = "Saving to Firebase Storage...";
-
-            try {
-                // Upload to Firebase Storage
-                const fileName = `recordings/${userId}/chant_${Date.now()}.webm`;
-                const storageRef = ref(storage, fileName);
-                
-                await uploadBytes(storageRef, audioBlob);
-                const downloadUrl = await getDownloadURL(storageRef);
-
-                // Log the Audio URL to Google Sheets
-                const payload = {
-                    userId: userId,
-                    userName: userName,
-                    date: new Date().toISOString().split('T')[0],
-                    time: new Date().toLocaleTimeString(),
-                    action: "AUDIO_SUBMIT",
-                    obs: "Audio Recording Submitted: " + downloadUrl
-                };
-
-                await fetch(window.APP_CONFIG.settings.googleSheetUrl, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-
-                statusText.innerText = "Successfully submitted to the teacher!";
-                submitBtn.style.display = 'none';
-                audioPreview.style.display = 'none';
-                audioBlob = null;
-                timerDisplay.innerText = "00:00";
-                
-            } catch(error) {
-                console.error(error);
-                statusText.innerText = "Error uploading recording. Please check your Firebase configuration.";
-                statusText.style.color = "#ff4757";
-            } finally {
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = `<i data-feather="upload-cloud" style="width: 16px; margin-right: 5px;"></i> Submit Recording`;
-                feather.replace();
-            }
-        });
-    }
-</script>
-
 </body>
 </html>
