@@ -171,6 +171,14 @@
 </div>
 
 <script>
+// --- GLOBAL RECORDING VARIABLES (ACCESSIBLE TO BOTH SCRIPTS) ---
+window.globalAudioBlob = null;
+let mediaRecorder;
+let audioChunks = [];
+let isRecording = false;
+let timerInterval;
+let seconds = 0;
+
 // --- USER SESSION MANAGEMENT ---
 function checkUserSession() {
     const userName = localStorage.getItem('vss_user_name');
@@ -269,7 +277,7 @@ async function loadConfig() {
         const response = await fetch('./app_config/learnvss_config.json');
         if (response.ok) {
             APP_CONFIG = await response.json();
-            window.APP_CONFIG = APP_CONFIG; // Expose globally for Firebase Module
+            window.APP_CONFIG = APP_CONFIG; 
         } else {
             throw new Error("Config not found");
         }
@@ -359,7 +367,7 @@ function getPaneHTML(id) {
                     <p style="font-size: 12px; opacity: 0.7; margin-bottom: 20px; font-family:'Inter', sans-serif;">Submit audio for teacher review</p>
                     
                     <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 15px; margin-bottom: 15px;">
-                        <button id="record-btn" style="background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: white; border-radius: 50%; width: 60px; height: 60px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.3s; box-shadow: 0 4px 15px rgba(0,0,0,0.3);">
+                        <button onclick="toggleMicrophone()" id="record-btn" style="background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: white; border-radius: 50%; width: 60px; height: 60px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.3s; box-shadow: 0 4px 15px rgba(0,0,0,0.3);">
                             <i data-feather="mic" id="record-icon" style="width: 24px; height: 24px;"></i>
                         </button>
                         <span id="record-timer" style="font-family: monospace; font-size: 24px; color: var(--gold); font-weight: bold; letter-spacing: 2px;">00:00</span>
@@ -1143,6 +1151,72 @@ window.onload = async () => {
     const flowAudio = document.getElementById('sadhana-bg-audio');
     if (flowAudio) flowAudio.src = "./meditations/vss.mp3";
 };
+
+// --- AUDIO RECORDING BROWSER LOGIC ---
+function toggleMicrophone() {
+    const recordBtn = document.getElementById('record-btn');
+    const recordIcon = document.getElementById('record-icon');
+    const timerDisplay = document.getElementById('record-timer');
+    const audioPreview = document.getElementById('audio-preview');
+    const submitBtn = document.getElementById('submit-audio-btn');
+    const statusText = document.getElementById('audio-status');
+
+    if(!window.isRecording) {
+        // START RECORDING
+        navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
+            window.mediaRecorder = new MediaRecorder(stream);
+            window.audioChunks = [];
+
+            window.mediaRecorder.ondataavailable = e => {
+                if (e.data.size > 0) window.audioChunks.push(e.data);
+            };
+
+            window.mediaRecorder.onstop = () => {
+                window.globalAudioBlob = new Blob(window.audioChunks, { type: 'audio/webm' });
+                const audioUrl = URL.createObjectURL(window.globalAudioBlob);
+                audioPreview.src = audioUrl;
+                audioPreview.style.display = 'block';
+                submitBtn.style.display = 'flex';
+                
+                stream.getTracks().forEach(track => track.stop());
+            };
+
+            window.mediaRecorder.start();
+            window.isRecording = true;
+            
+            recordBtn.style.background = '#ff4757';
+            recordBtn.style.borderColor = '#ff4757';
+            recordIcon.setAttribute('data-feather', 'square');
+            feather.replace();
+            audioPreview.style.display = 'none';
+            submitBtn.style.display = 'none';
+            statusText.innerText = "";
+            
+            window.seconds = 0;
+            timerDisplay.innerText = "00:00";
+            window.timerInterval = setInterval(() => {
+                window.seconds++;
+                let m = Math.floor(window.seconds / 60).toString().padStart(2, '0');
+                let s = (window.seconds % 60).toString().padStart(2, '0');
+                timerDisplay.innerText = `${m}:${s}`;
+            }, 1000);
+
+        }).catch(err => {
+            alert("Microphone access denied or not available on this device.");
+            console.error(err);
+        });
+    } else {
+        // STOP RECORDING
+        window.mediaRecorder.stop();
+        window.isRecording = false;
+        clearInterval(window.timerInterval);
+        
+        recordBtn.style.background = 'rgba(255,255,255,0.1)';
+        recordBtn.style.borderColor = 'var(--border)';
+        recordIcon.setAttribute('data-feather', 'mic');
+        feather.replace();
+    }
+}
 </script>
 
 <script type="module">
@@ -1159,87 +1233,26 @@ window.onload = async () => {
         appId: "1:305492860613:web:701d9c3ab0cd4c5a3edaac"
     };
 
-    const app = initializeApp(firebaseConfig);
-    const storage = getStorage(app);
+    let storage;
+    try {
+        const app = initializeApp(firebaseConfig);
+        storage = getStorage(app);
+    } catch(e) {
+        console.error("Firebase init failed: ", e);
+    }
 
-    let mediaRecorder;
-    let audioChunks = [];
-    let audioBlob = null;
-    let isRecording = false;
-    let timerInterval;
-    let seconds = 0;
-
-    const recordBtn = document.getElementById('record-btn');
-    const recordIcon = document.getElementById('record-icon');
-    const timerDisplay = document.getElementById('record-timer');
-    const audioPreview = document.getElementById('audio-preview');
     const submitBtn = document.getElementById('submit-audio-btn');
     const statusText = document.getElementById('audio-status');
-
-    if(recordBtn) {
-        recordBtn.addEventListener('click', async () => {
-            if(!isRecording) {
-                // START RECORDING
-                try {
-                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                    mediaRecorder = new MediaRecorder(stream);
-                    audioChunks = [];
-
-                    mediaRecorder.ondataavailable = e => {
-                        if (e.data.size > 0) audioChunks.push(e.data);
-                    };
-
-                    mediaRecorder.onstop = () => {
-                        audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
-                        const audioUrl = URL.createObjectURL(audioBlob);
-                        audioPreview.src = audioUrl;
-                        audioPreview.style.display = 'block';
-                        submitBtn.style.display = 'flex';
-                        
-                        stream.getTracks().forEach(track => track.stop());
-                    };
-
-                    mediaRecorder.start();
-                    isRecording = true;
-                    
-                    recordBtn.style.background = '#ff4757';
-                    recordBtn.style.borderColor = '#ff4757';
-                    recordIcon.setAttribute('data-feather', 'square');
-                    feather.replace();
-                    audioPreview.style.display = 'none';
-                    submitBtn.style.display = 'none';
-                    statusText.innerText = "";
-                    
-                    seconds = 0;
-                    timerDisplay.innerText = "00:00";
-                    timerInterval = setInterval(() => {
-                        seconds++;
-                        let m = Math.floor(seconds / 60).toString().padStart(2, '0');
-                        let s = (seconds % 60).toString().padStart(2, '0');
-                        timerDisplay.innerText = `${m}:${s}`;
-                    }, 1000);
-
-                } catch(err) {
-                    alert("Microphone access denied or not available on this device.");
-                    console.error(err);
-                }
-            } else {
-                // STOP RECORDING
-                mediaRecorder.stop();
-                isRecording = false;
-                clearInterval(timerInterval);
-                
-                recordBtn.style.background = 'rgba(255,255,255,0.1)';
-                recordBtn.style.borderColor = 'var(--border)';
-                recordIcon.setAttribute('data-feather', 'mic');
-                feather.replace();
-            }
-        });
-    }
+    const audioPreview = document.getElementById('audio-preview');
+    const timerDisplay = document.getElementById('record-timer');
 
     if(submitBtn) {
         submitBtn.addEventListener('click', async () => {
-            if(!audioBlob) return;
+            if(!window.globalAudioBlob) return;
+            if(!storage) {
+                alert("Firebase is not configured properly. Check API keys.");
+                return;
+            }
             
             const userId = localStorage.getItem('vss_user_id') || 'guest_user';
             const userName = localStorage.getItem('vss_user_name') || 'Guest';
@@ -1258,7 +1271,7 @@ window.onload = async () => {
                 const fileName = `recordings/${userId}/chant_${Date.now()}.webm`;
                 const storageRef = ref(storage, fileName);
                 
-                await uploadBytes(storageRef, audioBlob);
+                await uploadBytes(storageRef, window.globalAudioBlob);
                 const downloadUrl = await getDownloadURL(storageRef);
 
                 // Log the Audio URL to Google Sheets
@@ -1281,12 +1294,12 @@ window.onload = async () => {
                 statusText.innerText = "Successfully submitted to the teacher!";
                 submitBtn.style.display = 'none';
                 audioPreview.style.display = 'none';
-                audioBlob = null;
+                window.globalAudioBlob = null;
                 timerDisplay.innerText = "00:00";
                 
             } catch(error) {
                 console.error(error);
-                statusText.innerText = "Error uploading recording. Please check your Firebase configuration.";
+                statusText.innerText = "Error uploading recording. Please check your Firebase rules.";
                 statusText.style.color = "#ff4757";
             } finally {
                 submitBtn.disabled = false;
