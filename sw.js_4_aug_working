@@ -1,4 +1,4 @@
-const CACHE_NAME = 'vedicspace-cache-v7';
+const CACHE_NAME = 'vedicspace-cache-v6';
 
 // Files to cache immediately on install so both apps work offline
 const CORE_ASSETS = [

@@ -49,7 +49,7 @@
         
         .card { background: var(--glass); border: 1px solid var(--border); border-radius: 20px; overflow: hidden; margin-bottom: 20px; padding: 20px; }
         .card-body { padding: 15px; text-align: center; }
-        .video-box { position: relative; padding-bottom: 56.25%; height: 0; background: #000; }
+        .video-box { position: relative; padding-bottom: 56.25%; height: 0; background: transparent; }
         .video-box iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
 
         .interactive-picker { background: var(--glass); border: 1px solid var(--border); border-radius: 15px; margin-bottom: 20px; overflow: hidden; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
@@ -74,22 +74,129 @@
 
         #jaas-container { width: 100%; height: 60vh; border-radius: 15px; overflow: hidden; background: #000; }
 
-        #sadhana-container:fullscreen { background: var(--bg) !important; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 0; width: 100vw; height: 100vh; }
-        #sadhana-container:fullscreen .slide-wrapper { width: 100vw; height: 100vh; max-height: 100vh; aspect-ratio: auto; border-radius: 0; }
-        
-        #sadhana-container .slide-wrapper { width: 100%; height: auto; aspect-ratio: 16/9; max-height: 75vh; border-radius: 12px; overflow: hidden; }
-        #sadhana-container img#sadhana-slide { object-fit: contain; width: 100%; height: 100%; }
+        /* ======== SLIDE OVERHAUL (NORMAL MODE) ======== */
+        #sadhana-container .slide-wrapper { 
+            width: 100%; height: auto; aspect-ratio: 16/9; max-height: 75vh; 
+            border-radius: 20px; 
+            box-shadow: 0 25px 60px -15px rgba(0,0,0,0.9); /* Perfect blend shadow - no lines! */
+            margin: 30px auto; 
+            overflow: hidden; background: transparent; -webkit-tap-highlight-color: transparent; outline: none;
+        }
+        #sadhana-container img#sadhana-slide { 
+            object-fit: cover; width: 100%; height: 100%; border-radius: 20px; transition: border-radius 0.3s ease; -webkit-user-select: none; user-select: none; display: block;
+        }
 
-        @media screen and (max-height: 500px) and (orientation: landscape) {
-            #sadhana-container:fullscreen .flow-controls {
-                position: fixed; bottom: 10px; left: 50%; transform: translateX(-50%); width: auto; max-width: 95%;
-                background: rgba(0, 0, 0, 0.65); border-radius: 50px; padding: 8px 15px !important;
-                backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.2);
-                display: flex !important; flex-direction: row !important; align-items: center !important; justify-content: center !important; gap: 12px !important; margin-top: 0 !important; z-index: 200;
+        /* NORMAL CONTROLS PILL (Side-by-side Gradient) */
+        #sadhana-container .flow-controls {
+            display: flex; align-items: center; justify-content: center; gap: 15px; z-index: 100; 
+            padding: 10px 20px; background: linear-gradient(135deg, rgba(15,23,42,0.9), rgba(30,58,138,0.9)); 
+            border: 1px solid var(--border); border-radius: 50px; width: fit-content; margin: 0 auto; 
+            -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); 
+            transition: all 0.3s ease; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        /* NORMAL RECORDING PANE */
+        #recording-pane {
+            max-height: 0; opacity: 0; overflow: hidden; margin: 0 auto; padding: 0 15px; 
+            border-radius: 15px; background: rgba(0,0,0,0.3); transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); 
+            border: none; box-sizing: border-box; position: relative; max-width: 420px;
+        }
+        #recording-pane.expanded {
+            margin-top: 25px; padding-bottom: 15px; border: 1px solid var(--border);
+        }
+
+
+        /* ======== FULLSCREEN OVERHAUL ======== */
+        #sadhana-container::backdrop {
+            background: linear-gradient(135deg, #0f172a, #1e3a8a) !important;
+        }
+        
+        /* Fullscreen Logo Tracker */
+        .fs-logo { display: none; position: absolute; top: 15px; left: 20px; height: 40px; width: auto; z-index: 150; filter: drop-shadow(0 0 5px rgba(251,191,36,0.3)); }
+        #sadhana-container:fullscreen .fs-logo, #sadhana-container:-webkit-full-screen .fs-logo { display: block; }
+
+        /* Default Fullscreen (Vertical/Portrait) */
+        #sadhana-container:fullscreen, #sadhana-container:-webkit-full-screen { 
+            background: linear-gradient(135deg, #0f172a, #1e3a8a) !important; 
+            display: flex; flex-direction: column; justify-content: center; align-items: center; 
+            padding: 20px; width: 100vw; height: 100vh; position: relative; box-sizing: border-box;
+            gap: 25px; 
+        }
+
+        #sadhana-container:fullscreen .vss-heading-img, #sadhana-container:-webkit-full-screen .vss-heading-img { 
+            display: flex !important; flex-direction: column; align-items: center; margin: 0 !important; 
+        }
+        
+        #sadhana-container:fullscreen .slide-wrapper, #sadhana-container:-webkit-full-screen .slide-wrapper { 
+            width: 100%; max-width: 95vw; height: auto; max-height: 60vh; aspect-ratio: 16/9; 
+            margin: 0 !important; border-radius: 20px; box-shadow: 0 25px 60px -15px rgba(0,0,0,0.9);
+        }
+
+        #sadhana-container:fullscreen img#sadhana-slide, #sadhana-container:-webkit-full-screen img#sadhana-slide { 
+            border-radius: 20px; padding: 0; box-sizing: border-box; object-fit: cover;
+        }
+
+        /* Fullscreen Controls simply sit below the slide in flex layout */
+        #sadhana-container:fullscreen .flow-controls, #sadhana-container:-webkit-full-screen .flow-controls {
+            position: relative !important; margin: 0 !important; bottom: auto !important; left: auto !important; transform: none !important;
+        }
+
+        /* Fullscreen Floating Recording Pane */
+        #sadhana-container:fullscreen #recording-pane.expanded, #sadhana-container:-webkit-full-screen #recording-pane.expanded {
+            position: fixed !important;
+            bottom: 90px !important;
+            left: 50% !important;
+            transform: translateX(-50%) !important;
+            width: 90% !important;
+            max-width: 420px !important;
+            z-index: 9999 !important;
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 58, 138, 0.95)) !important;
+            border: 1px solid var(--gold) !important;
+            margin: 0 !important;
+        }
+
+        /* Landscape Fullscreen Exception (Short screens only!) */
+        @media screen and (max-height: 600px) and (orientation: landscape) {
+            #sadhana-container:fullscreen, #sadhana-container:-webkit-full-screen { gap: 0; padding: 10px; }
+            #sadhana-container:fullscreen .vss-heading-img, #sadhana-container:-webkit-full-screen .vss-heading-img { display: none !important; }
+            #sadhana-container:fullscreen .fs-logo, #sadhana-container:-webkit-full-screen .fs-logo { display: none !important; }
+            #sadhana-container:fullscreen .slide-wrapper, #sadhana-container:-webkit-full-screen .slide-wrapper {
+                max-height: 85vh; width: auto; max-width: 95vw;
             }
-            #sadhana-container .flow-controls > div { flex-shrink: 0; }
-            #sadhana-container:fullscreen .vss-heading-img { display: none !important; }
-            #sadhana-container:fullscreen .recording-section { display: none !important; }
+            #sadhana-container:fullscreen .flow-controls, #sadhana-container:-webkit-full-screen .flow-controls {
+                position: fixed !important;
+                bottom: 15px !important;
+                left: 50% !important;
+                transform: translateX(-50%) !important;
+                margin: 0 !important;
+            }
+            #sadhana-container:fullscreen #recording-pane.expanded, #sadhana-container:-webkit-full-screen #recording-pane.expanded {
+                bottom: 80px !important;
+            }
+        }
+
+        /* --- GUEST POPUP OVERLAY --- */
+        .guest-popup {
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9);
+            background: rgba(15, 23, 42, 0.95); border: 1px solid var(--gold); border-radius: 20px;
+            padding: 30px 20px; width: 90%; max-width: 350px; text-align: center; z-index: 2147483647;
+            backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+            opacity: 0; pointer-events: none; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .guest-popup.active { opacity: 1; pointer-events: auto; transform: translate(-50%, -50%) scale(1); }
+        .popup-overlay {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.6);
+            z-index: 2147483646; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; 
+            backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);
+        }
+        .popup-overlay.active { opacity: 1; pointer-events: auto; }
+
+        /* Absolute positioning overrides for when the popup is moved inside a Flex Fullscreen container */
+        #sadhana-container:fullscreen .guest-popup, #sadhana-container:-webkit-full-screen .guest-popup {
+            position: absolute !important; top: 50% !important; left: 50% !important;
+        }
+        #sadhana-container:fullscreen .popup-overlay, #sadhana-container:-webkit-full-screen .popup-overlay {
+            position: absolute !important; width: 100% !important; height: 100% !important; top: 0 !important; left: 0 !important;
         }
 
         .yajna-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: linear-gradient(135deg, #0f172a, #1e3a8a); z-index: 2000; display: none; flex-direction: column; opacity: 0; transition: opacity 0.3s ease; overflow: hidden;}
@@ -143,7 +250,6 @@
                     </a>
                 </div>
             </div>
-
         </div>
     </div>
 </header>
@@ -154,6 +260,16 @@
     <button class="nav-arrow left-arrow" onclick="scrollNav(-1)"><i data-feather="chevron-left"></i></button>
     <nav class="mobile-nav" id="main-nav"></nav>
     <button class="nav-arrow right-arrow" onclick="scrollNav(1)"><i data-feather="chevron-right"></i></button>
+</div>
+
+<!-- GUEST GATE POPUP -->
+<div class="popup-overlay" id="guest-overlay" onclick="closeGuestPopup()"></div>
+<div class="guest-popup" id="guest-popup">
+    <i data-feather="lock" style="color: var(--gold); width: 32px; height: 32px; margin-bottom: 15px;"></i>
+    <h3 class="serif" style="color: var(--gold); margin-bottom: 10px; font-size: 1.3rem;">Join the Sangha</h3>
+    <p style="font-size: 14px; opacity: 0.9; margin-bottom: 25px; line-height: 1.5; color: white;">Join the Vedic Space course to unlock all Shlokas, Meditations, Prāṇāyāma, and community features!</p>
+    <a href="https://tinyurl.com/vedicspace" target="_blank" style="display: block; width: 100%; background: linear-gradient(135deg, var(--gold), #d97706); color: var(--bg); padding: 12px; border-radius: 12px; font-weight: bold; text-decoration: none; font-size: 14px; margin-bottom: 10px; font-family: 'Inter', sans-serif;">Explore Course</a>
+    <button onclick="closeGuestPopup()" style="background: transparent; border: none; color: rgba(255,255,255,0.5); font-size: 12px; cursor: pointer; text-decoration: underline; font-family: 'Inter', sans-serif;">Maybe later</button>
 </div>
 
 <div id="yajna-overlay" class="yajna-overlay">
@@ -184,6 +300,62 @@ let audioChunks = [];
 let isRecording = false;
 let timerInterval;
 let seconds = 0;
+window.pIdx = 1;
+
+// --- GUEST POPUP LOGIC ---
+function showGuestPopup() {
+    const overlay = document.getElementById('guest-overlay');
+    const popup = document.getElementById('guest-popup');
+    const fsElement = document.fullscreenElement || document.webkitFullscreenElement;
+
+    // Detect if we are in fullscreen, so popup safely renders ABOVE everything
+    if (fsElement) {
+        fsElement.appendChild(overlay);
+        fsElement.appendChild(popup);
+    } else {
+        document.body.appendChild(overlay);
+        document.body.appendChild(popup);
+    }
+
+    overlay.classList.add('active');
+    popup.classList.add('active');
+    feather.replace();
+}
+
+function closeGuestPopup() {
+    document.getElementById('guest-overlay').classList.remove('active');
+    document.getElementById('guest-popup').classList.remove('active');
+}
+
+// --- EXPANDABLE RECORDING PANE LOGIC ---
+window.toggleRecordSection = () => {
+    const pane = document.getElementById('recording-pane');
+    const btn = document.getElementById('expand-record-btn');
+    const indicator = document.getElementById('shloka-indicator');
+    
+    if (pane.style.maxHeight === '0px' || pane.style.maxHeight === '') {
+        // Expand
+        pane.classList.add('expanded');
+        pane.style.maxHeight = '500px';
+        pane.style.opacity = '1';
+        
+        btn.style.background = 'var(--gold)';
+        btn.style.color = 'var(--bg)';
+        
+        // Setup smart shloka tracking text
+        indicator.innerText = window.pIdx > 2 ? `Submitting for: Shloka ${window.pIdx - 2}` : `Submitting for: Setup/Intro`;
+        
+        setTimeout(() => pane.scrollIntoView({ behavior: 'smooth', block: 'center' }), 150);
+    } else {
+        // Collapse
+        pane.classList.remove('expanded');
+        pane.style.maxHeight = '0px';
+        pane.style.opacity = '0';
+        
+        btn.style.background = 'transparent';
+        btn.style.color = 'var(--gold)';
+    }
+};
 
 // --- USER SESSION MANAGEMENT ---
 function checkUserSession() {
@@ -254,7 +426,6 @@ window.addEventListener('appinstalled', () => {
 
 // --- CONFIGURATION ENGINE ---
 let APP_CONFIG = null;
-let pIdx = 1;
 
 const FALLBACK_CONFIG = {
     settings: { enableShruti: false, googleSheetUrl: GOOGLE_APP_URL, meditationBellUrl: './assets/taala.mp3' },
@@ -325,22 +496,29 @@ function getPaneHTML(id) {
         </section>`;
         
     if(id === 'sadhana') return `
+        <!-- OVERFLOW VISIBLE FIX APPLIED HERE TO PREVENT CLIPPING -->
         <section id="v-sadhana" class="view">
-            <div id="sadhana-container" class="card" style="padding: 20px 10px; text-align: center; position: relative; border: none; background: transparent;">
-                <div class="vss-heading-img">
-                    <img src="./assets/shri_vishnu.png" alt="Shri Vishnu" style="width: 160px; height: auto; object-fit: contain; margin: 0 auto 20px auto; display: block;">
-                    <h3 class="serif" style="color: var(--gold); margin: 0 0 15px 0;">।। अथ सकलसौभाग्यदायक श्री विष्णु सहस्रनाम स्तोत्रम् ।।</h3>
+            <div id="sadhana-container" class="card" style="padding: 15px 10px; text-align: center; position: relative; border: none; background: transparent; overflow: visible !important;">
+                
+                <!-- Fullscreen Lotus Logo -->
+                <img src="../assets/logo.webp" class="fs-logo" alt="Vedic Space">
+
+                <div class="vss-heading-img" style="margin-bottom: 10px;">
+                    <img src="./assets/shri_vishnu.png" alt="Shri Vishnu" style="width: 140px; height: auto; object-fit: contain; margin: 0 auto 5px auto; display: block;">
+                    <h3 class="serif" style="color: var(--gold); margin: 0; font-size: 1.1rem;">।। अथ सकलसौभाग्यदायक श्री विष्णु सहस्रनाम स्तोत्रम् ।।</h3>
                 </div>
                 
                 <button onclick="toggleFS()" class="fs-btn" style="position: absolute; top: 15px; right: 15px; background: rgba(0,0,0,0.3); border: 1px solid var(--border); color: white; padding: 8px; border-radius: 8px; z-index: 100; cursor: pointer;"><i data-feather="maximize" id="fs-icon" style="width: 18px; height: 18px;"></i></button>
                 
-                <div class="slide-wrapper" id="swipe-zone" style="position: relative; display: block; overflow: hidden; touch-action: pan-y; cursor: pointer; margin: auto;">
+                <div class="slide-wrapper" id="swipe-zone" style="position: relative; display: block; touch-action: pan-y; cursor: pointer; background: transparent;">
                     <img id="sadhana-slide" src="./parayana/Slide1.webp" style="display: block; pointer-events: none;">
-                    <button onclick="navSlide(-1)" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.15); border: none; color: white; border-radius: 50%; width: 40px; height: 40px; cursor: pointer; z-index: 10;"><i data-feather="chevron-left"></i></button>
-                    <button onclick="navSlide(1)" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.15); border: none; color: white; border-radius: 50%; width: 40px; height: 40px; cursor: pointer; z-index: 10;"><i data-feather="chevron-right"></i></button>
+                    <button onclick="navSlide(-1)" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.25); border: none; color: white; border-radius: 50%; width: 40px; height: 40px; cursor: pointer; z-index: 10; backdrop-filter: blur(5px);"><i data-feather="chevron-left"></i></button>
+                    <button onclick="navSlide(1)" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.25); border: none; color: white; border-radius: 50%; width: 40px; height: 40px; cursor: pointer; z-index: 10; backdrop-filter: blur(5px);"><i data-feather="chevron-right"></i></button>
                 </div>
                 
-                <div class="flow-controls" style="margin-top: 15px; display: flex; align-items: center; justify-content: center; gap: 20px; z-index: 100; flex-wrap: wrap; padding: 10px; transition: all 0.3s ease;">
+                <!-- SIDE-BY-SIDE CONTROLS WITH GRADIENT BACKGROUND -->
+                <div class="flow-controls">
+                    <!-- Play Button -->
                     <div style="position: relative; width: 40px; height: 40px; flex-shrink: 0;" onclick="toggleAudioPlay()">
                         <svg width="40" height="40">
                             <circle cx="20" cy="20" r="18" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="3"/>
@@ -350,35 +528,42 @@ function getPaneHTML(id) {
                             <i data-feather="play" id="audio-play-icon" style="width: 16px;"></i>
                         </div>
                     </div>
-                    
-                    <div style="display: flex; align-items: center; gap: 5px; background: var(--glass); padding: 4px 10px; border-radius: 20px; border: 1px solid var(--border); backdrop-filter: blur(5px); height: 40px;">
-                        <button onclick="toggleAudioMute()" style="background:none; border:none; color:var(--gold); cursor:pointer; display:flex; align-items:center;">
-                            <i id="audio-icon" data-feather="volume-2" style="width: 16px;"></i>
-                        </button>
-                        <input type="range" id="sadhana-volume" min="0" max="1" step="0.01" value="1" oninput="setSadhanaVolume(this.value)" style="width: 60px; height: 4px; -webkit-appearance: none; background: rgba(255,255,255,0.2); border-radius: 2px;">
-                    </div>
+
+                    <!-- Sleek Expandable Button -->
+                    <button id="expand-record-btn" onclick="toggleRecordSection()" style="display: flex; align-items: center; gap: 6px; background: transparent; border: 1px solid var(--gold); color: var(--gold); height: 40px; padding: 0 15px; border-radius: 20px; font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.3s ease;">
+                        <i data-feather="mic" style="width: 14px;"></i> Record Chanting
+                    </button>
                 </div>
                 
                 <audio id="sadhana-bg-audio" preload="auto"></audio>
 
-                <div class="recording-section card" style="margin-top: 25px; padding: 20px 15px; border-radius: 15px; background: rgba(0,0,0,0.2);">
-                    <h4 class="serif" style="color: var(--gold); font-size: 16px; margin-bottom: 5px;">Record Your Chanting</h4>
-                    <p style="font-size: 12px; opacity: 0.7; margin-bottom: 20px; font-family:'Inter', sans-serif;">Submit audio for teacher review</p>
+                <!-- EXPANDABLE RECORDING PANE WITH SOFT CLOSE -->
+                <div id="recording-pane" class="recording-section">
                     
-                    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 15px; margin-bottom: 15px;">
-                        <button onclick="toggleMicrophone()" id="record-btn" style="background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: white; border-radius: 50%; width: 60px; height: 60px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.3s; box-shadow: 0 4px 15px rgba(0,0,0,0.3);">
-                            <i data-feather="mic" id="record-icon" style="width: 24px; height: 24px;"></i>
-                        </button>
-                        <span id="record-timer" style="font-family: monospace; font-size: 24px; color: var(--gold); font-weight: bold; letter-spacing: 2px;">00:00</span>
-                    </div>
-
-                    <audio id="audio-preview" controls style="width: 100%; display: none; margin-bottom: 15px; height: 40px; border-radius: 8px;"></audio>
-
-                    <button id="submit-audio-btn" onclick="submitAudioRecording()" style="display: none; width: 100%; max-width: 250px; margin: 0 auto; background: linear-gradient(135deg, var(--gold), #d97706); border: none; color: var(--bg); padding: 14px; border-radius: 12px; font-weight: bold; cursor: pointer; font-family: 'Inter', sans-serif; align-items: center; justify-content: center;">
-                        <i data-feather="upload-cloud" style="width: 18px; margin-right: 8px;"></i> Submit Recording
+                    <button onclick="toggleRecordSection()" style="position: absolute; top: 12px; right: 12px; background: none; border: none; color: white; opacity: 0.5; cursor: pointer; z-index: 10; transition: 0.3s;">
+                        <i data-feather="x" style="width: 20px; height: 20px;"></i>
                     </button>
-                    <div id="audio-status" style="font-size: 13px; margin-top: 15px; color: var(--gold); font-weight: 500; font-family:'Inter', sans-serif;"></div>
+
+                    <div style="padding: 15px 0 0 0;">
+                        <h4 class="serif" style="color: var(--gold); font-size: 16px; margin-bottom: 5px;">Record Your Chanting</h4>
+                        <p id="shloka-indicator" style="font-size: 12px; opacity: 0.9; margin-bottom: 20px; font-family:'Inter', sans-serif; color: white;"></p>
+                        
+                        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 15px; margin-bottom: 15px;">
+                            <button onclick="toggleMicrophone()" id="record-btn" style="background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: white; border-radius: 50%; width: 60px; height: 60px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.3s; box-shadow: 0 4px 15px rgba(0,0,0,0.3);">
+                                <i data-feather="mic" id="record-icon" style="width: 24px; height: 24px;"></i>
+                            </button>
+                            <span id="record-timer" style="font-family: monospace; font-size: 24px; color: var(--gold); font-weight: bold; letter-spacing: 2px;">00:00</span>
+                        </div>
+
+                        <audio id="audio-preview" controls style="width: 100%; display: none; margin-bottom: 15px; height: 40px; border-radius: 8px;"></audio>
+
+                        <button id="submit-audio-btn" onclick="submitAudioRecording()" style="display: none; width: 100%; max-width: 250px; margin: 0 auto; background: linear-gradient(135deg, var(--gold), #d97706); border: none; color: var(--bg); padding: 14px; border-radius: 12px; font-weight: bold; cursor: pointer; font-family: 'Inter', sans-serif; align-items: center; justify-content: center;">
+                            <i data-feather="upload-cloud" style="width: 18px; margin-right: 8px;"></i> Submit Recording
+                        </button>
+                        <div id="audio-status" style="font-size: 13px; margin-top: 15px; color: var(--gold); font-weight: 500; font-family:'Inter', sans-serif;"></div>
+                    </div>
                 </div>
+
             </div>
         </section>`;
 
@@ -509,7 +694,7 @@ function logAnubhavaSnapshot() {
     anubhavaStore[today].push(snapshot);
     localStorage.setItem('vss_anubhava_logs', JSON.stringify(anubhavaStore));
     
-    let fetchUrl = GOOGLE_APP_URL; // Re-routed to the single Google App URL
+    let fetchUrl = GOOGLE_APP_URL; 
     fetchUrl += `?obs=${encodeURIComponent(obsText)}`;
 
     fetch(fetchUrl, {
@@ -744,36 +929,6 @@ function clearMedSelection() {
 }
 
 // --- LEARN VSS AUDIO LOGIC ---
-function setSadhanaVolume(val) {
-    const audio = document.getElementById('sadhana-bg-audio');
-    if(audio) {
-        audio.volume = val;
-        if(val == 0) {
-            audio.muted = true;
-            document.getElementById('audio-icon').setAttribute('data-feather', 'volume-x');
-        } else {
-            audio.muted = false;
-            document.getElementById('audio-icon').setAttribute('data-feather', 'volume-2');
-        }
-        feather.replace();
-    }
-}
-
-function toggleAudioMute() {
-    const audio = document.getElementById('sadhana-bg-audio');
-    audio.muted = !audio.muted;
-    document.getElementById('audio-icon').setAttribute('data-feather', audio.muted ? 'volume-x' : 'volume-2');
-    
-    const slider = document.getElementById('sadhana-volume');
-    if (audio.muted) {
-        slider.value = 0;
-    } else {
-        slider.value = audio.volume > 0 ? audio.volume : 1;
-        audio.volume = slider.value;
-    }
-    feather.replace();
-}
-
 function toggleAudioPlay() {
     const audio = document.getElementById('sadhana-bg-audio');
     const icon = document.getElementById('audio-play-icon');
@@ -793,6 +948,14 @@ let scrollTimeouts = {};
 let renderedTabs = { med: false, pran: false, sadhana: false, yajna: false, anubhava: false, drop: false };
 
 function showTab(t){
+    const userId = localStorage.getItem('vss_user_id') || 'guest_user';
+    
+    // GUEST USER GATE FOR TABS
+    if (userId === 'guest_user' && t !== 'sadhana') {
+        showGuestPopup();
+        return; 
+    }
+
     document.querySelectorAll('.view,.nav-item').forEach(el=>el.classList.remove('active'));
     document.querySelectorAll('.nav-links a').forEach(el=>el.classList.remove('active-link'));
     
@@ -1103,16 +1266,36 @@ function toggleYajnaAudio() {
 }
 
 function preloadNearby() {
-    let next = pIdx + 1;
+    let next = window.pIdx + 1;
     if (next > 109) next = 1;
     let img = new Image();
     img.src = `./parayana/Slide${next}.webp`;
 }
 
 function navSlide(dir){ 
-    pIdx+=dir; if(pIdx>109) pIdx=1; if(pIdx<1) pIdx=109; 
-    document.getElementById('sadhana-slide').src=`./parayana/Slide${pIdx}.webp`; 
+    const userId = localStorage.getItem('vss_user_id') || 'guest_user';
+    let targetIdx = window.pIdx + dir;
+    
+    // GUEST USER GATE FOR SLIDES
+    if (userId === 'guest_user') {
+        if (targetIdx > 5 || targetIdx < 1) {
+            showGuestPopup();
+            return; // Block slide movement
+        }
+    }
+
+    window.pIdx = targetIdx; 
+    if(window.pIdx > 109) window.pIdx = 1; 
+    if(window.pIdx < 1) window.pIdx = 109; 
+    
+    document.getElementById('sadhana-slide').src = `./parayana/Slide${window.pIdx}.webp`; 
     preloadNearby();
+
+    // Silently update the shloka indicator if the recording pane happens to be open
+    const indicator = document.getElementById('shloka-indicator');
+    if (indicator) {
+        indicator.innerText = window.pIdx > 2 ? `Submitting for: Shloka ${window.pIdx - 2}` : `Submitting for: Setup/Intro`;
+    }
 }
 
 function handleKeys(e) {
@@ -1123,18 +1306,26 @@ function handleKeys(e) {
 
 function toggleFS(){ 
     const el = document.getElementById('sadhana-container'); 
-    if(!document.fullscreenElement) { el.requestFullscreen().catch(()=>{}); } 
-    else { document.exitFullscreen(); }
+    if(!document.fullscreenElement && !document.webkitFullscreenElement) { 
+        if (el.requestFullscreen) el.requestFullscreen().catch(()=>{});
+        else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+    } else { 
+        if (document.exitFullscreen) document.exitFullscreen(); 
+        else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+    }
 }
 
-document.addEventListener('fullscreenchange', () => {
+document.addEventListener('fullscreenchange', handleFSChange);
+document.addEventListener('webkitfullscreenchange', handleFSChange);
+
+function handleFSChange() {
     const icon = document.getElementById('fs-icon');
     if (icon) {
-        if (document.fullscreenElement && document.fullscreenElement.id === 'sadhana-container') icon.setAttribute('data-feather', 'minimize');
+        if (document.fullscreenElement || document.webkitFullscreenElement) icon.setAttribute('data-feather', 'minimize');
         else icon.setAttribute('data-feather', 'maximize');
     }
     feather.replace();
-});
+}
 
 document.getElementById('main-nav').addEventListener('wheel', (evt) => {
     evt.preventDefault();
@@ -1257,11 +1448,15 @@ window.submitAudioRecording = async () => {
 
             statusText.innerText = "Saving directly to Google Drive...";
 
+            // Dynamically assign Shloka tracking
+            const shlokaNum = window.pIdx > 2 ? `Shloka ${window.pIdx - 2}` : `Setup/Intro`;
+
             const payload = {
                 userId: userId,
                 userName: userName,
                 date: new Date().toISOString().split('T')[0],
                 time: new Date().toLocaleTimeString(),
+                timing: shlokaNum, // Saved beautifully into the Timing Column
                 action: "AUDIO_SUBMIT",
                 audioBase64: base64data,
                 mimeType: window.globalAudioBlob.type
