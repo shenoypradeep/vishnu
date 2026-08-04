@@ -78,7 +78,7 @@
         #sadhana-container .slide-wrapper { 
             width: 100%; height: auto; aspect-ratio: 16/9; max-height: 75vh; 
             border-radius: 20px; 
-            box-shadow: 0 15px 35px rgba(0,0,0,0.3); /* Soft, natural shadow without hard artifact lines */
+            box-shadow: 0 25px 60px -15px rgba(0,0,0,0.9); /* Perfect blend shadow - no lines! */
             margin: 30px auto; 
             overflow: hidden; background: transparent; -webkit-tap-highlight-color: transparent; outline: none;
         }
@@ -91,7 +91,8 @@
             display: flex; align-items: center; justify-content: center; gap: 15px; z-index: 100; 
             padding: 10px 20px; background: linear-gradient(135deg, rgba(15,23,42,0.9), rgba(30,58,138,0.9)); 
             border: 1px solid var(--border); border-radius: 50px; width: fit-content; margin: 0 auto; 
-            backdrop-filter: blur(10px); transition: all 0.3s ease; box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); 
+            transition: all 0.3s ease; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
         /* NORMAL RECORDING PANE */
@@ -112,36 +113,36 @@
         
         /* Fullscreen Logo Tracker */
         .fs-logo { display: none; position: absolute; top: 15px; left: 20px; height: 40px; z-index: 150; filter: drop-shadow(0 0 5px rgba(251,191,36,0.3)); }
-        #sadhana-container:fullscreen .fs-logo { display: block; }
+        #sadhana-container:fullscreen .fs-logo, #sadhana-container:-webkit-full-screen .fs-logo { display: block; }
 
         /* Default Fullscreen (Vertical/Portrait) */
-        #sadhana-container:fullscreen { 
+        #sadhana-container:fullscreen, #sadhana-container:-webkit-full-screen { 
             background: linear-gradient(135deg, #0f172a, #1e3a8a) !important; 
             display: flex; flex-direction: column; justify-content: center; align-items: center; 
             padding: 20px; width: 100vw; height: 100vh; position: relative; box-sizing: border-box;
             gap: 25px; 
         }
 
-        #sadhana-container:fullscreen .vss-heading-img { 
+        #sadhana-container:fullscreen .vss-heading-img, #sadhana-container:-webkit-full-screen .vss-heading-img { 
             display: flex !important; flex-direction: column; align-items: center; margin: 0 !important; 
         }
         
-        #sadhana-container:fullscreen .slide-wrapper { 
+        #sadhana-container:fullscreen .slide-wrapper, #sadhana-container:-webkit-full-screen .slide-wrapper { 
             width: 100%; max-width: 95vw; height: auto; max-height: 60vh; aspect-ratio: 16/9; 
             margin: 0 !important; border-radius: 20px; box-shadow: 0 25px 60px -15px rgba(0,0,0,0.9);
         }
 
-        #sadhana-container:fullscreen img#sadhana-slide { 
+        #sadhana-container:fullscreen img#sadhana-slide, #sadhana-container:-webkit-full-screen img#sadhana-slide { 
             border-radius: 20px; padding: 0; box-sizing: border-box; object-fit: cover;
         }
 
         /* Fullscreen Controls simply sit below the slide in flex layout */
-        #sadhana-container:fullscreen .flow-controls {
+        #sadhana-container:fullscreen .flow-controls, #sadhana-container:-webkit-full-screen .flow-controls {
             position: relative !important; margin: 0 !important; bottom: auto !important; left: auto !important; transform: none !important;
         }
 
         /* Fullscreen Floating Recording Pane */
-        #sadhana-container:fullscreen #recording-pane.expanded {
+        #sadhana-container:fullscreen #recording-pane.expanded, #sadhana-container:-webkit-full-screen #recording-pane.expanded {
             position: fixed !important;
             bottom: 90px !important;
             left: 50% !important;
@@ -156,20 +157,20 @@
 
         /* Landscape Fullscreen Exception (Short screens only!) */
         @media screen and (max-height: 600px) and (orientation: landscape) {
-            #sadhana-container:fullscreen { gap: 0; padding: 10px; }
-            #sadhana-container:fullscreen .vss-heading-img { display: none !important; }
-            #sadhana-container:fullscreen .fs-logo { display: none !important; }
-            #sadhana-container:fullscreen .slide-wrapper {
+            #sadhana-container:fullscreen, #sadhana-container:-webkit-full-screen { gap: 0; padding: 10px; }
+            #sadhana-container:fullscreen .vss-heading-img, #sadhana-container:-webkit-full-screen .vss-heading-img { display: none !important; }
+            #sadhana-container:fullscreen .fs-logo, #sadhana-container:-webkit-full-screen .fs-logo { display: none !important; }
+            #sadhana-container:fullscreen .slide-wrapper, #sadhana-container:-webkit-full-screen .slide-wrapper {
                 max-height: 85vh; width: auto; max-width: 95vw;
             }
-            #sadhana-container:fullscreen .flow-controls {
+            #sadhana-container:fullscreen .flow-controls, #sadhana-container:-webkit-full-screen .flow-controls {
                 position: fixed !important;
                 bottom: 15px !important;
                 left: 50% !important;
                 transform: translateX(-50%) !important;
                 margin: 0 !important;
             }
-            #sadhana-container:fullscreen #recording-pane.expanded {
+            #sadhana-container:fullscreen #recording-pane.expanded, #sadhana-container:-webkit-full-screen #recording-pane.expanded {
                 bottom: 80px !important;
             }
         }
@@ -179,13 +180,14 @@
             position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9);
             background: rgba(15, 23, 42, 0.95); border: 1px solid var(--gold); border-radius: 20px;
             padding: 30px 20px; width: 90%; max-width: 350px; text-align: center; z-index: 2147483647;
-            backdrop-filter: blur(15px); box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+            backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); box-shadow: 0 20px 50px rgba(0,0,0,0.8);
             opacity: 0; pointer-events: none; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
         .guest-popup.active { opacity: 1; pointer-events: auto; transform: translate(-50%, -50%) scale(1); }
         .popup-overlay {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.6);
-            z-index: 2147483646; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; backdrop-filter: blur(5px);
+            z-index: 2147483646; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; 
+            backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);
         }
         .popup-overlay.active { opacity: 1; pointer-events: auto; }
 
@@ -296,11 +298,12 @@ window.pIdx = 1;
 function showGuestPopup() {
     const overlay = document.getElementById('guest-overlay');
     const popup = document.getElementById('guest-popup');
+    const fsElement = document.fullscreenElement || document.webkitFullscreenElement;
 
-    // Move the popup into the fullscreen container if active so it remains visible
-    if (document.fullscreenElement) {
-        document.fullscreenElement.appendChild(overlay);
-        document.fullscreenElement.appendChild(popup);
+    // Detect if we are in fullscreen, so popup safely renders ABOVE everything
+    if (fsElement) {
+        fsElement.appendChild(overlay);
+        fsElement.appendChild(popup);
     } else {
         document.body.appendChild(overlay);
         document.body.appendChild(popup);
@@ -486,7 +489,7 @@ function getPaneHTML(id) {
         
     if(id === 'sadhana') return `
         <section id="v-sadhana" class="view">
-            <div id="sadhana-container" class="card" style="padding: 15px 10px; text-align: center; position: relative; border: none; background: transparent;">
+            <div id="sadhana-container" style="padding: 15px 10px; text-align: center; position: relative; width: 100%;">
                 
                 <!-- Fullscreen Lotus Logo -->
                 <img src="../assets/logo.webp" class="fs-logo" alt="Vedic Space">
@@ -526,7 +529,7 @@ function getPaneHTML(id) {
                 <audio id="sadhana-bg-audio" preload="auto"></audio>
 
                 <!-- EXPANDABLE RECORDING PANE WITH SOFT CLOSE -->
-                <div id="recording-pane" class="recording-section card">
+                <div id="recording-pane" class="recording-section">
                     
                     <button onclick="toggleRecordSection()" style="position: absolute; top: 12px; right: 12px; background: none; border: none; color: white; opacity: 0.5; cursor: pointer; z-index: 10; transition: 0.3s;">
                         <i data-feather="x" style="width: 20px; height: 20px;"></i>
@@ -1294,18 +1297,26 @@ function handleKeys(e) {
 
 function toggleFS(){ 
     const el = document.getElementById('sadhana-container'); 
-    if(!document.fullscreenElement) { el.requestFullscreen().catch(()=>{}); } 
-    else { document.exitFullscreen(); }
+    if(!document.fullscreenElement && !document.webkitFullscreenElement) { 
+        if (el.requestFullscreen) el.requestFullscreen().catch(()=>{});
+        else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+    } else { 
+        if (document.exitFullscreen) document.exitFullscreen(); 
+        else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+    }
 }
 
-document.addEventListener('fullscreenchange', () => {
+document.addEventListener('fullscreenchange', handleFSChange);
+document.addEventListener('webkitfullscreenchange', handleFSChange);
+
+function handleFSChange() {
     const icon = document.getElementById('fs-icon');
     if (icon) {
-        if (document.fullscreenElement && document.fullscreenElement.id === 'sadhana-container') icon.setAttribute('data-feather', 'minimize');
+        if (document.fullscreenElement || document.webkitFullscreenElement) icon.setAttribute('data-feather', 'minimize');
         else icon.setAttribute('data-feather', 'maximize');
     }
     feather.replace();
-});
+}
 
 document.getElementById('main-nav').addEventListener('wheel', (evt) => {
     evt.preventDefault();
