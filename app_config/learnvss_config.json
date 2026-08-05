@@ -6,10 +6,11 @@
     },
     "navigation": [
         {"id":"mandala", "title":"Mandala", "icon":"zap", "enabled": false}, 
-        {"id":"sadhana", "title":"Learn VSS", "icon":"refresh-cw", "enabled": true},
+        {"id":"sadhana", "title":"Learn VSS", "icon":"refresh-cw", "enabled": true},		
         {"id":"pran", "title":"Prāṇa", "icon":"loader", "enabled": true},
-        {"id":"med", "title":"Dhyāna", "icon":"moon", "enabled": true}, 
-        {"id":"anubhava", "title":"Anubhava", "icon":"edit-3", "enabled": true}, 
+        {"id":"med", "title":"Dhyāna", "icon":"moon", "enabled": true},
+		{id:'sanskrit', title:'Sanskrit', icon:'book-open', enabled: true},
+        {"id":"anubhava", "title":"Anubhava", "icon":"edit-3", "enabled": false}, 
         {"id":"yajna", "title":"Yajna", "icon":"video", "enabled": true},
         {"id":"drop", "title":"Drop", "icon":"wind", "enabled": false}, 
         {"id":"learn", "title":"Learn", "icon":"book-open", "enabled": false},
@@ -48,4 +49,4 @@
         { "title": "Shlokas 76-90", "duration": 26, "url": "https://www.youtube.com/embed/H0nJ7B7XmD0" },
         { "title": "Shlokas 91-108", "duration": 32, "url": "https://www.youtube.com/embed/8oM4Z5hQ_5M" }
     ]
-}
+}`
