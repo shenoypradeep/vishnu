@@ -7,21 +7,36 @@
     "navigation": [
         {"id":"mandala", "title":"Mandala", "icon":"zap", "enabled": false}, 
         {"id":"sadhana", "title":"Learn VSS", "icon":"refresh-cw", "enabled": true},		
+        {"id":"sanskrit", "title":"Sanskrit", "icon":"book-open", "enabled": true},
         {"id":"pran", "title":"Prāṇa", "icon":"loader", "enabled": true},
         {"id":"med", "title":"Dhyāna", "icon":"moon", "enabled": true},
-		{id:'sanskrit', title:'Sanskrit', icon:'book-open', enabled: true},
         {"id":"anubhava", "title":"Anubhava", "icon":"edit-3", "enabled": false}, 
         {"id":"yajna", "title":"Yajna", "icon":"video", "enabled": true},
         {"id":"drop", "title":"Drop", "icon":"wind", "enabled": false}, 
         {"id":"learn", "title":"Learn", "icon":"book-open", "enabled": false},
         {"id":"sangha", "title":"Sangha", "icon":"users", "enabled": false}
     ],
-    "anubhavaMetrics": [
-        {"id":"body", "label":"Body State", "max":2, "default":1, "options":["Tired","Neutral","Relaxed"]}, 
-        {"id":"breath", "label":"Breath Rhythm", "max":3, "default":2, "options":["Nostril<br>Dominant","Jumbled","Even &<br>Smooth","Smooth/Both<br>Nostrils"]},
-        {"id":"mind", "label":"State of Mind", "max":4, "default":2, "options":["Stressful","Full of<br>thoughts","Same as<br>before","Less<br>thoughts","Relaxed &<br>Clear"]}, 
-        {"id":"mood", "label":"Overall Mood", "max":3, "default":1, "options":["Negative","Neutral","Positive","Joyful"]},
-        {"id":"stress", "label":"Stress Resilience", "max":4, "default":1, "options":["Negative","Reaction<br>same","More<br>composed","In<br>control","Positive"]}
+    "sanskrit": [
+        { "title": "HOW TO Pronounce BRAHMA", "id": "QYpVUqQcJ_8", "type": "video" },
+        { "title": "Visarga pronunciation in Sanskrit", "id": "14yoCuTle6A", "type": "video" },
+        { "title": "Experience the 'Scientificness' of Sanskrit for yourself !", "id": "4fI7Qy1NbrI", "type": "video" },
+        { "title": "The First Sanskrit Lesson- Mastery of Sound", "id": "a4rz9NbMq0M", "type": "video" },
+        { "title": "The First Sanskrit Lesson - Check Point", "id": "dq5VdY69RMc", "type": "video" },
+        { "title": "Birth of Sanskrit Language - Origin Stories", "id": "BXaRPBIOYs0", "type": "video" },
+        { "title": "This ONE mistake is ruining ALL your Sanskrit Chants!", "id": "jLKwB6sq_Zo", "type": "video" },
+        { "title": "Sanskrit Pronunciation & Chanting Rules 1", "id": "KGMTqgCv4-w", "type": "video" },
+        { "title": "See, Hear, and Feel the Rhythms of Sanskrit!", "id": "LjM5GSSe8mU", "type": "video" },
+        { "title": "Sanskrit Pronunciation & Chanting Rules 2", "id": "pZ27iJw3uPg", "type": "video" },
+        { "title": "Chandas - Vedas, vedangas and upangas", "id": "Whm3LrWEENI", "type": "video" },
+        { "title": "Sanskrit Pronunciation & Chanting Rules 3", "id": "Ul7L_cAsYlw", "type": "video" },
+        { "title": "jna pronunciation in Sanskrit - How to pronounce ज्ञ correctly", "id": "nO6ZM4-1pyM", "type": "video" },
+        { "title": "Sanskrit Pronunciation & Chanting Rules 4", "id": "pEAbtgTDLr4", "type": "video" },
+        { "title": "Sanskrit Pronunciation & Chanting Rules 5", "id": "MQ5z2rNtFko", "type": "video" },
+        { "title": "Sanskrit Alphabets for beginners", "id": "PLFLFOfuyaIHvExkYbtlMM_mS1m5yRZtO2", "type": "playlist", "videos": [] },
+        { "title": "Sanskrit Lessons for Beginners", "id": "PLAPrVB8wngPkLgfax1hILlfRNPxljTn2L", "type": "playlist", "videos": [] },
+        { "title": "Sanskrit Grammar Lessons", "id": "PLnFLN_eBOBMVEWX7pGJMGJNr_HK75VL_9", "type": "playlist", "videos": [] },
+        { "title": "Sanskrit Vocabulary Builder", "id": "PLnFLN_eBOBMVKOoy7cZX3i6H2Gv3mO1eQ", "type": "playlist", "videos": [] },
+        { "title": "Sanskrit Reading Practice", "id": "PLlNdduOe1pp12SWXlphYT5h7zj0p2mhx3", "type": "playlist", "videos": [] }
     ],
     "meditations": [
         {"title":"Hari Om Meditation","audio":"./meditations/hari_om_meditation.mp3","img":"./meditations/Hari_Om_Chakras.webp"}, 
@@ -38,15 +53,5 @@
         {"title":"Chandra Bhedana","video":"https://www.youtube.com/embed/QGN8I7Ydvwo"},
         {"title":"Shitali Cooling Breath","video":"https://www.youtube.com/embed/wWXN9Qx6fO0"},
         {"title":"Surya Bhedana","video":"https://www.youtube.com/embed/4YIlmACF7g8"}
-    ],
-    "learnLessons": [
-        { "title": "Shlokas 1-10", "duration": 22, "url": "https://www.youtube.com/embed/XDzlsJ01P_A" },
-        { "title": "Shlokas 11-20", "duration": 23, "url": "https://www.youtube.com/embed/dSPrO6FVEYQ" },
-        { "title": "Shlokas 21-35", "duration": 38, "url": "https://www.youtube.com/embed/QAx2L7-fdKM" },
-        { "title": "Shlokas 36-50", "duration": 31, "url": "https://www.youtube.com/embed/1B6S1yA1104" },
-        { "title": "Shlokas 51-60", "duration": 18, "url": "https://www.youtube.com/embed/V4fXm3wG9p0" },
-        { "title": "Shlokas 61-75", "duration": 26, "url": "https://www.youtube.com/embed/yQ5uAIfTf6I" },
-        { "title": "Shlokas 76-90", "duration": 26, "url": "https://www.youtube.com/embed/H0nJ7B7XmD0" },
-        { "title": "Shlokas 91-108", "duration": 32, "url": "https://www.youtube.com/embed/8oM4Z5hQ_5M" }
     ]
-}`
+}
