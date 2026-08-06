@@ -17,6 +17,19 @@
         {"id":"sangha", "title":"Sangha", "icon":"users", "enabled": false}
     ],
     "sanskrit": [
+        { "title": "Sanskrit Alphabets for beginners", "id": "PLFLFOfuyaIHvExkYbtlMM_mS1m5yRZtO2", "type": "playlist", "videos": [
+            { "title": "Part 1: The Vowels", "id": "yA2X2vA" },
+            { "title": "Part 2: The Consonants", "id": "zQ3_O4dDq_s" }
+        ]},
+        { "title": "Sanskrit Lessons for Beginners", "id": "PLAPrVB8wngPkLgfax1hILlfRNPxljTn2L", "type": "playlist", "videos": [
+            { "title": "Lesson 1: Introduction", "id": "a4rz9NbMq0M" },
+            { "title": "Lesson 2: Sentence Structure", "id": "dq5VdY69RMc" }
+        ]},
+        { "title": "Sanskrit Grammar Lessons", "id": "PLnFLN_eBOBMVEWX7pGJMGJNr_HK75VL_9", "type": "playlist", "videos": [
+            { "title": "Noun Declensions", "id": "jLKwB6sq_Zo" }
+        ]},
+        { "title": "Sanskrit Vocabulary Builder", "id": "PLnFLN_eBOBMVKOoy7cZX3i6H2Gv3mO1eQ", "type": "playlist", "videos": [] },
+        { "title": "Sanskrit Reading Practice", "id": "PLlNdduOe1pp12SWXlphYT5h7zj0p2mhx3", "type": "playlist", "videos": [] },
         { "title": "HOW TO Pronounce BRAHMA", "id": "QYpVUqQcJ_8", "type": "video" },
         { "title": "Visarga pronunciation in Sanskrit", "id": "14yoCuTle6A", "type": "video" },
         { "title": "Experience the 'Scientificness' of Sanskrit for yourself !", "id": "4fI7Qy1NbrI", "type": "video" },
@@ -31,12 +44,7 @@
         { "title": "Sanskrit Pronunciation & Chanting Rules 3", "id": "Ul7L_cAsYlw", "type": "video" },
         { "title": "jna pronunciation in Sanskrit - How to pronounce ज्ञ correctly", "id": "nO6ZM4-1pyM", "type": "video" },
         { "title": "Sanskrit Pronunciation & Chanting Rules 4", "id": "pEAbtgTDLr4", "type": "video" },
-        { "title": "Sanskrit Pronunciation & Chanting Rules 5", "id": "MQ5z2rNtFko", "type": "video" },
-        { "title": "Sanskrit Alphabets for beginners", "id": "PLFLFOfuyaIHvExkYbtlMM_mS1m5yRZtO2", "type": "playlist", "videos": [] },
-        { "title": "Sanskrit Lessons for Beginners", "id": "PLAPrVB8wngPkLgfax1hILlfRNPxljTn2L", "type": "playlist", "videos": [] },
-        { "title": "Sanskrit Grammar Lessons", "id": "PLnFLN_eBOBMVEWX7pGJMGJNr_HK75VL_9", "type": "playlist", "videos": [] },
-        { "title": "Sanskrit Vocabulary Builder", "id": "PLnFLN_eBOBMVKOoy7cZX3i6H2Gv3mO1eQ", "type": "playlist", "videos": [] },
-        { "title": "Sanskrit Reading Practice", "id": "PLlNdduOe1pp12SWXlphYT5h7zj0p2mhx3", "type": "playlist", "videos": [] }
+        { "title": "Sanskrit Pronunciation & Chanting Rules 5", "id": "MQ5z2rNtFko", "type": "video" }
     ],
     "meditations": [
         {"title":"Hari Om Meditation","audio":"./meditations/hari_om_meditation.mp3","img":"./meditations/Hari_Om_Chakras.webp"}, 
