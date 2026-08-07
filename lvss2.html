@@ -78,7 +78,7 @@
         #sadhana-container .slide-wrapper { 
             width: 100%; height: auto; aspect-ratio: 16/9; max-height: 75vh; 
             border-radius: 20px; 
-            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3); /* Soft, natural shadow without hard artifact lines */
             margin: 30px auto; 
             overflow: hidden; background: transparent; -webkit-tap-highlight-color: transparent; outline: none;
         }
@@ -105,14 +105,17 @@
             margin-top: 25px; padding-bottom: 15px; border: 1px solid var(--border);
         }
 
+
         /* ======== FULLSCREEN OVERHAUL ======== */
         #sadhana-container::backdrop {
             background: linear-gradient(135deg, #0f172a, #1e3a8a) !important;
         }
         
+        /* Fullscreen Logo Tracker */
         .fs-logo { display: none; position: absolute; top: 15px; left: 20px; height: 40px; width: auto; z-index: 150; filter: drop-shadow(0 0 5px rgba(251,191,36,0.3)); }
         #sadhana-container:fullscreen .fs-logo, #sadhana-container:-webkit-full-screen .fs-logo { display: block; }
 
+        /* Default Fullscreen (Vertical/Portrait) */
         #sadhana-container:fullscreen, #sadhana-container:-webkit-full-screen { 
             background: linear-gradient(135deg, #0f172a, #1e3a8a) !important; 
             display: flex; flex-direction: column; justify-content: center; align-items: center; 
@@ -133,44 +136,59 @@
             border-radius: 20px; padding: 0; box-sizing: border-box; object-fit: cover;
         }
 
+        /* Fullscreen Controls simply sit below the slide in flex layout */
         #sadhana-container:fullscreen .flow-controls, #sadhana-container:-webkit-full-screen .flow-controls {
             position: relative !important; margin: 0 !important; bottom: auto !important; left: auto !important; transform: none !important;
         }
 
+        /* Fullscreen Floating Recording Pane */
         #sadhana-container:fullscreen #recording-pane.expanded, #sadhana-container:-webkit-full-screen #recording-pane.expanded {
-            position: fixed !important; bottom: 90px !important; left: 50% !important; transform: translateX(-50%) !important;
-            width: 90% !important; max-width: 420px !important; z-index: 9999 !important;
+            position: fixed !important;
+            bottom: 90px !important;
+            left: 50% !important;
+            transform: translateX(-50%) !important;
+            width: 90% !important;
+            max-width: 420px !important;
+            z-index: 9999 !important;
             background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 58, 138, 0.95)) !important;
-            border: 1px solid var(--gold) !important; margin: 0 !important;
+            border: 1px solid var(--gold) !important;
+            margin: 0 !important;
         }
 
+        /* Landscape Fullscreen Exception (Short screens only!) */
         @media screen and (max-height: 600px) and (orientation: landscape) {
             #sadhana-container:fullscreen, #sadhana-container:-webkit-full-screen { gap: 0; padding: 10px; }
             #sadhana-container:fullscreen .vss-heading-img, #sadhana-container:-webkit-full-screen .vss-heading-img { display: none !important; }
             #sadhana-container:fullscreen .fs-logo, #sadhana-container:-webkit-full-screen .fs-logo { display: none !important; }
-            #sadhana-container:fullscreen .slide-wrapper, #sadhana-container:-webkit-full-screen .slide-wrapper { max-height: 85vh; width: auto; max-width: 95vw; }
-            #sadhana-container:fullscreen .flow-controls, #sadhana-container:-webkit-full-screen .flow-controls {
-                position: fixed !important; bottom: 15px !important; left: 50% !important; transform: translateX(-50%) !important; margin: 0 !important;
+            #sadhana-container:fullscreen .slide-wrapper, #sadhana-container:-webkit-full-screen .slide-wrapper {
+                max-height: 85vh; width: auto; max-width: 95vw;
             }
-            #sadhana-container:fullscreen #recording-pane.expanded, #sadhana-container:-webkit-full-screen #recording-pane.expanded { bottom: 80px !important; }
+            #sadhana-container:fullscreen .flow-controls, #sadhana-container:-webkit-full-screen .flow-controls {
+                position: fixed !important;
+                bottom: 15px !important;
+                left: 50% !important;
+                transform: translateX(-50%) !important;
+                margin: 0 !important;
+            }
+            #sadhana-container:fullscreen #recording-pane.expanded, #sadhana-container:-webkit-full-screen #recording-pane.expanded {
+                bottom: 80px !important;
+            }
         }
 
-        /* --- SANSKRIT PANE CSS --- */
+        /* --- SANSKRIT SLEEK LIST --- */
         #sanskrit-player-list::-webkit-scrollbar { display: none; }
-        #sanskrit-player-list { scrollbar-width: none; }
         
         .sanskrit-list-item {
-            display: flex; align-items: center; padding: 12px 15px; border-radius: 8px; margin-bottom: 8px; 
-            cursor: pointer; transition: all 0.2s ease; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05);
+            display: flex; align-items: center; padding: 10px 12px; border-radius: 10px; margin-bottom: 6px; 
+            cursor: pointer; transition: all 0.2s ease;
         }
-        .sanskrit-list-item:hover { background: rgba(255,255,255,0.08); }
-        .sanskrit-list-item.active { background: rgba(251,191,36,0.1) !important; border-color: var(--gold) !important; }
+        .sanskrit-list-item:hover { background: rgba(255,255,255,0.08) !important; }
         
         .sanskrit-sub-item {
-            padding: 10px 12px; border-radius: 8px; cursor: pointer; font-size: 13px; 
-            display: flex; align-items: center; gap: 10px; transition: 0.2s; color: rgba(255,255,255,0.7);
+            padding: 8px 12px; border-radius: 8px; cursor: pointer; font-size: 12.5px; 
+            display: flex; align-items: center; gap: 8px; transition: 0.2s;
         }
-        .sanskrit-sub-item:hover { background: rgba(255,255,255,0.05); color: white; }
+        .sanskrit-sub-item:hover { background: rgba(255,255,255,0.05) !important; color: white !important; }
 
         /* --- GUEST POPUP OVERLAY --- */
         .guest-popup {
@@ -187,9 +205,14 @@
             backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);
         }
         .popup-overlay.active { opacity: 1; pointer-events: auto; }
-        
-        #sadhana-container:fullscreen .guest-popup, #sadhana-container:-webkit-full-screen .guest-popup { position: absolute !important; top: 50% !important; left: 50% !important; }
-        #sadhana-container:fullscreen .popup-overlay, #sadhana-container:-webkit-full-screen .popup-overlay { position: absolute !important; width: 100% !important; height: 100% !important; top: 0 !important; left: 0 !important; }
+
+        /* Absolute positioning overrides for when the popup is moved inside a Flex Fullscreen container */
+        #sadhana-container:fullscreen .guest-popup, #sadhana-container:-webkit-full-screen .guest-popup {
+            position: absolute !important; top: 50% !important; left: 50% !important;
+        }
+        #sadhana-container:fullscreen .popup-overlay, #sadhana-container:-webkit-full-screen .popup-overlay {
+            position: absolute !important; width: 100% !important; height: 100% !important; top: 0 !important; left: 0 !important;
+        }
 
         .yajna-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: linear-gradient(135deg, #0f172a, #1e3a8a); z-index: 2000; display: none; flex-direction: column; opacity: 0; transition: opacity 0.3s ease; overflow: hidden;}
         .yajna-overlay.active { display: flex; opacity: 1; }
@@ -299,6 +322,7 @@ function showGuestPopup() {
     const popup = document.getElementById('guest-popup');
     const fsElement = document.fullscreenElement || document.webkitFullscreenElement;
 
+    // Detect if we are in fullscreen, so popup safely renders ABOVE everything
     if (fsElement) {
         fsElement.appendChild(overlay);
         fsElement.appendChild(popup);
@@ -324,6 +348,7 @@ window.toggleRecordSection = () => {
     const indicator = document.getElementById('shloka-indicator');
     
     if (pane.style.maxHeight === '0px' || pane.style.maxHeight === '') {
+        // Expand
         pane.classList.add('expanded');
         pane.style.maxHeight = '500px';
         pane.style.opacity = '1';
@@ -331,12 +356,16 @@ window.toggleRecordSection = () => {
         btn.style.background = 'var(--gold)';
         btn.style.color = 'var(--bg)';
         
+        // Setup smart shloka tracking text
         indicator.innerText = window.pIdx > 2 ? `Submitting for: Shloka ${window.pIdx - 2}` : `Submitting for: Setup/Intro`;
+        
         setTimeout(() => pane.scrollIntoView({ behavior: 'smooth', block: 'center' }), 150);
     } else {
+        // Collapse
         pane.classList.remove('expanded');
         pane.style.maxHeight = '0px';
         pane.style.opacity = '0';
+        
         btn.style.background = 'transparent';
         btn.style.color = 'var(--gold)';
     }
@@ -458,6 +487,7 @@ function initDynamicUI() {
     dNav.innerHTML = ''; mNav.innerHTML = ''; contentContainer.innerHTML = '';
     
     APP_CONFIG.navigation.filter(item => item.enabled !== false && !['mandala', 'learn', 'sangha'].includes(item.id)).forEach(item => {
+        // Fallback for missing Saṃskṛta Vidyā title update
         let title = item.title;
         if(item.id === 'drop') title = 'Arpanam';
         if(item.id === 'sanskrit') title = 'Saṃskṛta Vidyā';
@@ -527,9 +557,11 @@ function getPaneHTML(id) {
                 <audio id="sadhana-bg-audio" preload="auto"></audio>
 
                 <div id="recording-pane" class="recording-section">
+                    
                     <button onclick="toggleRecordSection()" style="position: absolute; top: 12px; right: 12px; background: none; border: none; color: white; opacity: 0.5; cursor: pointer; z-index: 10; transition: 0.3s;">
                         <i data-feather="x" style="width: 20px; height: 20px;"></i>
                     </button>
+
                     <div style="padding: 15px 0 0 0;">
                         <h4 class="serif" style="color: var(--gold); font-size: 16px; margin-bottom: 5px;">Record Your Chanting</h4>
                         <p id="shloka-indicator" style="font-size: 12px; opacity: 0.9; margin-bottom: 20px; font-family:'Inter', sans-serif; color: white;"></p>
@@ -540,13 +572,16 @@ function getPaneHTML(id) {
                             </button>
                             <span id="record-timer" style="font-family: monospace; font-size: 24px; color: var(--gold); font-weight: bold; letter-spacing: 2px;">00:00</span>
                         </div>
+
                         <audio id="audio-preview" controls style="width: 100%; display: none; margin-bottom: 15px; height: 40px; border-radius: 8px;"></audio>
+
                         <button id="submit-audio-btn" onclick="submitAudioRecording()" style="display: none; width: 100%; max-width: 250px; margin: 0 auto; background: linear-gradient(135deg, var(--gold), #d97706); border: none; color: var(--bg); padding: 14px; border-radius: 12px; font-weight: bold; cursor: pointer; font-family: 'Inter', sans-serif; align-items: center; justify-content: center;">
                             <i data-feather="upload-cloud" style="width: 18px; margin-right: 8px;"></i> Submit Recording
                         </button>
                         <div id="audio-status" style="font-size: 13px; margin-top: 15px; color: var(--gold); font-weight: 500; font-family:'Inter', sans-serif;"></div>
                     </div>
                 </div>
+
             </div>
         </section>`;
 
@@ -567,19 +602,26 @@ function getPaneHTML(id) {
                         <i data-feather="arrow-left" style="width: 16px;"></i> Back to List
                     </button>
                     
-                    <div class="card" style="padding: 0; background: rgba(0,0,0,0.4); margin-bottom: 15px;">
+                    <div class="card" style="padding: 0; background: rgba(0,0,0,0.4); border: 1px solid var(--border); margin-bottom: 15px;">
                         <div class="video-box" style="border-radius: 20px 20px 0 0;">
                             <iframe id="sanskrit-iframe" src="" allowfullscreen></iframe>
                         </div>
                         <div class="card-body" style="text-align: left; padding: 20px;">
-                            <h3 class="serif" id="sanskrit-player-title" style="color: var(--gold); margin-bottom: 0px; font-size: 18px;"></h3>
-                            <span id="sanskrit-playlist-badge" style="display:none; background: rgba(251,191,36,0.15); color: var(--gold); font-size: 10px; font-weight: bold; padding: 4px 8px; border-radius: 6px; letter-spacing: 0.5px; margin-top: 8px;">PLAYLIST</span>
+                            <h3 class="serif" id="sanskrit-player-title" style="color: var(--gold); margin-bottom: 10px; font-size: 18px;"></h3>
+                            <span id="sanskrit-playlist-badge" style="display:none; background: rgba(251,191,36,0.15); color: var(--gold); font-size: 11px; font-weight: bold; padding: 4px 8px; border-radius: 6px; letter-spacing: 0.5px;">PLAYLIST</span>
+                            
+                            <div id="sanskrit-playlist-container" style="display:none; margin-top: 20px;">
+                                <button onclick="toggleSanskritPlaylist()" style="width:100%; display:flex; justify-content:space-between; align-items:center; background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: white; padding: 12px 15px; border-radius: 12px; cursor: pointer; font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 500;">
+                                    <span>More from this playlist</span>
+                                    <i data-feather="chevron-down" id="sanskrit-playlist-chevron" style="width: 18px; color: var(--gold);"></i>
+                                </button>
+                                <div id="sanskrit-playlist-items" style="max-height: 0; overflow: hidden; transition: max-height 0.4s ease-out;"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
                 
                 <div style="position: relative; flex: 1; min-height: 0; display: flex; flex-direction: column; width: 100%;">
-                    
                     <button id="sanskrit-scroll-up" onclick="scrollSanskritList(-1)" style="position: absolute; top: 0; left: 50%; transform: translateX(-50%); background: linear-gradient(to bottom, rgba(15,23,42,0.95), transparent); border: none; color: var(--gold); z-index: 10; width: 100%; height: 35px; cursor: pointer; display: none; align-items: flex-start; justify-content: center; padding-top: 5px; border-radius: 8px 8px 0 0;">
                         <i data-feather="chevron-up" style="width: 18px; opacity: 0.9;"></i>
                     </button>
@@ -589,7 +631,6 @@ function getPaneHTML(id) {
                     <button id="sanskrit-scroll-down" onclick="scrollSanskritList(1)" style="position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); background: linear-gradient(to top, rgba(15,23,42,0.95), transparent); border: none; color: var(--gold); z-index: 10; width: 100%; height: 35px; cursor: pointer; display: none; align-items: flex-end; justify-content: center; padding-bottom: 5px; border-radius: 0 0 8px 8px;">
                         <i data-feather="chevron-down" style="width: 18px; opacity: 0.9;"></i>
                     </button>
-
                 </div>
             </div>
         </section>`;
@@ -1023,7 +1064,7 @@ function renderTabIfNeeded(tab){
     renderedTabs[tab] = true;
 }
 
-// --- SANSKRIT PANE LOGIC (SLEEK LIST & ARROWS) ---
+// --- SANSKRIT PANE LOGIC (RESTORED BEAUTIFUL CARD + SLEEK MAIN LIST BELOW) ---
 function renderSanskritUI(activeIndex = null) {
     const mainList = document.getElementById('sanskrit-main-list');
     const playerList = document.getElementById('sanskrit-player-list');
@@ -1043,27 +1084,14 @@ function renderSanskritUI(activeIndex = null) {
             const borderColor = isActive ? 'var(--gold)' : 'rgba(255,255,255,0.08)';
 
             html += `
-                <div class="sanskrit-list-item ${activeClass}" style="background: ${bgColor}; border: 1px solid ${borderColor}; padding: 12px 15px; border-radius: 8px; margin-bottom: 8px; display: flex; align-items: center; cursor: pointer; transition: 0.2s;" onclick="openSanskritItem(${index})">
+                <div class="sanskrit-list-item ${activeClass}" style="background: ${bgColor}; border: 1px solid ${borderColor}; padding: 10px 12px; border-radius: 8px; margin-bottom: 8px; display: flex; align-items: center; cursor: pointer; transition: 0.2s;" onclick="openSanskritItem(${index})">
                     <i data-feather="${iconName}" style="margin-right: 12px; color: ${titleColor}; width: 16px; height: 16px; opacity: 0.9;"></i>
                     <div style="flex: 1; text-align: left; display: flex; align-items: center; justify-content: space-between;">
-                        <span style="font-size: 14px; font-weight: ${fontWeight}; color: ${titleColor}; font-family: 'Inter', sans-serif; line-height: 1.3;">${item.title}</span>
+                        <span style="font-size: 13.5px; font-weight: ${fontWeight}; color: ${titleColor}; font-family: 'Inter', sans-serif; line-height: 1.3;">${item.title}</span>
                         ${badge}
                     </div>
                 </div>
             `;
-            
-            if (isActive && isPlaylist && item.videos && item.videos.length > 0) {
-                html += `<div style="margin: 0 0 12px 15px; padding-left: 15px; border-left: 2px solid rgba(251,191,36,0.3); display: flex; flex-direction: column; gap: 4px;">`;
-                item.videos.forEach((vid, vIdx) => {
-                    html += `
-                        <div class="sanskrit-sub-item" onclick="playSanskritSubVideo('${vid.id}', this)" style="padding: 10px 12px; font-size: 13px; color: rgba(255,255,255,0.7); cursor: pointer; display: flex; align-items: center; gap: 10px; border-radius: 8px; transition: 0.2s;">
-                            <i data-feather="play-circle" style="width: 14px; height: 14px;"></i> 
-                            <span style="font-family: 'Inter', sans-serif;">${vid.title}</span>
-                        </div>
-                    `;
-                });
-                html += `</div>`;
-            }
         });
         return html;
     };
@@ -1082,6 +1110,9 @@ function openSanskritItem(index) {
     // Set titles
     const titleEl = document.getElementById('sanskrit-player-title');
     const badgeEl = document.getElementById('sanskrit-playlist-badge');
+    const accContainer = document.getElementById('sanskrit-playlist-container');
+    const accItems = document.getElementById('sanskrit-playlist-items');
+    
     titleEl.innerText = data.title;
 
     // Remount the list under the player so it shows the new active state
@@ -1092,16 +1123,36 @@ function openSanskritItem(index) {
         titleEl.style.marginBottom = '10px';
         document.getElementById('sanskrit-iframe').src = `https://www.youtube.com/embed/videoseries?list=${data.id}&autoplay=1`;
         
-        setTimeout(() => {
-            const firstSubItem = document.querySelector('#sanskrit-player-list .sanskrit-sub-item');
-            if(firstSubItem && data.videos && data.videos.length > 0) {
-                playSanskritSubVideo(data.videos[0].id, firstSubItem);
-            }
-        }, 100);
+        // Show Accordion Inside Card
+        if(data.videos && data.videos.length > 0) {
+            accContainer.style.display = 'block';
+            let itemsHtml = '<div style="padding-top: 10px; display: flex; flex-direction: column; gap: 8px;">';
+            data.videos.forEach((vid) => {
+                itemsHtml += `
+                    <div onclick="playSanskritSubVideo('${vid.id}', this)" class="sanskrit-playlist-row" style="padding: 12px; background: rgba(0,0,0,0.2); border-radius: 8px; cursor: pointer; color: white; font-size: 13px; display: flex; align-items: center; gap: 10px; font-family: 'Inter', sans-serif; transition: 0.2s;">
+                        <i data-feather="play-circle" style="width: 14px; opacity: 0.7;"></i>
+                        <span>${vid.title}</span>
+                    </div>
+                `;
+            });
+            itemsHtml += '</div>';
+            accItems.innerHTML = itemsHtml;
+            
+            // Auto-highlight the first sub-video
+            setTimeout(() => {
+                const firstSubItem = accItems.querySelector('.sanskrit-playlist-row');
+                if(firstSubItem) playSanskritSubVideo(data.videos[0].id, firstSubItem);
+            }, 100);
+        } else {
+            accContainer.style.display = 'none';
+            accItems.innerHTML = '';
+        }
 
     } else {
         badgeEl.style.display = 'none';
         titleEl.style.marginBottom = '0px';
+        accContainer.style.display = 'none';
+        accItems.innerHTML = '';
         document.getElementById('sanskrit-iframe').src = `https://www.youtube.com/embed/${data.id}?autoplay=1`;
     }
     
@@ -1110,24 +1161,39 @@ function openSanskritItem(index) {
     
     // Check if the inner scroll list needs arrows
     setTimeout(checkSanskritScroll, 300);
+    feather.replace();
 }
 
 function playSanskritSubVideo(vidId, el) {
     document.getElementById('sanskrit-iframe').src = `https://www.youtube.com/embed/${vidId}?autoplay=1`;
     
-    document.querySelectorAll('#sanskrit-player-list .sanskrit-sub-item').forEach(item => {
-        item.style.background = 'transparent';
-        item.style.color = 'rgba(255,255,255,0.6)';
+    document.querySelectorAll('.sanskrit-playlist-row').forEach(item => {
+        item.style.background = 'rgba(0,0,0,0.2)';
+        item.style.color = 'white';
         item.style.fontWeight = 'normal';
         const icon = item.querySelector('i');
-        if(icon) icon.style.color = 'rgba(255,255,255,0.6)';
+        if(icon) icon.style.color = 'white';
     });
     
-    el.style.background = 'rgba(251, 191, 36, 0.08)';
+    el.style.background = 'rgba(251, 191, 36, 0.1)';
     el.style.color = 'var(--gold)';
     el.style.fontWeight = '500';
     const icon = el.querySelector('i');
     if(icon) icon.style.color = 'var(--gold)';
+}
+
+function toggleSanskritPlaylist() {
+    const items = document.getElementById('sanskrit-playlist-items');
+    const chevron = document.getElementById('sanskrit-playlist-chevron');
+    
+    if (items.style.maxHeight === '0px' || items.style.maxHeight === '') {
+        items.style.maxHeight = '500px'; 
+        chevron.setAttribute('data-feather', 'chevron-up');
+    } else {
+        items.style.maxHeight = '0px';
+        chevron.setAttribute('data-feather', 'chevron-down');
+    }
+    feather.replace();
 }
 
 function backToSanskritList() {
