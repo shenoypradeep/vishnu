@@ -42,7 +42,17 @@
         .nav-links a { color: white; text-decoration: none; font-weight: 500; font-size: 13px; text-transform: uppercase; letter-spacing: 0.1em; transition: color 0.3s; cursor: pointer; }
         .nav-links a:hover, .nav-links a.active-link { color: var(--gold); }
         
-        .content { padding: 10px; max-width: 800px; margin: auto; padding-left: env(safe-area-inset-left, 10px); padding-right: env(safe-area-inset-right, 10px); }
+        /* Master Container expanded to allow Desktop Side-by-Side to breathe */
+        .content { padding: 10px; max-width: 1150px; margin: auto; padding-left: env(safe-area-inset-left, 10px); padding-right: env(safe-area-inset-right, 10px); }
+        
+        /* Ensure normal panes stay beautifully centered and constrained like Prana */
+        #v-anubhava .card, #v-drop .card, #picker-pran, #pran-timer-container, #display-pran .card, #picker-med, #med-timer-container, #display-med .card, #sadhana-container, #sanskrit-landing-view {
+            max-width: 800px; margin-left: auto; margin-right: auto;
+        }
+
+        /* Yajna Pane massively expands on Desktop */
+        #v-yajna .card { max-width: 1000px; margin-left: auto; margin-right: auto; }
+
         .view { display: none; }
         .view.active { display: block; animation: fadeIn 0.3s ease; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
@@ -75,7 +85,7 @@
         .mode-btn { flex: 1; border: none; background: transparent; color: white; border-radius: 8px; cursor: pointer; font-size: 10px; transition: 0.3s; padding: 0 4px; line-height: 1.2; font-family: 'Inter', sans-serif;}
         .mode-btn.active { background: var(--gold); color: var(--bg); font-weight: bold; }
 
-        #jaas-container { width: 100%; height: 60vh; border-radius: 15px; overflow: hidden; background: #000; }
+        #jaas-container { width: 100%; height: 70vh; border-radius: 15px; overflow: hidden; background: #000; }
 
         /* ======== SLIDE OVERHAUL (NORMAL MODE) ======== */
         #sadhana-container .slide-wrapper { 
@@ -153,14 +163,25 @@
 
         /* --- AKṢARA SLEEK LAYOUT --- */
         .sanskrit-player-layout { display: flex; flex-direction: column; gap: 15px; }
-        .sanskrit-list-wrapper { position: relative; width: 100%; display: flex; flex-direction: column; min-height: 0; }
+        
+        .sanskrit-list-wrapper { position: relative; width: 100%; display: flex; flex-direction: column; height: 42vh; }
         .sanskrit-video-wrapper { width: 100%; }
         
-        #sanskrit-player-list { max-height: 50vh; overflow-y: auto; padding-right: 5px; padding-top: 5px; padding-bottom: 40px; scroll-behavior: smooth; }
+        #sanskrit-player-list { 
+            flex: 1; overflow-y: auto; padding-right: 5px; padding-top: 5px; padding-bottom: 60px; scroll-behavior: smooth; 
+        }
         #sanskrit-player-list::-webkit-scrollbar { display: none; }
         #sanskrit-player-list { scrollbar-width: none; }
 
-        @media (min-width: 768px) { #sanskrit-player-list { max-height: 60vh; } }
+        @media (min-width: 768px) {
+            .sanskrit-player-layout {
+                flex-direction: row-reverse; /* List on left, video on right */
+                align-items: flex-start;
+                gap: 25px;
+            }
+            .sanskrit-list-wrapper { width: 320px; flex-shrink: 0; height: 65vh; }
+            .sanskrit-video-wrapper { flex: 1; max-width: 800px; } /* Exactly matches Prana Pane */
+        }
         
         .sanskrit-list-item {
             display: flex; align-items: center; padding: 10px 12px; border-radius: 10px; margin-bottom: 6px; 
@@ -203,7 +224,6 @@
             .nav-links { display: flex !important; }
             body { padding-bottom: 20px; }
             .yajna-content-area { padding: 40px 10%; font-size: 18px; }
-            #jaas-container { height: 80vh !important; max-height: 800px; }
         }
 
         .mobile-nav-wrapper { position: fixed; bottom: 0; left: 0; width: 100%; background: #0f172a; border-top: 1px solid var(--border); z-index: 1000; overflow: hidden; padding-bottom: env(safe-area-inset-bottom, 0); }
@@ -416,7 +436,7 @@ window.addEventListener('appinstalled', () => {
 // --- CONFIGURATION ENGINE ---
 let APP_CONFIG = null;
 
-// Secure Fallback in case JSON is missing or broken on the server
+// Exact fallback mirroring the provided learnvss_config.json
 const FALLBACK_CONFIG = {
     settings: { enableShruti: false, googleSheetUrl: GOOGLE_APP_URL, meditationBellUrl: "./assets/taala.mp3" },
     navigation: [
@@ -484,8 +504,6 @@ async function loadConfig() {
         const response = await fetch('./app_config/learnvss_config.json');
         if (response.ok) {
             APP_CONFIG = await response.json();
-            
-            // SMART SAFEGUARD: If JSON exists but is missing arrays, use fallback!
             if (!APP_CONFIG.sanskrit) APP_CONFIG.sanskrit = FALLBACK_CONFIG.sanskrit;
             if (!APP_CONFIG.pranayamas) APP_CONFIG.pranayamas = FALLBACK_CONFIG.pranayamas;
             if (!APP_CONFIG.meditations) APP_CONFIG.meditations = FALLBACK_CONFIG.meditations;
@@ -631,8 +649,8 @@ function getPaneHTML(id) {
                                 <iframe id="sanskrit-iframe" src="" allowfullscreen></iframe>
                             </div>
                             <div class="card-body" style="text-align: left; padding: 20px;">
-                                <h3 class="serif" id="sanskrit-player-title" style="color: var(--gold); margin-bottom: 0px; font-size: 18px;"></h3>
-                                <span id="sanskrit-playlist-badge" style="display:none; background: rgba(251,191,36,0.15); color: var(--gold); font-size: 11px; font-weight: bold; padding: 4px 8px; border-radius: 6px; letter-spacing: 0.5px; margin-top: 10px;">PLAYLIST</span>
+                                <h3 class="serif" id="sanskrit-player-title" style="color: var(--gold); margin-bottom: 10px; font-size: 18px;"></h3>
+                                <span id="sanskrit-playlist-badge" style="display:none; background: rgba(251,191,36,0.15); color: var(--gold); font-size: 11px; font-weight: bold; padding: 4px 8px; border-radius: 6px; letter-spacing: 0.5px;">PLAYLIST</span>
                                 
                                 <div id="sanskrit-playlist-container" style="display:none; margin-top: 20px;">
                                     <button onclick="toggleSanskritPlaylist()" style="width:100%; display:flex; justify-content:space-between; align-items:center; background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: white; padding: 12px 15px; border-radius: 12px; cursor: pointer; font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 500;">
@@ -1131,7 +1149,9 @@ function openSanskritItem(index) {
     const data = APP_CONFIG.sanskrit[index];
     
     document.getElementById('sanskrit-landing-view').style.display = 'none';
-    document.getElementById('sanskrit-player-view').style.display = 'flex';
+    
+    const playerView = document.getElementById('sanskrit-player-view');
+    playerView.style.display = 'block'; 
     
     const titleEl = document.getElementById('sanskrit-player-title');
     const badgeEl = document.getElementById('sanskrit-playlist-badge');
@@ -1147,6 +1167,7 @@ function openSanskritItem(index) {
         titleEl.style.marginBottom = '10px';
         document.getElementById('sanskrit-iframe').src = `https://www.youtube.com/embed/videoseries?list=${data.id}&autoplay=1`;
         
+        // Show Accordion Inside Card
         if(data.videos && data.videos.length > 0) {
             accContainer.style.display = 'block';
             let itemsHtml = '<div style="padding-top: 10px; display: flex; flex-direction: column; gap: 8px;">';
@@ -1161,6 +1182,7 @@ function openSanskritItem(index) {
             itemsHtml += '</div>';
             accItems.innerHTML = itemsHtml;
             
+            // Auto-highlight the first sub-video
             setTimeout(() => {
                 const firstSubItem = accItems.querySelector('.sanskrit-playlist-row');
                 if(firstSubItem) playSanskritSubVideo(data.videos[0].id, firstSubItem);
@@ -1178,11 +1200,14 @@ function openSanskritItem(index) {
         document.getElementById('sanskrit-iframe').src = `https://www.youtube.com/embed/${data.id}?autoplay=1`;
     }
     
-    // Check if the inner scroll list needs arrows
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    
     setTimeout(() => {
         checkSanskritScroll();
         const activeEl = document.querySelector('#sanskrit-player-list .sanskrit-list-item.active');
-        if (activeEl) activeEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        if (activeEl) {
+            activeEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
     }, 300);
     feather.replace();
 }
