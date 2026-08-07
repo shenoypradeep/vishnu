@@ -89,7 +89,6 @@
             object-fit: cover; width: 100%; height: 100%; border-radius: 20px; transition: border-radius 0.3s ease; -webkit-user-select: none; user-select: none; display: block;
         }
 
-        /* NORMAL CONTROLS PILL (Side-by-side Gradient) */
         #sadhana-container .flow-controls {
             display: flex; align-items: center; justify-content: center; gap: 15px; z-index: 100; 
             padding: 10px 20px; background: linear-gradient(135deg, rgba(15,23,42,0.9), rgba(30,58,138,0.9)); 
@@ -98,32 +97,23 @@
             transition: all 0.3s ease; box-shadow: 0 10px 30px rgba(0,0,0,0.3);
         }
 
-        /* NORMAL RECORDING PANE */
         #recording-pane {
             max-height: 0; opacity: 0; overflow: hidden; margin: 0 auto; padding: 0 15px; 
             border-radius: 15px; background: rgba(0,0,0,0.3); transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); 
             border: none; box-sizing: border-box; position: relative; max-width: 420px;
         }
-        #recording-pane.expanded {
-            margin-top: 25px; padding-bottom: 15px; border: 1px solid var(--border);
-        }
-
+        #recording-pane.expanded { margin-top: 25px; padding-bottom: 15px; border: 1px solid var(--border); }
 
         /* ======== FULLSCREEN OVERHAUL ======== */
-        #sadhana-container::backdrop {
-            background: linear-gradient(135deg, #0f172a, #1e3a8a) !important;
-        }
+        #sadhana-container::backdrop { background: linear-gradient(135deg, #0f172a, #1e3a8a) !important; }
         
-        /* Fullscreen Logo Tracker */
         .fs-logo { display: none; position: absolute; top: 15px; left: 20px; height: 40px; width: auto; z-index: 150; filter: drop-shadow(0 0 5px rgba(251,191,36,0.3)); }
         #sadhana-container:fullscreen .fs-logo, #sadhana-container:-webkit-full-screen .fs-logo { display: block; }
 
-        /* Default Fullscreen (Vertical/Portrait) */
         #sadhana-container:fullscreen, #sadhana-container:-webkit-full-screen { 
             background: linear-gradient(135deg, #0f172a, #1e3a8a) !important; 
             display: flex; flex-direction: column; justify-content: center; align-items: center; 
-            padding: 20px; width: 100vw; height: 100vh; position: relative; box-sizing: border-box;
-            gap: 25px; 
+            padding: 20px; width: 100vw; height: 100vh; position: relative; box-sizing: border-box; gap: 25px; 
         }
 
         #sadhana-container:fullscreen .vss-heading-img, #sadhana-container:-webkit-full-screen .vss-heading-img { 
@@ -139,67 +129,38 @@
             border-radius: 20px; padding: 0; box-sizing: border-box; object-fit: cover;
         }
 
-        /* Fullscreen Controls simply sit below the slide in flex layout */
         #sadhana-container:fullscreen .flow-controls, #sadhana-container:-webkit-full-screen .flow-controls {
             position: relative !important; margin: 0 !important; bottom: auto !important; left: auto !important; transform: none !important;
         }
 
-        /* Fullscreen Floating Recording Pane */
         #sadhana-container:fullscreen #recording-pane.expanded, #sadhana-container:-webkit-full-screen #recording-pane.expanded {
-            position: fixed !important;
-            bottom: 90px !important;
-            left: 50% !important;
-            transform: translateX(-50%) !important;
-            width: 90% !important;
-            max-width: 420px !important;
-            z-index: 9999 !important;
+            position: fixed !important; bottom: 90px !important; left: 50% !important; transform: translateX(-50%) !important;
+            width: 90% !important; max-width: 420px !important; z-index: 9999 !important;
             background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 58, 138, 0.95)) !important;
-            border: 1px solid var(--gold) !important;
-            margin: 0 !important;
+            border: 1px solid var(--gold) !important; margin: 0 !important;
         }
 
-        /* Landscape Fullscreen Exception (Short screens only!) */
         @media screen and (max-height: 600px) and (orientation: landscape) {
             #sadhana-container:fullscreen, #sadhana-container:-webkit-full-screen { gap: 0; padding: 10px; }
             #sadhana-container:fullscreen .vss-heading-img, #sadhana-container:-webkit-full-screen .vss-heading-img { display: none !important; }
             #sadhana-container:fullscreen .fs-logo, #sadhana-container:-webkit-full-screen .fs-logo { display: none !important; }
-            #sadhana-container:fullscreen .slide-wrapper, #sadhana-container:-webkit-full-screen .slide-wrapper {
-                max-height: 85vh; width: auto; max-width: 95vw;
-            }
+            #sadhana-container:fullscreen .slide-wrapper, #sadhana-container:-webkit-full-screen .slide-wrapper { max-height: 85vh; width: auto; max-width: 95vw; }
             #sadhana-container:fullscreen .flow-controls, #sadhana-container:-webkit-full-screen .flow-controls {
-                position: fixed !important;
-                bottom: 15px !important;
-                left: 50% !important;
-                transform: translateX(-50%) !important;
-                margin: 0 !important;
+                position: fixed !important; bottom: 15px !important; left: 50% !important; transform: translateX(-50%) !important; margin: 0 !important;
             }
-            #sadhana-container:fullscreen #recording-pane.expanded, #sadhana-container:-webkit-full-screen #recording-pane.expanded {
-                bottom: 80px !important;
-            }
+            #sadhana-container:fullscreen #recording-pane.expanded, #sadhana-container:-webkit-full-screen #recording-pane.expanded { bottom: 80px !important; }
         }
 
         /* --- AKṢARA SLEEK LAYOUT --- */
-        .sanskrit-player-layout {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-        .sanskrit-list-wrapper {
-            position: relative; width: 100%; display: flex; flex-direction: column; min-height: 0;
-        }
-        .sanskrit-video-wrapper {
-            width: 100%;
-        }
+        .sanskrit-player-layout { display: flex; flex-direction: column; gap: 15px; }
+        .sanskrit-list-wrapper { position: relative; width: 100%; display: flex; flex-direction: column; min-height: 0; }
+        .sanskrit-video-wrapper { width: 100%; }
         
-        #sanskrit-player-list { 
-            max-height: 50vh; overflow-y: auto; padding-right: 5px; padding-top: 5px; padding-bottom: 40px; scroll-behavior: smooth; 
-        }
+        #sanskrit-player-list { max-height: 50vh; overflow-y: auto; padding-right: 5px; padding-top: 5px; padding-bottom: 40px; scroll-behavior: smooth; }
         #sanskrit-player-list::-webkit-scrollbar { display: none; }
         #sanskrit-player-list { scrollbar-width: none; }
 
-        @media (min-width: 768px) {
-            #sanskrit-player-list { max-height: 60vh; }
-        }
+        @media (min-width: 768px) { #sanskrit-player-list { max-height: 60vh; } }
         
         .sanskrit-list-item {
             display: flex; align-items: center; padding: 10px 12px; border-radius: 10px; margin-bottom: 6px; 
@@ -229,13 +190,8 @@
         }
         .popup-overlay.active { opacity: 1; pointer-events: auto; }
 
-        /* Absolute positioning overrides for when the popup is moved inside a Flex Fullscreen container */
-        #sadhana-container:fullscreen .guest-popup, #sadhana-container:-webkit-full-screen .guest-popup {
-            position: absolute !important; top: 50% !important; left: 50% !important;
-        }
-        #sadhana-container:fullscreen .popup-overlay, #sadhana-container:-webkit-full-screen .popup-overlay {
-            position: absolute !important; width: 100% !important; height: 100% !important; top: 0 !important; left: 0 !important;
-        }
+        #sadhana-container:fullscreen .guest-popup, #sadhana-container:-webkit-full-screen .guest-popup { position: absolute !important; top: 50% !important; left: 50% !important; }
+        #sadhana-container:fullscreen .popup-overlay, #sadhana-container:-webkit-full-screen .popup-overlay { position: absolute !important; width: 100% !important; height: 100% !important; top: 0 !important; left: 0 !important; }
 
         .yajna-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: linear-gradient(135deg, #0f172a, #1e3a8a); z-index: 2000; display: none; flex-direction: column; opacity: 0; transition: opacity 0.3s ease; overflow: hidden;}
         .yajna-overlay.active { display: flex; opacity: 1; }
@@ -329,6 +285,7 @@
 // 1. PASTE YOUR NEW APP SCRIPT URL HERE
 // ==========================================
 const GOOGLE_APP_URL = "YOUR_NEW_APPS_SCRIPT_URL_HERE";
+
 
 // --- GLOBAL RECORDING VARIABLES ---
 window.globalAudioBlob = null;
@@ -459,6 +416,7 @@ window.addEventListener('appinstalled', () => {
 // --- CONFIGURATION ENGINE ---
 let APP_CONFIG = null;
 
+// Secure Fallback in case JSON is missing or broken on the server
 const FALLBACK_CONFIG = {
     settings: { enableShruti: false, googleSheetUrl: GOOGLE_APP_URL, meditationBellUrl: "./assets/taala.mp3" },
     navigation: [
@@ -526,6 +484,11 @@ async function loadConfig() {
         const response = await fetch('./app_config/learnvss_config.json');
         if (response.ok) {
             APP_CONFIG = await response.json();
+            
+            // SMART SAFEGUARD: If JSON exists but is missing arrays, use fallback!
+            if (!APP_CONFIG.sanskrit) APP_CONFIG.sanskrit = FALLBACK_CONFIG.sanskrit;
+            if (!APP_CONFIG.pranayamas) APP_CONFIG.pranayamas = FALLBACK_CONFIG.pranayamas;
+            if (!APP_CONFIG.meditations) APP_CONFIG.meditations = FALLBACK_CONFIG.meditations;
         } else {
             throw new Error("Config not found");
         }
@@ -533,7 +496,6 @@ async function loadConfig() {
         APP_CONFIG = FALLBACK_CONFIG;
     }
 
-    // Sort Sanskrit list automatically so playlists are always on top
     if (APP_CONFIG.sanskrit) {
         APP_CONFIG.sanskrit.sort((a, b) => {
             if (a.type === 'playlist' && b.type !== 'playlist') return -1;
@@ -1127,6 +1089,165 @@ function renderTabIfNeeded(tab){
     if(tab === 'yajna') initJitsi();
     renderedTabs[tab] = true;
 }
+
+// --- SANSKRIT PANE LOGIC (RESTORED BEAUTIFUL CARD + SLEEK MAIN LIST BELOW) ---
+function renderSanskritUI(activeIndex = null) {
+    const mainList = document.getElementById('sanskrit-main-list');
+    const playerList = document.getElementById('sanskrit-player-list');
+    const data = APP_CONFIG.sanskrit || [];
+    
+    let generateListHtml = (isPlayerView = false) => {
+        let html = '';
+        data.forEach((item, index) => {
+            const isActive = index === activeIndex;
+            const isPlaylist = item.type === 'playlist';
+            const iconName = isPlaylist ? 'list' : 'youtube';
+            const activeClass = isActive ? 'active' : '';
+            const badge = isPlaylist ? `<span style="font-size: 9px; color: var(--gold); border: 1px solid var(--gold); padding: 1px 5px; border-radius: 8px; margin-left: 8px; letter-spacing: 0.5px; font-weight: 600;">PLAYLIST</span>` : '';
+            const titleColor = isActive ? 'var(--gold)' : 'white';
+            const fontWeight = isActive ? '500' : '400';
+            const bgColor = isActive ? 'rgba(251,191,36,0.08)' : 'rgba(255,255,255,0.04)';
+            const borderColor = isActive ? 'var(--gold)' : 'rgba(255,255,255,0.08)';
+
+            html += `
+                <div class="sanskrit-list-item ${activeClass}" style="background: ${bgColor}; border: 1px solid ${borderColor}; padding: 12px 15px; border-radius: 8px; margin-bottom: 8px; display: flex; align-items: center; cursor: pointer; transition: 0.2s;" onclick="openSanskritItem(${index})">
+                    <i data-feather="${iconName}" style="margin-right: 12px; color: ${titleColor}; width: 16px; height: 16px; opacity: 0.9;"></i>
+                    <div style="flex: 1; text-align: left; display: flex; align-items: center; justify-content: space-between;">
+                        <span style="font-size: 13.5px; font-weight: ${fontWeight}; color: ${titleColor}; font-family: 'Inter', sans-serif; line-height: 1.3;">${item.title}</span>
+                        ${badge}
+                    </div>
+                </div>
+            `;
+        });
+        return html;
+    };
+
+    if (mainList) mainList.innerHTML = generateListHtml(false);
+    if (playerList) playerList.innerHTML = generateListHtml(true);
+    feather.replace();
+}
+
+function openSanskritItem(index) {
+    const data = APP_CONFIG.sanskrit[index];
+    
+    document.getElementById('sanskrit-landing-view').style.display = 'none';
+    document.getElementById('sanskrit-player-view').style.display = 'flex';
+    
+    const titleEl = document.getElementById('sanskrit-player-title');
+    const badgeEl = document.getElementById('sanskrit-playlist-badge');
+    const accContainer = document.getElementById('sanskrit-playlist-container');
+    const accItems = document.getElementById('sanskrit-playlist-items');
+    
+    titleEl.innerText = data.title;
+
+    renderSanskritUI(index);
+    
+    if (data.type === 'playlist') {
+        badgeEl.style.display = 'inline-block';
+        titleEl.style.marginBottom = '10px';
+        document.getElementById('sanskrit-iframe').src = `https://www.youtube.com/embed/videoseries?list=${data.id}&autoplay=1`;
+        
+        if(data.videos && data.videos.length > 0) {
+            accContainer.style.display = 'block';
+            let itemsHtml = '<div style="padding-top: 10px; display: flex; flex-direction: column; gap: 8px;">';
+            data.videos.forEach((vid) => {
+                itemsHtml += `
+                    <div onclick="playSanskritSubVideo('${vid.id}', this)" class="sanskrit-playlist-row" style="padding: 12px; background: rgba(0,0,0,0.2); border-radius: 8px; cursor: pointer; color: white; font-size: 13px; display: flex; align-items: center; gap: 10px; font-family: 'Inter', sans-serif; transition: 0.2s;">
+                        <i data-feather="play-circle" style="width: 14px; opacity: 0.7;"></i>
+                        <span>${vid.title}</span>
+                    </div>
+                `;
+            });
+            itemsHtml += '</div>';
+            accItems.innerHTML = itemsHtml;
+            
+            setTimeout(() => {
+                const firstSubItem = accItems.querySelector('.sanskrit-playlist-row');
+                if(firstSubItem) playSanskritSubVideo(data.videos[0].id, firstSubItem);
+            }, 100);
+        } else {
+            accContainer.style.display = 'none';
+            accItems.innerHTML = '';
+        }
+
+    } else {
+        badgeEl.style.display = 'none';
+        titleEl.style.marginBottom = '0px';
+        accContainer.style.display = 'none';
+        accItems.innerHTML = '';
+        document.getElementById('sanskrit-iframe').src = `https://www.youtube.com/embed/${data.id}?autoplay=1`;
+    }
+    
+    // Check if the inner scroll list needs arrows
+    setTimeout(() => {
+        checkSanskritScroll();
+        const activeEl = document.querySelector('#sanskrit-player-list .sanskrit-list-item.active');
+        if (activeEl) activeEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 300);
+    feather.replace();
+}
+
+function playSanskritSubVideo(vidId, el) {
+    document.getElementById('sanskrit-iframe').src = `https://www.youtube.com/embed/${vidId}?autoplay=1`;
+    
+    document.querySelectorAll('.sanskrit-playlist-row').forEach(item => {
+        item.style.background = 'rgba(0,0,0,0.2)';
+        item.style.color = 'white';
+        item.style.fontWeight = 'normal';
+        const icon = item.querySelector('i');
+        if(icon) icon.style.color = 'white';
+    });
+    
+    el.style.background = 'rgba(251, 191, 36, 0.1)';
+    el.style.color = 'var(--gold)';
+    el.style.fontWeight = '500';
+    const icon = el.querySelector('i');
+    if(icon) icon.style.color = 'var(--gold)';
+}
+
+function toggleSanskritPlaylist() {
+    const items = document.getElementById('sanskrit-playlist-items');
+    const chevron = document.getElementById('sanskrit-playlist-chevron');
+    
+    if (items.style.maxHeight === '0px' || items.style.maxHeight === '') {
+        items.style.maxHeight = '500px'; 
+        chevron.setAttribute('data-feather', 'chevron-up');
+    } else {
+        items.style.maxHeight = '0px';
+        chevron.setAttribute('data-feather', 'chevron-down');
+    }
+    feather.replace();
+}
+
+function backToSanskritList() {
+    document.getElementById('sanskrit-iframe').src = ''; 
+    document.getElementById('sanskrit-player-view').style.display = 'none';
+    document.getElementById('sanskrit-landing-view').style.display = 'block';
+    renderSanskritUI(null); 
+}
+
+window.checkSanskritScroll = () => {
+    const list = document.getElementById('sanskrit-player-list');
+    const upBtn = document.getElementById('sanskrit-scroll-up');
+    const downBtn = document.getElementById('sanskrit-scroll-down');
+    if(!list) return;
+
+    if (list.scrollHeight > list.clientHeight) {
+        upBtn.style.display = list.scrollTop > 5 ? 'flex' : 'none';
+        downBtn.style.display = (list.scrollTop + list.clientHeight < list.scrollHeight - 5) ? 'flex' : 'none';
+    } else {
+        upBtn.style.display = 'none';
+        downBtn.style.display = 'none';
+    }
+};
+
+window.scrollSanskritList = (dir) => {
+    const list = document.getElementById('sanskrit-player-list');
+    if(!list) return;
+    const scrollAmount = 120 * dir;
+    list.scrollBy({ top: scrollAmount, behavior: 'smooth' });
+    setTimeout(checkSanskritScroll, 300); 
+};
 
 function initPicker(type) {
     const sourceData = type === 'pran' ? APP_CONFIG.pranayamas : APP_CONFIG.meditations;
