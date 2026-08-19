@@ -13,7 +13,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/feather-icons"></script>
     <style>
-        :root { --gold: #fbbf24; --glass: rgba(255, 255, 255, 0.08); --border: rgba(255, 255, 255, 0.12); }
+        :root { --bg: #1e3a8a; --gold: #fbbf24; --glass: rgba(255, 255, 255, 0.08); --border: rgba(255, 255, 255, 0.12); }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html { background-color: #0f172a; min-height: 100vh; }
         body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #0f172a, #1e3a8a); background-attachment: fixed; min-height: 100vh; color: white; display: flex; align-items: center; justify-content: center; padding: 20px; }
@@ -42,8 +42,14 @@
         .mode-switch a { color: var(--gold); cursor: pointer; text-decoration: none; font-weight: 600; }
         .mode-switch a:hover { text-decoration: underline; }
         
-        /* New class for signup-specific fields */
         .signup-field { display: none; }
+        .serif { font-family: 'Playfair Display', serif; }
+
+        /* Approval Modal CSS */
+        .approval-popup { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9); background: rgba(15, 23, 42, 0.95); border: 1px solid var(--gold); border-radius: 20px; padding: 30px 20px; width: 90%; max-width: 350px; text-align: center; z-index: 2147483647; backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); box-shadow: 0 20px 50px rgba(0,0,0,0.8); opacity: 0; pointer-events: none; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .approval-popup.active { opacity: 1; pointer-events: auto; transform: translate(-50%, -50%) scale(1); }
+        .popup-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.6); z-index: 2147483646; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); }
+        .popup-overlay.active { opacity: 1; pointer-events: auto; }
     </style>
 </head>
 <body>
@@ -92,23 +98,29 @@
     <span class="guest-link" onclick="continueAsGuest()">Continue as Guest ></span>
 </div>
 
+<div class="popup-overlay" id="approval-overlay" onclick="closeApprovalPopup()"></div>
+<div class="approval-popup" id="approval-popup">
+    <i data-feather="clock" style="color: var(--gold); width: 32px; height: 32px; margin-bottom: 15px;"></i>
+    <h3 class="serif" style="color: var(--gold); margin-bottom: 10px; font-size: 1.3rem;">Approval Pending</h3>
+    <p id="approval-msg-text" style="font-size: 14px; opacity: 0.9; margin-bottom: 25px; line-height: 1.5; color: white;"></p>
+    <button onclick="closeApprovalPopup()" style="width: 100%; background: linear-gradient(135deg, var(--gold), #d97706); color: var(--bg); padding: 12px; border-radius: 12px; font-weight: bold; border: none; font-size: 14px; cursor: pointer; font-family: 'Inter', sans-serif;">Understood</button>
+</div>
+
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-    import { getAuth, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+    import { getAuth, GoogleAuthProvider, signInWithPopup, signOut } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
 
     // =============== PASTE YOUR TEST GOOGLE APPS SCRIPT URL HERE ===============
-    const GOOGLE_APP_URL = "https://script.google.com/macros/s/AKfycbzfIn5Jy1JxaViZRmkiembvrw-rS3hZUwiDxl7-h1YwzjIbhSxOZlsQkQWan5woyIXknw/exec";
+    const GOOGLE_APP_URL = "https://script.google.com/macros/s/AKfycbyRMmFeftM55MPBtPR3dMknnO05SlV2sXbV-thjweCdgzkv5HxTXaBOLawZtJBQQOR2VA/exec";
 
-    // =============== PASTE YOUR FIREBASE CONFIG HERE ===============
-        const firebaseConfig = {
-            apiKey: "AIzaSyDNODSDmwHVfqt2CSb0tPDZwJGYjov7Lt0",
-            authDomain: "vedic-space.firebaseapp.com",
-            projectId: "vedic-space",
-            storageBucket: "vedic-space.firebasestorage.app",
-            messagingSenderId: "465492860613",
-            appId: "1:465492860613:web:701d9c3ab0cd4c5a3edaac"
-        };
-
+    const firebaseConfig = {
+        apiKey: "AIzaSyDNODSDmwHVfqt2CSb0tPDZwJGYjov7Lt0",
+        authDomain: "vedic-space.firebaseapp.com",
+        projectId: "vedic-space",
+        storageBucket: "vedic-space.firebasestorage.app",
+        messagingSenderId: "305492860613",
+        appId: "1:305492860613:web:701d9c3ab0cd4c5a3edaac"
+    };
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
@@ -119,6 +131,20 @@
     const signupBtn = document.getElementById('signup-btn');
     feather.replace();
 
+    // Show Pending Popup
+    function showPendingModal(msg) {
+        document.getElementById('approval-msg-text').innerText = msg;
+        document.getElementById('approval-overlay').classList.add('active');
+        document.getElementById('approval-popup').classList.add('active');
+        err.innerText = "";
+    }
+
+    // Expose close function to window
+    window.closeApprovalPopup = () => {
+        document.getElementById('approval-overlay').classList.remove('active');
+        document.getElementById('approval-popup').classList.remove('active');
+    };
+
     // 1. Google Sign In
     document.getElementById('google-btn').onclick = async () => {
         try {
@@ -126,25 +152,27 @@
             err.style.color = "var(--gold)";
             const result = await signInWithPopup(auth, provider);
             
-            err.innerText = "Syncing profile...";
+            err.innerText = "Checking Approval Status...";
             const googleName = result.user.displayName || result.user.email.split('@')[0];
 
             const response = await fetch(GOOGLE_APP_URL, {
                 method: 'POST',
-                // Explicitly send as plain text to bypass Google Apps Script CORS Preflight blocks!
-                headers: {
-                    "Content-Type": "text/plain;charset=utf-8",
-                },
+                headers: { "Content-Type": "text/plain;charset=utf-8" },
                 body: JSON.stringify({ action: "GET_ROLE_AND_LOG", userId: result.user.email, name: googleName }),
             });
             const data = await response.json();
 
-            localStorage.setItem('vss_user_id', result.user.email); 
-            localStorage.setItem('vss_user_name', data.name || googleName);
-            localStorage.setItem('vss_user_role', data.role || "learner"); 
-            
-            // REDIRECT TO TEST PAGE
-            window.location.href = "lvss2.html";
+            if(data.status === "success") {
+                localStorage.setItem('vss_user_id', result.user.email); 
+                localStorage.setItem('vss_user_name', data.name || googleName);
+                localStorage.setItem('vss_user_role', data.role || "learner"); 
+                window.location.href = "lvss2.html";
+            } else if (data.status === "pending") {
+                await signOut(auth); // Sign them out of Firebase so they aren't stuck halfway
+                showPendingModal(data.message);
+            } else {
+                throw new Error(data.message);
+            }
         } catch (error) { 
             err.style.color = "#ff4757";
             err.innerText = error.message.replace("Firebase: ", ""); 
@@ -182,10 +210,7 @@
         try {
             const response = await fetch(GOOGLE_APP_URL, {
                 method: 'POST',
-                // Explicitly send as plain text to bypass Google Apps Script CORS Preflight blocks!
-                headers: {
-                    "Content-Type": "text/plain;charset=utf-8",
-                },
+                headers: { "Content-Type": "text/plain;charset=utf-8" },
                 body: JSON.stringify({ action: action, userId: userIdInput, password: pass, name: fullName }),
             });
             
@@ -195,9 +220,9 @@
                 localStorage.setItem('vss_user_id', userIdInput);
                 localStorage.setItem('vss_user_name', data.name || userIdInput);
                 localStorage.setItem('vss_user_role', data.role || "learner");
-                
-                // REDIRECT TO TEST PAGE
                 window.location.href = "lvss2.html";
+            } else if (data.status === "pending") {
+                showPendingModal(data.message);
             } else {
                 throw new Error(data.message);
             }
@@ -217,8 +242,6 @@
         localStorage.setItem('vss_user_id', 'guest_user');
         localStorage.setItem('vss_user_name', 'Guest User');
         localStorage.setItem('vss_user_role', 'guest');
-        
-        // REDIRECT TO TEST PAGE
         window.location.href = "lvss2.html";
     };
 
@@ -241,5 +264,6 @@
             `Already have an account? <a onclick="toggleMode()">Login here</a>`;
     };
 </script>
+
 </body>
 </html>
