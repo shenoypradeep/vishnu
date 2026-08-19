@@ -99,6 +99,7 @@
     // =============== PASTE YOUR TEST GOOGLE APPS SCRIPT URL HERE ===============
     const GOOGLE_APP_URL = "https://script.google.com/macros/s/AKfycbwkd-iHQAcObLfTO9-xOmQy_NLlmvPrrTR1VddW-DCb-PyUBe9sGWvPhp4Z2e1VpG1osw/exec";
 
+    // =============== PASTE YOUR FIREBASE CONFIG HERE ===============
         const firebaseConfig = {
             apiKey: "AIzaSyDNODSDmwHVfqt2CSb0tPDZwJGYjov7Lt0",
             authDomain: "vedic-space.firebaseapp.com",
@@ -130,6 +131,10 @@
 
             const response = await fetch(GOOGLE_APP_URL, {
                 method: 'POST',
+                // Explicitly send as plain text to bypass Google Apps Script CORS Preflight blocks!
+                headers: {
+                    "Content-Type": "text/plain;charset=utf-8",
+                },
                 body: JSON.stringify({ action: "GET_ROLE_AND_LOG", userId: result.user.email, name: googleName }),
             });
             const data = await response.json();
@@ -158,7 +163,6 @@
             return;
         }
 
-        // Validate Name fields if Signing Up
         if (action === "SIGNUP") {
             const fName = document.getElementById('firstName').value.trim();
             const lName = document.getElementById('lastName').value.trim();
@@ -178,8 +182,13 @@
         try {
             const response = await fetch(GOOGLE_APP_URL, {
                 method: 'POST',
+                // Explicitly send as plain text to bypass Google Apps Script CORS Preflight blocks!
+                headers: {
+                    "Content-Type": "text/plain;charset=utf-8",
+                },
                 body: JSON.stringify({ action: action, userId: userIdInput, password: pass, name: fullName }),
             });
+            
             const data = await response.json();
 
             if(data.status === "success") {
@@ -222,7 +231,6 @@
         document.getElementById('login-btn').style.display = isLogin ? 'flex' : 'none';
         document.getElementById('signup-btn').style.display = isLogin ? 'none' : 'flex';
         
-        // Show/Hide name fields
         const signupFields = document.querySelectorAll('.signup-field');
         signupFields.forEach(field => {
             field.style.display = isLogin ? 'none' : 'block';
@@ -233,6 +241,5 @@
             `Already have an account? <a onclick="toggleMode()">Login here</a>`;
     };
 </script>
-
 </body>
 </html>
