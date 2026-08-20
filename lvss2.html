@@ -932,7 +932,7 @@ function scrollNav(dir) {
 }
 
 function renderTabIfNeeded(tab){
-    if(tab === 'review') { loadReviews(); } 
+    if(tab === 'review') { loadReviews(); } // Always refresh reviews
     
     if(renderedTabs[tab]) return;
     if(tab === 'med') { initPicker('med'); updateMedTimerDisplay(); }
@@ -1252,7 +1252,7 @@ function toggleMicrophone() {
             window.mediaRecorder.ondataavailable = e => { if (e.data.size > 0) window.audioChunks.push(e.data); };
 
             window.mediaRecorder.onstop = () => {
-                window.globalAudioBlob = new Blob(window.audioChunks, { type: 'audio/webm' });
+                window.globalAudioBlob = new Blob(window.audioChunks, { type: window.mediaRecorder.mimeType || 'audio/webm' });
                 audioPreview.src = URL.createObjectURL(window.globalAudioBlob);
                 audioPreview.style.display = 'block';
                 submitBtn.style.display = 'flex';
@@ -1323,7 +1323,7 @@ window.submitAudioRecording = async () => {
                 timing: shlokaNum, 
                 action: "AUDIO_SUBMIT",
                 audioBase64: base64data,
-                mimeType: window.globalAudioBlob.type
+                mimeType: window.globalAudioBlob.type || 'audio/webm'
             };
 
             await fetch(GOOGLE_APP_URL, {
@@ -1517,19 +1517,15 @@ window.scrollSanskritList = (dir) => {
 function getRawAudioUrl(url) {
     if (!url) return "";
     let fileId = "";
-    
-    // Extract ID from standard view link (e.g. drive.google.com/file/d/FILE_ID/view)
     const dMatch = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
     if (dMatch && dMatch[1]) fileId = dMatch[1];
-    
-    // Extract ID from uc link (e.g. drive.google.com/uc?id=FILE_ID)
     else if (url.includes("id=")) {
         const idMatch = url.match(/id=([a-zA-Z0-9_-]+)/);
         if (idMatch && idMatch[1]) fileId = idMatch[1];
     }
-    
     if (fileId) {
-        return `https://drive.google.com/uc?export=download&id=${fileId}`;
+        // Force the URL through docs.google.com to bypass drive CORS blocks
+        return `https://docs.google.com/uc?export=download&id=${fileId}`;
     }
     return url;
 }
@@ -1730,7 +1726,7 @@ window.toggleFeedbackRecord = (shlokaId) => {
             };
 
             window.feedbackMediaRecorder.onstop = () => {
-                window.feedbackBlob = new Blob(window.feedbackAudioChunks, { type: 'audio/webm' });
+                window.feedbackBlob = new Blob(window.feedbackAudioChunks, { type: window.feedbackMediaRecorder.mimeType || 'audio/webm' });
                 preview.src = URL.createObjectURL(window.feedbackBlob);
                 preview.style.display = 'block';
                 stream.getTracks().forEach(t => t.stop());
