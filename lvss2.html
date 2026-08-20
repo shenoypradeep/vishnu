@@ -1524,7 +1524,6 @@ function getRawAudioUrl(url) {
         if (idMatch && idMatch[1]) fileId = idMatch[1];
     }
     if (fileId) {
-        // Force the URL through docs.google.com to bypass drive CORS blocks
         return `https://docs.google.com/uc?export=download&id=${fileId}`;
     }
     return url;
