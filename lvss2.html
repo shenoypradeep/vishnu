@@ -44,7 +44,7 @@
         
         .content { padding: 10px; max-width: 1150px; margin: auto; padding-left: env(safe-area-inset-left, 10px); padding-right: env(safe-area-inset-right, 10px); }
         
-        #v-anubhava .card, #v-drop .card, #picker-pran, #pran-timer-container, #display-pran .card, #picker-med, #med-timer-container, #display-med .card, #sadhana-container, #sanskrit-landing-view, #v-review .card {
+        #v-anubhava .card, #v-drop .card, #picker-pran, #pran-timer-container, #display-pran .card, #picker-med, #med-timer-container, #display-med .card, #sadhana-container, #sanskrit-landing-view {
             max-width: 800px; margin-left: auto; margin-right: auto;
         }
 
@@ -220,7 +220,7 @@
             .nav-links { display: flex !important; }
             body { padding-bottom: 20px; }
             .yajna-content-area { padding: 40px 10%; font-size: 18px; }
-            #jaas-container { height: 70vh !important; max-height: 800px; }
+            #jaas-container { height: 80vh !important; max-height: 800px; }
         }
 
         .mobile-nav-wrapper { position: fixed; bottom: 0; left: 0; width: 100%; background: #0f172a; border-top: 1px solid var(--border); z-index: 1000; overflow: hidden; padding-bottom: env(safe-area-inset-bottom, 0); }
@@ -331,7 +331,7 @@ function checkUserSession() {
 function handleUserIconClick() {
     const userId = localStorage.getItem('vss_user_id');
     if (!userId || userId === 'guest_user') {
-        window.location.href = 'login_test.html'; 
+        window.location.href = 'login_test.html'; // Pointing to TEST login
     } else {
         const dropdown = document.getElementById('logout-dropdown');
         dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
@@ -339,19 +339,20 @@ function handleUserIconClick() {
 }
 
 function logoutUser() {
+    // Attempt to log logout to GAS before clearing
     const email = localStorage.getItem('vss_user_id');
     if(email && email !== 'guest_user') {
         fetch(GOOGLE_APP_URL, {
             method: 'POST',
             mode: 'no-cors',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ action: "LOGOUT", userId: email })
+            body: JSON.stringify({ action: "LOGOUT", email: email })
         });
     }
     localStorage.removeItem('vss_user_id');
     localStorage.removeItem('vss_user_name');
     localStorage.removeItem('vss_user_role');
-    window.location.href = 'login_test.html'; 
+    window.location.href = 'login_test.html'; // Pointing to TEST login
 }
 
 window.addEventListener('click', function(e) {
@@ -443,13 +444,16 @@ let APP_CONFIG = null;
 const FALLBACK_CONFIG = {
     settings: { enableShruti: false, googleSheetUrl: GOOGLE_APP_URL, meditationBellUrl: "./assets/taala.mp3" },
     navigation: [
+        { id: "mandala", title: "Mandala", icon: "zap", enabled: false }, 
         { id: "sadhana", title: "Learn VSS", icon: "refresh-cw", enabled: true },		
         { id: "sanskrit", title: "Akṣara", icon: "book-open", enabled: true },
         { id: "pran", title: "Prāṇa", icon: "loader", enabled: true },
         { id: "med", title: "Dhyāna", icon: "moon", enabled: true },
-        { id: "review", title: "Review", icon: "check-circle", enabled: true },
+        { id: "anubhava", title: "Anubhava", icon: "edit-3", enabled: false }, 
         { id: "yajna", title: "Yajna", icon: "video", enabled: true },
-        { id: "drop", title: "Arpanam", icon: "wind", enabled: false }
+        { id: "drop", title: "Arpanam", icon: "wind", enabled: false }, 
+        { id: "learn", title: "Learn", icon: "book-open", enabled: false },
+        { id: "sangha", title: "Sangha", icon: "users", enabled: false }
     ],
     sanskrit: [
         { "title": "Sanskrit Alphabets for beginners", "id": "PLFLFOfuyaIHvExkYbtlMM_mS1m5yRZtO2", "type": "playlist", "videos": [
@@ -460,16 +464,42 @@ const FALLBACK_CONFIG = {
             { "title": "Lesson 1: Introduction", "id": "a4rz9NbMq0M" },
             { "title": "Lesson 2: Sentence Structure", "id": "dq5VdY69RMc" }
         ]},
+        { "title": "Sanskrit Grammar Lessons", "id": "PLnFLN_eBOBMVEWX7pGJMGJNr_HK75VL_9", "type": "playlist", "videos": [
+            { "title": "Noun Declensions", "id": "jLKwB6sq_Zo" }
+        ]},
+        { "title": "Sanskrit Vocabulary Builder", "id": "PLnFLN_eBOBMVKOoy7cZX3i6H2Gv3mO1eQ", "type": "playlist", "videos": [] },
+        { "title": "Sanskrit Reading Practice", "id": "PLlNdduOe1pp12SWXlphYT5h7zj0p2mhx3", "type": "playlist", "videos": [] },
         { "title": "HOW TO Pronounce BRAHMA", "id": "QYpVUqQcJ_8", "type": "video" },
-        { "title": "Visarga pronunciation in Sanskrit", "id": "14yoCuTle6A", "type": "video" }
+        { "title": "Visarga pronunciation in Sanskrit", "id": "14yoCuTle6A", "type": "video" },
+        { "title": "Experience the 'Scientificness' of Sanskrit for yourself !", "id": "4fI7Qy1NbrI", "type": "video" },
+        { "title": "The First Sanskrit Lesson- Mastery of Sound", "id": "a4rz9NbMq0M", "type": "video" },
+        { "title": "The First Sanskrit Lesson - Check Point", "id": "dq5VdY69RMc", "type": "video" },
+        { "title": "Birth of Sanskrit Language - Origin Stories", "id": "BXaRPBIOYs0", "type": "video" },
+        { "title": "This ONE mistake is ruining ALL your Sanskrit Chants!", "id": "jLKwB6sq_Zo", "type": "video" },
+        { "title": "Sanskrit Pronunciation & Chanting Rules 1", "id": "KGMTqgCv4-w", "type": "video" },
+        { "title": "See, Hear, and Feel the Rhythms of Sanskrit!", "id": "LjM5GSSe8mU", "type": "video" },
+        { "title": "Sanskrit Pronunciation & Chanting Rules 2", "id": "pZ27iJw3uPg", "type": "video" },
+        { "title": "Chandas - Vedas, vedangas and upangas", "id": "Whm3LrWEENI", "type": "video" },
+        { "title": "Sanskrit Pronunciation & Chanting Rules 3", "id": "Ul7L_cAsYlw", "type": "video" },
+        { "title": "jna pronunciation in Sanskrit - How to pronounce ज्ञ correctly", "id": "nO6ZM4-1pyM", "type": "video" },
+        { "title": "Sanskrit Pronunciation & Chanting Rules 4", "id": "pEAbtgTDLr4", "type": "video" },
+        { "title": "Sanskrit Pronunciation & Chanting Rules 5", "id": "MQ5z2rNtFko", "type": "video" }
     ],
     meditations: [
         {"title":"Hari Om Meditation","audio":"./meditations/hari_om_meditation.mp3","img":"./meditations/Hari_Om_Chakras.webp"}, 
-        {"title":"Om Namah Shivaya","audio":"./meditations/om_namah_shivaya.mp3","img":"./meditations/Om_Namah_Shivaya.webp"}
+        {"title":"Om Namah Shivaya","audio":"./meditations/om_namah_shivaya.mp3","img":"./meditations/Om_Namah_Shivaya.webp"},
+        {"title":"Samarpan Meditation","audio":"./meditations/samarpan.mp3","img":"./meditations/Samarpan.webp"}
     ],
     pranayamas: [
         {"title":"Bhastrika Pranayama","video":"https://www.youtube.com/embed/iAlojRS6iBM"}, 
-        {"title":"Ujjayi Breathing","video":"https://www.youtube.com/embed/IQrsJ-yZWV8"}
+        {"title":"Ujjayi Breathing","video":"https://www.youtube.com/embed/IQrsJ-yZWV8"},
+        {"title":"Bhramari Pranayama","video":"https://www.youtube.com/embed/-9CfCIzUw-k"},
+        {"title":"Kapalbhati Guide","video":"https://www.youtube.com/embed/WOw55qnKBSo"},
+        {"title":"Kapalbhati Advanced","video":"https://www.youtube.com/embed/RxQqFe3Q1AE"},
+        {"title":"Bhastrika Pranayama","video":"https://www.youtube.com/embed/kAlOoMbAqNc"},
+        {"title":"Chandra Bhedana","video":"https://www.youtube.com/embed/QGN8I7Ydvwo"},
+        {"title":"Shitali Cooling Breath","video":"https://www.youtube.com/embed/wWXN9Qx6fO0"},
+        {"title":"Surya Bhedana","video":"https://www.youtube.com/embed/4YIlmACF7g8"}
     ]
 };
 
@@ -481,11 +511,6 @@ async function loadConfig() {
             if (!APP_CONFIG.sanskrit) APP_CONFIG.sanskrit = FALLBACK_CONFIG.sanskrit;
             if (!APP_CONFIG.pranayamas) APP_CONFIG.pranayamas = FALLBACK_CONFIG.pranayamas;
             if (!APP_CONFIG.meditations) APP_CONFIG.meditations = FALLBACK_CONFIG.meditations;
-            
-            // Inject Review Pane dynamically if not present
-            if (!APP_CONFIG.navigation.find(n => n.id === 'review')) {
-                APP_CONFIG.navigation.splice(4, 0, { id: "review", title: "Review", icon: "check-circle", enabled: true });
-            }
         } else {
             throw new Error("Config not found");
         }
@@ -512,11 +537,14 @@ function initDynamicUI() {
     
     dNav.innerHTML = ''; mNav.innerHTML = ''; contentContainer.innerHTML = '';
     
-    APP_CONFIG.navigation.filter(item => item.enabled !== false && !['mandala', 'learn', 'sangha', 'anubhava'].includes(item.id)).forEach(item => {
+    APP_CONFIG.navigation.filter(item => item.enabled !== false && !['mandala', 'learn', 'sangha'].includes(item.id)).forEach(item => {
+        
+        // RBAC Check Example - Hide Anubhava from plain guests
+        if(item.id === 'anubhava' && userRole === 'guest') return;
+
         let title = item.title;
         if(item.id === 'drop') title = 'Arpanam';
         if(item.id === 'sanskrit') title = 'Akṣara';
-        if(item.id === 'review' && userRole === 'guest') return; // Hide review from pure guests
 
         dNav.innerHTML += `<li><a onclick="showTab('${item.id}')" id="t-${item.id}">${title}</a></li>`;
         mNav.innerHTML += `<div class="nav-item" onclick="showTab('${item.id}')" id="n-${item.id}"><i data-feather="${item.icon}"></i><span style="margin-top: 4px; font-family:'Inter', sans-serif;">${title}</span></div>`;
@@ -524,54 +552,82 @@ function initDynamicUI() {
     });
 
     feather.replace();
-    const firstPane = APP_CONFIG.navigation.find(item => item.enabled !== false && !['mandala', 'learn', 'sangha', 'anubhava'].includes(item.id));
+    const firstPane = APP_CONFIG.navigation.find(item => item.enabled !== false && !['mandala', 'learn', 'sangha'].includes(item.id));
     if(firstPane) showTab(firstPane.id); 
     bindTouchEvents();
 }
 
 function getPaneHTML(id) {
-    if(id === 'review') return `
-        <section id="v-review" class="view">
-            <div class="card" style="padding: 15px; background: transparent; border: none;">
-                <h3 class="serif" style="margin-bottom: 25px; color: var(--gold); text-align: center; font-size: 1.4rem;">Shloka Review</h3>
-                <div id="review-loading" style="text-align: center; color: var(--gold); font-size: 13px;">Loading recordings...</div>
-                <div id="review-container"></div>
+    if(id === 'anubhava') return `
+        <section id="v-anubhava" class="view">
+            <div class="card" style="padding: 25px 20px; text-align: center;">
+                <h3 class="serif" style="color: var(--gold); margin-bottom: 10px; font-size: 1.4rem;">Share your Anubhava</h3>
+                <p style="font-size: 13px; opacity: 0.8; margin-bottom: 25px; font-family:'Inter',sans-serif;">Share your on-going experiences, learnings, realisations with the group.</p>
+                <textarea id="anubhava-observations" class="search-input" style="min-height: 160px; padding: 15px; line-height: 1.5; box-shadow: inset 0 2px 5px rgba(0,0,0,0.2);" placeholder="Log any spiritual experiences, deep observations, or passing thoughts..."></textarea>
+                <button onclick="logAnubhavaSnapshot()" style="width: 100%; margin-top: 20px; background: linear-gradient(135deg, var(--gold), #d97706); border: none; color: var(--bg); padding: 16px; border-radius: 12px; font-weight: bold; font-size: 14px; cursor: pointer; box-shadow: 0 4px 15px rgba(251, 191, 36, 0.3); transition: transform 0.2s; font-family:'Inter',sans-serif;">Record Anubhava</button>
+                <div style="display: flex; gap: 10px; margin-top: 15px;">
+                    <button onclick="exportAnubhavaLogs()" style="flex: 1; background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: white; padding: 12px; border-radius: 12px; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; transition: 0.3s;"><i data-feather="download" style="width: 14px;"></i> Export</button>
+                    <button onclick="shareAnubhavaLogs('whatsapp')" style="flex: 1; background: #25D366; border: none; color: white; padding: 12px; border-radius: 12px; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; transition: 0.3s;"><i data-feather="message-circle" style="width: 14px;"></i> WhatsApp</button>
+                    <button onclick="shareAnubhavaLogs('email')" style="flex: 1; background: #1e3a8a; border: 1px solid #3b82f6; color: white; padding: 12px; border-radius: 12px; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; transition: 0.3s;"><i data-feather="mail" style="width: 14px;"></i> Email</button>
+                </div>
             </div>
         </section>`;
         
     if(id === 'sadhana') return `
         <section id="v-sadhana" class="view">
             <div id="sadhana-container" style="padding: 15px 10px; text-align: center; position: relative; width: 100%;">
+                
                 <img src="../assets/logo.webp" class="fs-logo" alt="Vedic Space">
+
                 <div class="vss-heading-img" style="margin-bottom: 10px;">
                     <img src="./assets/shri_vishnu.png" alt="Shri Vishnu" style="width: 140px; height: auto; object-fit: contain; margin: 0 auto 5px auto; display: block;">
                     <h3 class="serif" style="color: var(--gold); margin: 0; font-size: 1.1rem;">।। अथ सकलसौभाग्यदायक श्री विष्णु सहस्रनाम स्तोत्रम् ।।</h3>
                 </div>
+                
                 <button onclick="toggleFS()" class="fs-btn" style="position: absolute; top: 15px; right: 15px; background: rgba(0,0,0,0.3); border: 1px solid var(--border); color: white; padding: 8px; border-radius: 8px; z-index: 100; cursor: pointer;"><i data-feather="maximize" id="fs-icon" style="width: 18px; height: 18px;"></i></button>
+                
                 <div class="slide-wrapper" id="swipe-zone" style="position: relative; display: block; touch-action: pan-y; cursor: pointer; background: transparent;">
                     <img id="sadhana-slide" src="./parayana/Slide1.webp" style="display: block; pointer-events: none;">
                     <button onclick="navSlide(-1)" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.25); border: none; color: white; border-radius: 50%; width: 40px; height: 40px; cursor: pointer; z-index: 10; backdrop-filter: blur(5px);"><i data-feather="chevron-left"></i></button>
                     <button onclick="navSlide(1)" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.25); border: none; color: white; border-radius: 50%; width: 40px; height: 40px; cursor: pointer; z-index: 10; backdrop-filter: blur(5px);"><i data-feather="chevron-right"></i></button>
                 </div>
+                
                 <div class="flow-controls">
                     <div style="position: relative; width: 40px; height: 40px; flex-shrink: 0;" onclick="toggleAudioPlay()">
-                        <svg width="40" height="40"><circle cx="20" cy="20" r="18" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="3"/><circle cx="20" cy="20" r="18" style="stroke-width: 3; fill: none; stroke: var(--gold);"/></svg>
-                        <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); color:var(--gold); cursor: pointer;"><i data-feather="play" id="audio-play-icon" style="width: 16px;"></i></div>
+                        <svg width="40" height="40">
+                            <circle cx="20" cy="20" r="18" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="3"/>
+                            <circle cx="20" cy="20" r="18" style="stroke-width: 3; fill: none; stroke: var(--gold);"/>
+                        </svg>
+                        <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); color:var(--gold); cursor: pointer;">
+                            <i data-feather="play" id="audio-play-icon" style="width: 16px;"></i>
+                        </div>
                     </div>
-                    <button id="expand-record-btn" onclick="toggleRecordSection()" style="display: flex; align-items: center; gap: 6px; background: transparent; border: 1px solid var(--gold); color: var(--gold); height: 40px; padding: 0 15px; border-radius: 20px; font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.3s ease;"><i data-feather="mic" style="width: 14px;"></i> Record Chanting</button>
+
+                    <button id="expand-record-btn" onclick="toggleRecordSection()" style="display: flex; align-items: center; gap: 6px; background: transparent; border: 1px solid var(--gold); color: var(--gold); height: 40px; padding: 0 15px; border-radius: 20px; font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.3s ease;">
+                        <i data-feather="mic" style="width: 14px;"></i> Record Chanting
+                    </button>
                 </div>
+                
                 <audio id="sadhana-bg-audio" preload="auto"></audio>
+
                 <div id="recording-pane" class="recording-section">
-                    <button onclick="toggleRecordSection()" style="position: absolute; top: 12px; right: 12px; background: none; border: none; color: white; opacity: 0.5; cursor: pointer; z-index: 10; transition: 0.3s;"><i data-feather="x" style="width: 20px; height: 20px;"></i></button>
+                    <button onclick="toggleRecordSection()" style="position: absolute; top: 12px; right: 12px; background: none; border: none; color: white; opacity: 0.5; cursor: pointer; z-index: 10; transition: 0.3s;">
+                        <i data-feather="x" style="width: 20px; height: 20px;"></i>
+                    </button>
                     <div style="padding: 15px 0 0 0;">
                         <h4 class="serif" style="color: var(--gold); font-size: 16px; margin-bottom: 5px;">Record Your Chanting</h4>
                         <p id="shloka-indicator" style="font-size: 12px; opacity: 0.9; margin-bottom: 20px; font-family:'Inter', sans-serif; color: white;"></p>
+                        
                         <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 15px; margin-bottom: 15px;">
-                            <button onclick="toggleMicrophone()" id="record-btn" style="background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: white; border-radius: 50%; width: 60px; height: 60px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.3s; box-shadow: 0 4px 15px rgba(0,0,0,0.3);"><i data-feather="mic" id="record-icon" style="width: 24px; height: 24px;"></i></button>
+                            <button onclick="toggleMicrophone()" id="record-btn" style="background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: white; border-radius: 50%; width: 60px; height: 60px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.3s; box-shadow: 0 4px 15px rgba(0,0,0,0.3);">
+                                <i data-feather="mic" id="record-icon" style="width: 24px; height: 24px;"></i>
+                            </button>
                             <span id="record-timer" style="font-family: monospace; font-size: 24px; color: var(--gold); font-weight: bold; letter-spacing: 2px;">00:00</span>
                         </div>
                         <audio id="audio-preview" controls style="width: 100%; display: none; margin-bottom: 15px; height: 40px; border-radius: 8px;"></audio>
-                        <button id="submit-audio-btn" onclick="submitAudioRecording()" style="display: none; width: 100%; max-width: 250px; margin: 0 auto; background: linear-gradient(135deg, var(--gold), #d97706); border: none; color: var(--bg); padding: 14px; border-radius: 12px; font-weight: bold; cursor: pointer; font-family: 'Inter', sans-serif; align-items: center; justify-content: center;"><i data-feather="upload-cloud" style="width: 18px; margin-right: 8px;"></i> Submit Recording</button>
+                        <button id="submit-audio-btn" onclick="submitAudioRecording()" style="display: none; width: 100%; max-width: 250px; margin: 0 auto; background: linear-gradient(135deg, var(--gold), #d97706); border: none; color: var(--bg); padding: 14px; border-radius: 12px; font-weight: bold; cursor: pointer; font-family: 'Inter', sans-serif; align-items: center; justify-content: center;">
+                            <i data-feather="upload-cloud" style="width: 18px; margin-right: 8px;"></i> Submit Recording
+                        </button>
                         <div id="audio-status" style="font-size: 13px; margin-top: 15px; color: var(--gold); font-weight: 500; font-family:'Inter', sans-serif;"></div>
                     </div>
                 </div>
@@ -589,7 +645,11 @@ function getPaneHTML(id) {
             </div>
 
             <div id="sanskrit-player-view" style="display:none; animation: fadeIn 0.3s ease;">
-                <button onclick="backToSanskritList()" style="background: transparent; border: none; color: var(--gold); margin-bottom: 15px; cursor: pointer; font-size: 14px; display: flex; align-items: center; gap: 5px; font-family: 'Inter', sans-serif;"><i data-feather="arrow-left" style="width: 16px;"></i> Back to List</button>
+                
+                <button onclick="backToSanskritList()" style="background: transparent; border: none; color: var(--gold); margin-bottom: 15px; cursor: pointer; font-size: 14px; display: flex; align-items: center; gap: 5px; font-family: 'Inter', sans-serif;">
+                    <i data-feather="arrow-left" style="width: 16px;"></i> Back to List
+                </button>
+                
                 <div class="sanskrit-player-layout">
                     <div class="sanskrit-video-wrapper">
                         <div class="card" style="padding: 0; background: rgba(0,0,0,0.4); border: 1px solid var(--border); margin-bottom: 15px;">
@@ -599,20 +659,47 @@ function getPaneHTML(id) {
                             <div class="card-body" style="text-align: left; padding: 20px;">
                                 <h3 class="serif" id="sanskrit-player-title" style="color: var(--gold); margin-bottom: 10px; font-size: 18px;"></h3>
                                 <span id="sanskrit-playlist-badge" style="display:none; background: rgba(251,191,36,0.15); color: var(--gold); font-size: 11px; font-weight: bold; padding: 4px 8px; border-radius: 6px; letter-spacing: 0.5px;">PLAYLIST</span>
+                                
                                 <div id="sanskrit-playlist-container" style="display:none; margin-top: 20px;">
                                     <button onclick="toggleSanskritPlaylist()" style="width:100%; display:flex; justify-content:space-between; align-items:center; background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: white; padding: 12px 15px; border-radius: 12px; cursor: pointer; font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 500;">
-                                        <span>More from this playlist</span><i data-feather="chevron-down" id="sanskrit-playlist-chevron" style="width: 18px; color: var(--gold);"></i>
+                                        <span>More from this playlist</span>
+                                        <i data-feather="chevron-down" id="sanskrit-playlist-chevron" style="width: 18px; color: var(--gold);"></i>
                                     </button>
                                     <div id="sanskrit-playlist-items" style="max-height: 0; overflow: hidden; transition: max-height 0.4s ease-out;"></div>
                                 </div>
                             </div>
                         </div>
                     </div>
+                    
                     <div class="sanskrit-list-wrapper">
-                        <button id="sanskrit-scroll-up" onclick="scrollSanskritList(-1)" style="position: absolute; top: 0; left: 50%; transform: translateX(-50%); background: linear-gradient(to bottom, rgba(15,23,42,0.95), transparent); border: none; color: var(--gold); z-index: 10; width: 100%; height: 35px; cursor: pointer; display: none; align-items: flex-start; justify-content: center; padding-top: 5px; border-radius: 8px 8px 0 0;"><i data-feather="chevron-up" style="width: 18px; opacity: 0.9;"></i></button>
+                        <button id="sanskrit-scroll-up" onclick="scrollSanskritList(-1)" style="position: absolute; top: 0; left: 50%; transform: translateX(-50%); background: linear-gradient(to bottom, rgba(15,23,42,0.95), transparent); border: none; color: var(--gold); z-index: 10; width: 100%; height: 35px; cursor: pointer; display: none; align-items: flex-start; justify-content: center; padding-top: 5px; border-radius: 8px 8px 0 0;">
+                            <i data-feather="chevron-up" style="width: 18px; opacity: 0.9;"></i>
+                        </button>
+                        
                         <div id="sanskrit-player-list" onscroll="checkSanskritScroll()"></div>
-                        <button id="sanskrit-scroll-down" onclick="scrollSanskritList(1)" style="position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); background: linear-gradient(to top, rgba(15,23,42,0.95), transparent); border: none; color: var(--gold); z-index: 10; width: 100%; height: 35px; cursor: pointer; display: none; align-items: flex-end; justify-content: center; padding-bottom: 5px; border-radius: 0 0 8px 8px;"><i data-feather="chevron-down" style="width: 18px; opacity: 0.9;"></i></button>
+                        
+                        <button id="sanskrit-scroll-down" onclick="scrollSanskritList(1)" style="position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); background: linear-gradient(to top, rgba(15,23,42,0.95), transparent); border: none; color: var(--gold); z-index: 10; width: 100%; height: 35px; cursor: pointer; display: none; align-items: flex-end; justify-content: center; padding-bottom: 5px; border-radius: 0 0 8px 8px;">
+                            <i data-feather="chevron-down" style="width: 18px; opacity: 0.9;"></i>
+                        </button>
                     </div>
+
+                </div>
+            </div>
+        </section>`;
+
+    if(id === 'drop') return `
+        <section id="v-drop" class="view">
+            <div class="card" style="padding: 30px 20px; text-align: center;">
+                <h2 class="serif" style="color: var(--gold); margin-bottom: 10px;">Arpanam</h2>
+                <h3 class="serif" style="font-size: 16px; opacity: 0.9; margin-bottom: 20px; font-weight: normal; color: white;">Drop your botherations..</h3>
+                
+                <textarea id="botheration-input" class="search-input" style="min-height: 120px; margin-bottom: 20px; font-size: 15px; padding: 15px; box-shadow: inset 0 2px 5px rgba(0,0,0,0.2);" placeholder="Offer your thoughts, actions, or worries to the Divine..."></textarea>
+                <button onclick="dropBotheration()" style="width: 100%; background: linear-gradient(135deg, #0f172a, var(--gold)); border: 1px solid var(--gold); color: white; padding: 16px; border-radius: 12px; font-weight: bold; font-size: 15px; cursor: pointer; box-shadow: 0 4px 15px rgba(251, 191, 36, 0.2); transition: transform 0.2s; display: flex; justify-content: center; align-items: center; gap: 10px; font-family:'Inter',sans-serif;"><i data-feather="sun"></i> Offer to Divine</button>
+                <div id="drop-success-msg" style="opacity: 0; color: var(--gold); font-size: 14px; font-style: italic; margin-top: 20px; transition: opacity 0.5s;">Offered to the Divine...</div>
+                
+                <div style="margin-top: 30px; padding-top: 30px; border-top: 1px solid rgba(255,255,255,0.1);">
+                    <img src="./assets/gita_9_27.png" alt="Gita 9.27" onerror="this.style.display='none'" style="width:100%; max-width: 320px; border-radius: 12px; border: 1px solid var(--border); margin: 0 auto 15px auto; display: block;">
+                    <p style="font-size: 14px; line-height: 1.6; opacity: 0.9; margin-bottom: 0; font-family:'Inter',sans-serif; color: var(--gold); font-weight: 500;">"Whatever you do, whatever you eat, whatever you offer as oblation to the sacred fire, whatever you bestow as a gift, and whatever austerities you perform, O son of Kunti, do them as an offering to Me."</p>
                 </div>
             </div>
         </section>`;
@@ -620,9 +707,15 @@ function getPaneHTML(id) {
     if(id === 'pran') return `
         <section id="v-pran" class="view">
             <div class="interactive-picker" id="picker-pran">
-                <div class="picker-search-bar"><i data-feather="search" style="width: 16px; color: var(--gold);"></i><input type="text" id="input-pran" placeholder="Choose pranayama..." onfocus="expandPicker('pran')" oninput="filterPicker('pran')"><i data-feather="x" onclick="clearPranSelection()" style="cursor:pointer; color: rgba(255,255,255,0.4); margin-right: 5px; width: 16px;"></i><i data-feather="chevron-down" id="chevron-pran" onclick="togglePicker('pran')" style="cursor:pointer; color: var(--gold);"></i></div>
+                <div class="picker-search-bar">
+                    <i data-feather="search" style="width: 16px; color: var(--gold);"></i>
+                    <input type="text" id="input-pran" placeholder="Choose pranayama..." onfocus="expandPicker('pran')" oninput="filterPicker('pran')">
+                    <i data-feather="x" onclick="clearPranSelection()" style="cursor:pointer; color: rgba(255,255,255,0.4); margin-right: 5px; width: 16px;"></i>
+                    <i data-feather="chevron-down" id="chevron-pran" onclick="togglePicker('pran')" style="cursor:pointer; color: var(--gold);"></i>
+                </div>
                 <div class="picker-wheel-area"><div class="picker-highlight"></div><div class="picker-wheel" id="wheel-pran" onscroll="handleWheelScroll('pran')"></div></div>
             </div>
+            
             <div id="pran-timer-container" class="card" style="padding: 30px 20px; text-align: center; display:none;">
                 <h3 class="serif" style="color: var(--gold); margin-bottom: 15px;">Silent Timer</h3>
                 <div class="mode-toggle" style="margin: 0 auto 20px auto; width: 140px; height: 30px;">
@@ -696,259 +789,73 @@ function bindTouchEvents() {
     }
 }
 
-// --- REVIEW PANE LOGIC ---
-async function loadReviews() {
-    document.getElementById('review-loading').style.display = 'block';
-    document.getElementById('review-container').innerHTML = '';
-    
-    const userId = localStorage.getItem('vss_user_id');
-    const role = localStorage.getItem('vss_user_role') || 'learner';
-    
-    try {
-        const response = await fetch(GOOGLE_APP_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-            body: JSON.stringify({ action: "GET_LOGS", userId: userId, role: role })
-        });
-        const data = await response.json();
-        
-        if (data.status === 'success') {
-            renderReviews(data.logs, role);
-        } else {
-            document.getElementById('review-loading').innerText = 'Failed to load recordings.';
-        }
-    } catch (e) {
-        document.getElementById('review-loading').innerText = 'Error connecting to server.';
-    }
-}
+// --- STATE LOGIC ---
+let anubhavaStore = JSON.parse(localStorage.getItem('vss_anubhava_logs')) || {};
 
-function renderReviews(logs, role) {
-    const container = document.getElementById('review-container');
-    document.getElementById('review-loading').style.display = 'none';
+function logAnubhavaSnapshot() {
+    const today = new Date().toISOString().split('T')[0];
+    const obsText = document.getElementById('anubhava-observations').value || "";
     
-    if (!logs || logs.length === 0) {
-        container.innerHTML = '<p style="text-align: center; opacity: 0.6; font-size: 13px; font-family: Inter;">No recordings found.</p>';
+    if(!obsText.trim()) {
+        alert("Please write something to share your Anubhava.");
         return;
     }
 
-    logs.sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp));
+    const snapshot = {
+        userId: localStorage.getItem('vss_user_id') || 'guest_user',
+        userName: localStorage.getItem('vss_user_name') || 'guest_user',
+        date: today,
+        time: new Date().toLocaleTimeString(),
+        timestamp: new Date().getTime(),
+        obs: obsText
+    };
 
-    if (role === 'teacher' || role === 'admin') {
-        const grouped = {};
-        logs.forEach(l => {
-            if(!grouped[l.name]) grouped[l.name] = [];
-            grouped[l.name].push(l);
-        });
-        
-        let html = '';
-        for (const [studentName, studentLogs] of Object.entries(grouped)) {
-            let idSafe = studentName.replace(/\s+/g, '-').replace(/[^a-zA-Z0-9-]/g, '').toLowerCase();
-            html += `
-                <div style="margin-bottom: 10px; background: rgba(0,0,0,0.3); border: 1px solid var(--border); border-radius: 12px; overflow: hidden;">
-                    <button onclick="toggleReviewAccordion('${idSafe}')" style="width: 100%; background: rgba(255,255,255,0.05); padding: 15px; border: none; color: white; display: flex; justify-content: space-between; align-items: center; font-family: 'Inter', sans-serif; cursor: pointer; font-weight: 500;">
-                        <span>${studentName} <span style="font-size: 11px; color: var(--gold); background: rgba(251,191,36,0.1); padding: 2px 6px; border-radius: 6px; margin-left: 8px;">${studentLogs.length}</span></span>
-                        <i data-feather="chevron-down" id="chevron-${idSafe}" style="width: 16px; color: var(--gold);"></i>
-                    </button>
-                    <div id="acc-${idSafe}" style="max-height: 0; overflow: hidden; transition: max-height 0.4s ease-out;">
-                        <div style="padding: 15px;">
-                            ${studentLogs.map(l => buildReviewItem(l, role)).join('')}
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-        container.innerHTML = html;
-    } else {
-        container.innerHTML = logs.map(l => buildReviewItem(l, role)).join('');
-    }
-    feather.replace();
-}
-
-function buildReviewItem(log, role) {
-    let dateObj = new Date(log.timestamp);
-    let dateStr = dateObj.toLocaleDateString() + ' ' + dateObj.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-    let teacherFeedbackHTML = '';
-
-    if (role === 'teacher' || role === 'admin') {
-        teacherFeedbackHTML = `
-            <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid var(--border);">
-                <p style="font-size: 12px; color: var(--gold); margin-bottom: 5px;">Teacher Feedback</p>
-                <textarea id="feedback-text-${log.rowIdx}" class="search-input" style="min-height: 60px; margin-bottom: 10px;" placeholder="Write feedback here...">${log.feedbackText}</textarea>
-                
-                ${log.feedbackAudio ? `<div style="margin-bottom: 10px;"><span style="font-size: 11px; opacity:0.7;">Previous Voice Note:</span><br><audio src="${log.feedbackAudio}" controls style="width: 100%; height: 35px; border-radius: 8px;"></audio></div>` : ''}
-                
-                <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 10px;">
-                    <button id="fb-record-btn-${log.rowIdx}" onclick="toggleFeedbackRecord(${log.rowIdx})" style="background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: white; border-radius: 50%; width: 40px; height: 40px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.3s;">
-                        <i data-feather="mic" id="fb-record-icon-${log.rowIdx}" style="width: 16px;"></i>
-                    </button>
-                    <span id="fb-record-timer-${log.rowIdx}" style="font-family: monospace; font-size: 16px; color: var(--gold);">00:00</span>
-                </div>
-                <audio id="fb-audio-preview-${log.rowIdx}" controls style="width: 100%; display: none; height: 35px; border-radius: 8px; margin-bottom: 10px;"></audio>
-                
-                <button id="fb-submit-btn-${log.rowIdx}" onclick="submitFeedback(${log.rowIdx})" style="width: 100%; background: linear-gradient(135deg, var(--gold), #d97706); border: none; color: var(--bg); padding: 10px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 13px;">Save Feedback</button>
-                <div id="fb-status-${log.rowIdx}" style="font-size: 12px; color: var(--gold); margin-top: 5px;"></div>
-            </div>
-        `;
-    } else {
-        if(log.feedbackText || log.feedbackAudio) {
-            teacherFeedbackHTML = `
-                <div style="margin-top: 15px; padding: 15px; background: rgba(251, 191, 36, 0.08); border-left: 2px solid var(--gold); border-radius: 8px;">
-                    <p style="font-size: 12px; color: var(--gold); margin-bottom: 5px; font-weight: bold;">Teacher Review</p>
-                    ${log.feedbackText ? `<p style="font-size: 13px; color: white; margin-bottom: 10px; line-height: 1.5;">${log.feedbackText}</p>` : ''}
-                    ${log.feedbackAudio ? `<audio src="${log.feedbackAudio}" controls style="width: 100%; height: 35px; border-radius: 8px;"></audio>` : ''}
-                </div>
-            `;
-        } else {
-            teacherFeedbackHTML = `
-                <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid var(--border);">
-                    <p style="font-size: 12px; color: rgba(255,255,255,0.4); font-style: italic;">Review pending...</p>
-                </div>
-            `;
-        }
-    }
-
-    return `
-        <div style="padding: 15px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; margin-bottom: 15px; text-align: left;">
-            <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
-                <span style="font-weight: bold; color: var(--gold); font-size: 14px;">${log.shloka}</span>
-                <span style="font-size: 11px; opacity: 0.6;">${dateStr}</span>
-            </div>
-            <span style="font-size: 11px; opacity: 0.7; margin-bottom: 5px; display: block;">Learner Audio:</span>
-            <audio src="${log.audioLink}" controls style="width: 100%; height: 35px; border-radius: 8px;"></audio>
-            ${teacherFeedbackHTML}
-        </div>
-    `;
-}
-
-function toggleReviewAccordion(id) {
-    const items = document.getElementById('acc-' + id);
-    const chevron = document.getElementById('chevron-' + id);
-    if (items.style.maxHeight === '0px' || items.style.maxHeight === '') {
-        items.style.maxHeight = '2000px'; 
-        chevron.setAttribute('data-feather', 'chevron-up');
-    } else {
-        items.style.maxHeight = '0px';
-        chevron.setAttribute('data-feather', 'chevron-down');
-    }
-    feather.replace();
-}
-
-// Teacher Feedback Audio Variables
-window.feedbackBlob = null;
-window.feedbackMediaRecorder = null;
-window.feedbackAudioChunks = [];
-window.activeFeedbackRow = null;
-window.feedbackTimerInterval = null;
-window.feedbackSeconds = 0;
-
-window.toggleFeedbackRecord = (rowIdx) => {
-    if (window.activeFeedbackRow && window.activeFeedbackRow !== rowIdx) {
-        alert("Please finish or stop the current recording first.");
-        return;
-    }
-
-    const btn = document.getElementById(`fb-record-btn-${rowIdx}`);
-    const icon = document.getElementById(`fb-record-icon-${rowIdx}`);
-    const timer = document.getElementById(`fb-record-timer-${rowIdx}`);
-    const preview = document.getElementById(`fb-audio-preview-${rowIdx}`);
-
-    if (!window.feedbackMediaRecorder || window.feedbackMediaRecorder.state === "inactive") {
-        navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
-            window.activeFeedbackRow = rowIdx;
-            window.feedbackMediaRecorder = new MediaRecorder(stream);
-            window.feedbackAudioChunks = [];
-
-            window.feedbackMediaRecorder.ondataavailable = e => {
-                if (e.data.size > 0) window.feedbackAudioChunks.push(e.data);
-            };
-
-            window.feedbackMediaRecorder.onstop = () => {
-                window.feedbackBlob = new Blob(window.feedbackAudioChunks, { type: 'audio/webm' });
-                preview.src = URL.createObjectURL(window.feedbackBlob);
-                preview.style.display = 'block';
-                stream.getTracks().forEach(t => t.stop());
-                window.activeFeedbackRow = null;
-            };
-
-            window.feedbackMediaRecorder.start();
-            
-            btn.style.background = '#ff4757';
-            btn.style.borderColor = '#ff4757';
-            icon.setAttribute('data-feather', 'square');
-            feather.replace();
-            preview.style.display = 'none';
-            
-            window.feedbackSeconds = 0;
-            timer.innerText = "00:00";
-            window.feedbackTimerInterval = setInterval(() => {
-                window.feedbackSeconds++;
-                let m = Math.floor(window.feedbackSeconds / 60).toString().padStart(2, '0');
-                let s = (window.feedbackSeconds % 60).toString().padStart(2, '0');
-                timer.innerText = `${m}:${s}`;
-            }, 1000);
-        }).catch(e => alert("Microphone access denied."));
-    } else {
-        window.feedbackMediaRecorder.stop();
-        clearInterval(window.feedbackTimerInterval);
-        btn.style.background = 'rgba(255,255,255,0.1)';
-        btn.style.borderColor = 'var(--border)';
-        icon.setAttribute('data-feather', 'mic');
-        feather.replace();
-    }
-};
-
-window.submitFeedback = async (rowIdx) => {
-    const text = document.getElementById(`feedback-text-${rowIdx}`).value;
-    const status = document.getElementById(`fb-status-${rowIdx}`);
-    const submitBtn = document.getElementById(`fb-submit-btn-${rowIdx}`);
-
-    if (!text && !window.feedbackBlob) {
-        status.innerText = "Please provide text or audio feedback.";
-        return;
-    }
-
-    submitBtn.disabled = true;
-    submitBtn.innerText = "Saving...";
-    status.innerText = "Uploading to server...";
+    if (!anubhavaStore[today]) anubhavaStore[today] = [];
+    anubhavaStore[today].push(snapshot);
+    localStorage.setItem('vss_anubhava_logs', JSON.stringify(anubhavaStore));
     
-    let base64data = "";
-    let mimeType = "";
+    let fetchUrl = GOOGLE_APP_URL; 
+    fetchUrl += `?obs=${encodeURIComponent(obsText)}`;
+
+    fetch(fetchUrl, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(snapshot)
+    }).catch(error => console.error("Cloud sync failed:", error));
+
+    alert("Anubhava successfully recorded and shared!");
+    document.getElementById('anubhava-observations').value = "";
+}
+
+function exportAnubhavaLogs() {
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(anubhavaStore, null, 2));
+    const dlAnchorElem = document.createElement('a');
+    dlAnchorElem.setAttribute("href", dataStr);
+    dlAnchorElem.setAttribute("download", "vss_anubhava_logs.json");
+    dlAnchorElem.click();
+}
+
+function shareAnubhavaLogs(method) {
+    const text = `I am reflecting on my spiritual journey and Anubhava using the Vedic Space App. Join the Sangha to explore practical Sanatana Dharma!`;
+    if (method === 'whatsapp') {
+        window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`);
+    } else if (method === 'email') {
+        window.open(`mailto:?subject=My Sādhana Journey&body=${encodeURIComponent(text)}`);
+    }
+}
+
+function dropBotheration() {
+    const input = document.getElementById('botheration-input');
+    if(!input.value.trim()) return;
     
-    if (window.feedbackBlob) {
-        base64data = await new Promise((resolve) => {
-            const reader = new FileReader();
-            reader.readAsDataURL(window.feedbackBlob);
-            reader.onloadend = () => resolve(reader.result.split(',')[1]);
-        });
-        mimeType = window.feedbackBlob.type;
-    }
+    input.value = '';
+    const msg = document.getElementById('drop-success-msg');
+    msg.style.opacity = '1';
+    setTimeout(() => { msg.style.opacity = '0'; }, 3000);
+}
 
-    try {
-        await fetch(GOOGLE_APP_URL, {
-            method: 'POST',
-            headers: { "Content-Type": "text/plain;charset=utf-8" },
-            body: JSON.stringify({
-                action: "SUBMIT_FEEDBACK",
-                rowIdx: rowIdx,
-                feedbackText: text,
-                audioBase64: base64data,
-                mimeType: mimeType
-            })
-        });
-
-        status.innerText = "✅ Feedback Saved!";
-        status.style.color = "#2ed573";
-        window.feedbackBlob = null;
-        setTimeout(() => { submitBtn.innerText = "Save Feedback"; submitBtn.disabled = false; }, 2000);
-    } catch (e) {
-        status.innerText = "Error saving feedback.";
-        status.style.color = "#ff4757";
-        submitBtn.disabled = false;
-        submitBtn.innerText = "Save Feedback";
-    }
-};
-
-// --- PRESET TIMERS ---
+// --- UNIVERSAL PRESET TIMERS ---
 function setPresetTimer(type, mins) {
     document.getElementById(`toggle-5m-${type}`).classList.toggle('active', mins === 5);
     document.getElementById(`toggle-20m-${type}`).classList.toggle('active', mins === 20);
@@ -972,6 +879,7 @@ function setPresetTimer(type, mins) {
     }
 }
 
+// --- PRANAYAMA TIMER LOGIC ---
 let pranTotalSecs = 5 * 60;
 let pranSecsLeft = 5 * 60;
 let pranTimerRunning = false;
@@ -982,8 +890,12 @@ function updatePranTimerDisplay() {
     let s = pranSecsLeft % 60;
     const display = document.getElementById('pran-timer-display');
     if (display) display.innerText = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+    
     let ring = document.getElementById('pran-timer-ring');
-    if (ring) ring.style.strokeDashoffset = 282.7 * (1 - (pranSecsLeft / pranTotalSecs));
+    if (ring) {
+        let progress = pranSecsLeft / pranTotalSecs;
+        ring.style.strokeDashoffset = 282.7 * (1 - progress);
+    }
 }
 
 function adjPranTimer(mins) {
@@ -1015,7 +927,9 @@ function togglePranTimer() {
                 if(bell) bell.play().catch(e => console.log(e));
                 btn.innerHTML = '<i data-feather="play" style="width: 26px; height: 26px; margin-left: 3px;"></i>';
                 feather.replace();
-            } else { updatePranTimerDisplay(); }
+            } else {
+                updatePranTimerDisplay();
+            }
         }, 1000);
     } else {
         clearInterval(pranTimerInterval);
@@ -1048,6 +962,7 @@ function clearPranSelection() {
     document.getElementById('pran-timer-container').style.display = 'block';
 }
 
+// --- MEDITATION TIMER LOGIC ---
 let medTotalSecs = 20 * 60;
 let medSecsLeft = 20 * 60;
 let medTimerRunning = false;
@@ -1058,8 +973,12 @@ function updateMedTimerDisplay() {
     let s = medSecsLeft % 60;
     const display = document.getElementById('med-timer-display');
     if (display) display.innerText = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+    
     let ring = document.getElementById('med-timer-ring');
-    if (ring) ring.style.strokeDashoffset = 282.7 * (1 - (medSecsLeft / medTotalSecs));
+    if (ring) {
+        let progress = medSecsLeft / medTotalSecs;
+        ring.style.strokeDashoffset = 282.7 * (1 - progress);
+    }
 }
 
 function adjMedTimer(mins) {
@@ -1088,10 +1007,12 @@ function toggleMedTimer() {
                 medTimerRunning = false;
                 medSecsLeft = medTotalSecs; 
                 updateMedTimerDisplay();
-                bell.play().catch(e => console.log(e));
+                bell.play().catch(e => console.log("Audio block", e));
                 btn.innerHTML = '<i data-feather="play" style="width: 26px; height: 26px; margin-left: 3px;"></i>';
                 feather.replace();
-            } else { updateMedTimerDisplay(); }
+            } else {
+                updateMedTimerDisplay();
+            }
         }, 1000);
     } else {
         clearInterval(medTimerInterval);
@@ -1121,7 +1042,9 @@ function resetMedTimer() {
 function clearMedSelection() {
     document.getElementById('input-med').value = '';
     document.getElementById('display-med').style.display = 'none';
-    if(currentCardAudio) { currentCardAudio.pause(); }
+    if(currentCardAudio) {
+        currentCardAudio.pause();
+    }
     document.getElementById('med-timer-container').style.display = 'block';
 }
 
@@ -1133,7 +1056,7 @@ function toggleAudioPlay() {
     if (audio.paused) {
         audio.play().then(() => {
             icon.setAttribute('data-feather', 'pause'); feather.replace();
-        }).catch(e => {});
+        }).catch(e => { console.log("Audio play blocked.", e); });
     } else {
         audio.pause();
         icon.setAttribute('data-feather', 'play'); feather.replace();
@@ -1141,11 +1064,12 @@ function toggleAudioPlay() {
 }
 
 let scrollTimeouts = {};
-let renderedTabs = { med: false, pran: false, sadhana: false, sanskrit: false, yajna: false, anubhava: false, drop: false, review: false };
+let renderedTabs = { med: false, pran: false, sadhana: false, sanskrit: false, yajna: false, anubhava: false, drop: false };
 
 function showTab(t){
     const userId = localStorage.getItem('vss_user_id') || 'guest_user';
     
+    // GUEST USER GATE FOR TABS
     if (userId === 'guest_user' && t !== 'sadhana') {
         showGuestPopup();
         return; 
@@ -1175,8 +1099,6 @@ function scrollNav(dir) {
 }
 
 function renderTabIfNeeded(tab){
-    if(tab === 'review') { loadReviews(); } // Always refresh reviews
-    
     if(renderedTabs[tab]) return;
     if(tab === 'med') { initPicker('med'); updateMedTimerDisplay(); }
     if(tab === 'pran') { 
@@ -1186,38 +1108,236 @@ function renderTabIfNeeded(tab){
         if(bell && APP_CONFIG.settings.meditationBellUrl) bell.src = APP_CONFIG.settings.meditationBellUrl;
     }
     if(tab === 'sanskrit') { renderSanskritUI(); }
-    if(tab === 'sadhana'){ preloadNearby(); feather.replace(); }
+    if(tab === 'sadhana'){ 
+        preloadNearby();
+        feather.replace(); 
+    }
     if(tab === 'yajna') initJitsi();
     renderedTabs[tab] = true;
 }
 
+// --- SANSKRIT PANE LOGIC ---
+function renderSanskritUI(activeIndex = null) {
+    const mainList = document.getElementById('sanskrit-main-list');
+    const playerList = document.getElementById('sanskrit-player-list');
+    const data = APP_CONFIG.sanskrit || [];
+    
+    let generateListHtml = (isPlayerView = false) => {
+        let html = '';
+        data.forEach((item, index) => {
+            const isActive = index === activeIndex;
+            const isPlaylist = item.type === 'playlist';
+            const iconName = isPlaylist ? 'list' : 'youtube';
+            const activeClass = isActive ? 'active' : '';
+            const badge = isPlaylist ? `<span style="font-size: 9px; color: var(--gold); border: 1px solid var(--gold); padding: 1px 5px; border-radius: 8px; margin-left: 8px; letter-spacing: 0.5px; font-weight: 600;">PLAYLIST</span>` : '';
+            const titleColor = isActive ? 'var(--gold)' : 'white';
+            const fontWeight = isActive ? '500' : '400';
+            const bgColor = isActive ? 'rgba(251,191,36,0.08)' : 'rgba(255,255,255,0.04)';
+            const borderColor = isActive ? 'var(--gold)' : 'rgba(255,255,255,0.08)';
+
+            html += `
+                <div class="sanskrit-list-item ${activeClass}" style="background: ${bgColor}; border: 1px solid ${borderColor}; padding: 12px 15px; border-radius: 8px; margin-bottom: 8px; display: flex; align-items: center; cursor: pointer; transition: 0.2s;" onclick="openSanskritItem(${index})">
+                    <i data-feather="${iconName}" style="margin-right: 12px; color: ${titleColor}; width: 16px; height: 16px; opacity: 0.9;"></i>
+                    <div style="flex: 1; text-align: left; display: flex; align-items: center; justify-content: space-between;">
+                        <span style="font-size: 13.5px; font-weight: ${fontWeight}; color: ${titleColor}; font-family: 'Inter', sans-serif; line-height: 1.3;">${item.title}</span>
+                        ${badge}
+                    </div>
+                </div>
+            `;
+        });
+        return html;
+    };
+
+    if (mainList) mainList.innerHTML = generateListHtml(false);
+    if (playerList) playerList.innerHTML = generateListHtml(true);
+    feather.replace();
+}
+
+function openSanskritItem(index) {
+    const data = APP_CONFIG.sanskrit[index];
+    
+    document.getElementById('sanskrit-landing-view').style.display = 'none';
+    
+    const playerView = document.getElementById('sanskrit-player-view');
+    playerView.style.display = 'block'; 
+    
+    const titleEl = document.getElementById('sanskrit-player-title');
+    const badgeEl = document.getElementById('sanskrit-playlist-badge');
+    const accContainer = document.getElementById('sanskrit-playlist-container');
+    const accItems = document.getElementById('sanskrit-playlist-items');
+    
+    titleEl.innerText = data.title;
+
+    renderSanskritUI(index);
+    
+    if (data.type === 'playlist') {
+        badgeEl.style.display = 'inline-block';
+        titleEl.style.marginBottom = '10px';
+        document.getElementById('sanskrit-iframe').src = `https://www.youtube.com/embed/videoseries?list=${data.id}&autoplay=1`;
+        
+        // Show Accordion Inside Card
+        if(data.videos && data.videos.length > 0) {
+            accContainer.style.display = 'block';
+            let itemsHtml = '<div style="padding-top: 10px; display: flex; flex-direction: column; gap: 8px;">';
+            data.videos.forEach((vid) => {
+                itemsHtml += `
+                    <div onclick="playSanskritSubVideo('${vid.id}', this)" class="sanskrit-playlist-row" style="padding: 12px; background: rgba(0,0,0,0.2); border-radius: 8px; cursor: pointer; color: white; font-size: 13px; display: flex; align-items: center; gap: 10px; font-family: 'Inter', sans-serif; transition: 0.2s;">
+                        <i data-feather="play-circle" style="width: 14px; opacity: 0.7;"></i>
+                        <span>${vid.title}</span>
+                    </div>
+                `;
+            });
+            itemsHtml += '</div>';
+            accItems.innerHTML = itemsHtml;
+            
+            // Auto-highlight the first sub-video
+            setTimeout(() => {
+                const firstSubItem = accItems.querySelector('.sanskrit-playlist-row');
+                if(firstSubItem) playSanskritSubVideo(data.videos[0].id, firstSubItem);
+            }, 100);
+        } else {
+            accContainer.style.display = 'none';
+            accItems.innerHTML = '';
+        }
+
+    } else {
+        badgeEl.style.display = 'none';
+        titleEl.style.marginBottom = '0px';
+        accContainer.style.display = 'none';
+        accItems.innerHTML = '';
+        document.getElementById('sanskrit-iframe').src = `https://www.youtube.com/embed/${data.id}?autoplay=1`;
+    }
+    
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    
+    setTimeout(() => {
+        checkSanskritScroll();
+        const listContainer = document.getElementById('sanskrit-player-list');
+        const activeEl = document.querySelector('#sanskrit-player-list .sanskrit-list-item.active');
+        
+        if (activeEl && listContainer) {
+            // Safely scroll ONLY the inner list, preventing the main page from jumping down
+            const scrollPos = activeEl.offsetTop - (listContainer.clientHeight / 2) + (activeEl.clientHeight / 2);
+            listContainer.scrollTo({ top: scrollPos, behavior: 'smooth' });
+        }
+    }, 300);
+    feather.replace();
+}
+
+function playSanskritSubVideo(vidId, el) {
+    document.getElementById('sanskrit-iframe').src = `https://www.youtube.com/embed/${vidId}?autoplay=1`;
+    
+    document.querySelectorAll('.sanskrit-playlist-row').forEach(item => {
+        item.style.background = 'rgba(0,0,0,0.2)';
+        item.style.color = 'white';
+        item.style.fontWeight = 'normal';
+        const icon = item.querySelector('i');
+        if(icon) icon.style.color = 'white';
+    });
+    
+    el.style.background = 'rgba(251, 191, 36, 0.1)';
+    el.style.color = 'var(--gold)';
+    el.style.fontWeight = '500';
+    const icon = el.querySelector('i');
+    if(icon) icon.style.color = 'var(--gold)';
+}
+
+function toggleSanskritPlaylist() {
+    const items = document.getElementById('sanskrit-playlist-items');
+    const chevron = document.getElementById('sanskrit-playlist-chevron');
+    
+    if (items.style.maxHeight === '0px' || items.style.maxHeight === '') {
+        items.style.maxHeight = '500px'; 
+        chevron.setAttribute('data-feather', 'chevron-up');
+    } else {
+        items.style.maxHeight = '0px';
+        chevron.setAttribute('data-feather', 'chevron-down');
+    }
+    feather.replace();
+}
+
+function backToSanskritList() {
+    document.getElementById('sanskrit-iframe').src = ''; 
+    document.getElementById('sanskrit-player-view').style.display = 'none';
+    document.getElementById('sanskrit-landing-view').style.display = 'block';
+    renderSanskritUI(null); 
+}
+
+window.checkSanskritScroll = () => {
+    const list = document.getElementById('sanskrit-player-list');
+    const upBtn = document.getElementById('sanskrit-scroll-up');
+    const downBtn = document.getElementById('sanskrit-scroll-down');
+    if(!list) return;
+
+    if (list.scrollHeight > list.clientHeight) {
+        upBtn.style.display = list.scrollTop > 5 ? 'flex' : 'none';
+        downBtn.style.display = (list.scrollTop + list.clientHeight < list.scrollHeight - 5) ? 'flex' : 'none';
+    } else {
+        upBtn.style.display = 'none';
+        downBtn.style.display = 'none';
+    }
+};
+
+window.scrollSanskritList = (dir) => {
+    const list = document.getElementById('sanskrit-player-list');
+    if(!list) return;
+    const scrollAmount = 120 * dir;
+    list.scrollBy({ top: scrollAmount, behavior: 'smooth' });
+    setTimeout(checkSanskritScroll, 300); 
+};
+
 function initPicker(type) {
     const sourceData = type === 'pran' ? APP_CONFIG.pranayamas : APP_CONFIG.meditations;
     renderWheelItems(type, sourceData);
-    if (type === 'pran') clearPranSelection();
+    if (type === 'pran') {
+        clearPranSelection();
+    }
 }
 
 function togglePicker(type) {
     const picker = document.getElementById(`picker-${type}`);
-    if (picker && picker.classList.contains('expanded')) collapsePicker(type);
-    else expandPicker(type);
+    const inlinePicker = document.getElementById(`${type}-section-inline`);
+    const activeEl = inlinePicker || picker;
+    
+    if (activeEl && activeEl.querySelector('.picker-wheel-area').style.height === '150px' || (picker && picker.classList.contains('expanded'))) {
+        collapsePicker(type);
+    } else {
+        expandPicker(type);
+    }
 }
 
 function expandPicker(type) {
     const picker = document.getElementById(`picker-${type}`);
     const input = document.getElementById(`input-${type}`);
+    
     if(picker) picker.classList.add('expanded');
+    
+    const inlineWheel = document.getElementById(`wheel-${type}`);
+    if(inlineWheel && inlineWheel.parentElement.classList.contains('inline-dropdown')) {
+        inlineWheel.parentElement.style.height = '150px';
+        inlineWheel.parentElement.style.opacity = '1';
+    }
+    
     document.getElementById(`chevron-${type}`).setAttribute('data-feather', 'chevron-up');
     feather.replace();
+    
     input.placeholder = input.value || (type.includes('med') ? `Choose meditation...` : `Search...`);
     input.value = '';
     filterPicker(type); 
+    
     setTimeout(() => handleWheelScroll(type, true), 50);
 }
 
 function collapsePicker(type) {
     const picker = document.getElementById(`picker-${type}`);
     if(picker) picker.classList.remove('expanded');
+    
+    const inlineWheel = document.getElementById(`wheel-${type}`);
+    if(inlineWheel && inlineWheel.parentElement.classList.contains('inline-dropdown')) {
+        inlineWheel.parentElement.style.height = '0';
+        inlineWheel.parentElement.style.opacity = '0';
+    }
+    
     document.getElementById(`chevron-${type}`).setAttribute('data-feather', 'chevron-down');
     feather.replace();
 }
@@ -1237,6 +1357,7 @@ function renderWheelItems(type, items) {
         const origIdx = sourceData.indexOf(item);
         return `<div class="wheel-item" data-orig-idx="${origIdx}" onclick="selectFromWheel('${type}', ${origIdx})">${item.title}</div>`;
     }).join('');
+    
     wheel.innerHTML = `<div class="wheel-pad"></div>${innerHTML}<div class="wheel-pad"></div>`;
     wheel.scrollTop = 0;
     handleWheelScroll(type, true);
@@ -1256,12 +1377,17 @@ function handleWheelScroll(type, preventRender = false) {
         if(rect.height === 0) return; 
         const itemCenter = rect.top + (rect.height / 2);
         const dist = Math.abs(wheelCenter - itemCenter);
-        if (dist < closestDist) { closestDist = dist; closestItem = item; }
+        
+        if (dist < closestDist) {
+            closestDist = dist;
+            closestItem = item;
+        }
         item.classList.remove('active');
     });
     
     if (closestItem) {
         closestItem.classList.add('active');
+        
         if (!preventRender) {
             clearTimeout(scrollTimeouts[type]);
             scrollTimeouts[type] = setTimeout(() => {
@@ -1283,22 +1409,28 @@ function selectFromWheel(type, origIdx) {
     const sourceData = type === 'pran' ? APP_CONFIG.pranayamas : APP_CONFIG.meditations;
     const title = sourceData[origIdx].title;
     document.getElementById(`input-${type}`).value = title;
+    
     if (type === 'pran') {
         document.getElementById('pran-timer-container').style.display = 'none';
         document.getElementById('display-pran').style.display = 'block';
     }
+    
     renderMediaHTML(type, sourceData[origIdx]);
     collapsePicker(type);
 }
 
 let currentCardAudio = new Audio();
+
 function toggleCardAudio(src) {
     let btnIcon = document.getElementById('card-audio-icon');
+    
     if (currentCardAudio.src && currentCardAudio.src.includes(src) && !currentCardAudio.paused) {
         currentCardAudio.pause();
         btnIcon.setAttribute('data-feather', 'play');
     } else {
-        if (!currentCardAudio.src || !currentCardAudio.src.includes(src)) { currentCardAudio.src = src; }
+        if (!currentCardAudio.src || !currentCardAudio.src.includes(src)) {
+            currentCardAudio.src = src;
+        }
         currentCardAudio.play().catch(e => console.log(e));
         btnIcon.setAttribute('data-feather', 'pause');
     }
@@ -1312,7 +1444,11 @@ function toggleCardAudio(src) {
         const display = document.getElementById('card-audio-time');
         if(display) display.innerText = `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')} remaining`;
     };
-    currentCardAudio.onended = () => { btnIcon.setAttribute('data-feather', 'play'); feather.replace(); };
+    
+    currentCardAudio.onended = () => {
+        btnIcon.setAttribute('data-feather', 'play');
+        feather.replace();
+    };
 }
 
 function renderMediaHTML(type, data) {
@@ -1338,8 +1474,11 @@ function renderMediaHTML(type, data) {
                 <img src="${data.img}" loading="lazy" style="width:100%; height:180px; object-fit:cover;">
                 <div class="card-body" style="padding-top: 20px;">
                     <h3 class="serif" style="color: var(--gold); margin-bottom: 25px;">${data.title}</h3>
+                    
                     <div style="display: flex; justify-content: center; align-items: center; gap: 20px; margin-bottom: 10px;">
-                        <button onclick="toggleCardAudio('${data.audio}')" style="background: linear-gradient(135deg, var(--gold), #d97706); border: none; color: var(--bg); border-radius: 50%; width: 65px; height: 65px; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(251, 191, 36, 0.4);"><i data-feather="play" id="card-audio-icon" style="width: 26px; height: 26px; margin-left: 3px;"></i></button>
+                        <button onclick="toggleCardAudio('${data.audio}')" style="background: linear-gradient(135deg, var(--gold), #d97706); border: none; color: var(--bg); border-radius: 50%; width: 65px; height: 65px; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(251, 191, 36, 0.4);">
+                            <i data-feather="play" id="card-audio-icon" style="width: 26px; height: 26px; margin-left: 3px;"></i>
+                        </button>
                         <span id="card-audio-time" style="font-size: 20px; font-weight: bold; color: white; font-family: 'Inter', monospace; opacity: 0.9;">--:-- remaining</span>
                     </div>
                 </div>
@@ -1348,6 +1487,153 @@ function renderMediaHTML(type, data) {
         feather.replace();
     }
 }
+
+function initJitsi() {
+    if (typeof JitsiMeetExternalAPI !== 'undefined') {
+        new JitsiMeetExternalAPI("8x8.vc", {
+            roomName: "vpaas-magic-cookie-47ba1aabdd84458d9977951213e7d9f0/SampleAppIronicPotentialsChainSeemingly",
+            parentNode: document.querySelector('#jaas-container'),
+            configOverwrite: { prejoinPageEnabled: false },
+            interfaceConfigOverwrite: { SHOW_JITSI_WATERMARK: false }
+        });
+    } else { setTimeout(initJitsi, 1000); }
+}
+
+let yajnaSynth = window.speechSynthesis;
+let yajnaUtterance = null;
+
+async function openYajnaOverlay() {
+    const overlay = document.getElementById('yajna-overlay');
+    const content = document.getElementById('yajna-content');
+    overlay.classList.add('active');
+    
+    try {
+        const res = await fetch('./assets/what_is_yajna.txt');
+        if (res.ok) {
+            const text = await res.text();
+            content.innerHTML = text.replace(/\n/g, '<br>');
+            
+            if(yajnaSynth.speaking) yajnaSynth.cancel();
+            yajnaUtterance = new SpeechSynthesisUtterance(text);
+            
+            const voices = yajnaSynth.getVoices();
+            let indianVoice = voices.find(v => v.lang === 'en-IN' && (v.name.includes('Female') || v.name.includes('Rishi') || v.name.includes('Veena')));
+            if(!indianVoice) indianVoice = voices.find(v => v.lang === 'en-IN'); 
+            if(indianVoice) yajnaUtterance.voice = indianVoice;
+            
+            yajnaUtterance.onend = () => {
+                document.getElementById('yajna-audio-icon').setAttribute('data-feather', 'play');
+                feather.replace();
+            };
+        } else {
+            content.innerHTML = "Wisdom text could not be loaded.";
+        }
+    } catch(e) {
+        content.innerHTML = "Error loading wisdom.";
+    }
+}
+
+function closeYajnaOverlay() {
+    document.getElementById('yajna-overlay').classList.remove('active');
+    if(yajnaSynth.speaking) yajnaSynth.cancel();
+    document.getElementById('yajna-audio-icon').setAttribute('data-feather', 'play');
+    feather.replace();
+}
+
+function toggleYajnaAudio() {
+    if(!yajnaUtterance) return;
+    const icon = document.getElementById('yajna-audio-icon');
+    
+    if (yajnaSynth.speaking) {
+        if (yajnaSynth.paused) {
+            yajnaSynth.resume();
+            icon.setAttribute('data-feather', 'pause');
+        } else {
+            yajnaSynth.pause();
+            icon.setAttribute('data-feather', 'play');
+        }
+    } else {
+        yajnaSynth.speak(yajnaUtterance);
+        icon.setAttribute('data-feather', 'pause');
+    }
+    feather.replace();
+}
+
+function preloadNearby() {
+    let next = window.pIdx + 1;
+    if (next > 109) next = 1;
+    let img = new Image();
+    img.src = `./parayana/Slide${next}.webp`;
+}
+
+function navSlide(dir){ 
+    const userId = localStorage.getItem('vss_user_id') || 'guest_user';
+    let targetIdx = window.pIdx + dir;
+    
+    // GUEST USER GATE FOR SLIDES
+    if (userId === 'guest_user') {
+        if (targetIdx > 5 || targetIdx < 1) {
+            showGuestPopup();
+            return; // Block slide movement
+        }
+    }
+
+    window.pIdx = targetIdx; 
+    if(window.pIdx > 109) window.pIdx = 1; 
+    if(window.pIdx < 1) window.pIdx = 109; 
+    
+    document.getElementById('sadhana-slide').src = `./parayana/Slide${window.pIdx}.webp`; 
+    preloadNearby();
+
+    // Silently update the shloka indicator if the recording pane happens to be open
+    const indicator = document.getElementById('shloka-indicator');
+    if (indicator) {
+        indicator.innerText = window.pIdx > 2 ? `Submitting for: Shloka ${window.pIdx - 2}` : `Submitting for: Setup/Intro`;
+    }
+}
+
+function handleKeys(e) {
+    if (e.key === "ArrowRight") navSlide(1);
+    if (e.key === "ArrowLeft") navSlide(-1);
+    if (e.altKey && e.key === "Enter") toggleFS();
+}
+
+function toggleFS(){ 
+    const el = document.getElementById('sadhana-container'); 
+    if(!document.fullscreenElement && !document.webkitFullscreenElement) { 
+        if (el.requestFullscreen) el.requestFullscreen().catch(()=>{});
+        else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+    } else { 
+        if (document.exitFullscreen) document.exitFullscreen(); 
+        else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+    }
+}
+
+document.addEventListener('fullscreenchange', handleFSChange);
+document.addEventListener('webkitfullscreenchange', handleFSChange);
+
+function handleFSChange() {
+    const icon = document.getElementById('fs-icon');
+    if (icon) {
+        if (document.fullscreenElement || document.webkitFullscreenElement) icon.setAttribute('data-feather', 'minimize');
+        else icon.setAttribute('data-feather', 'maximize');
+    }
+    feather.replace();
+}
+
+document.getElementById('main-nav').addEventListener('wheel', (evt) => {
+    evt.preventDefault();
+    document.getElementById('main-nav').scrollLeft += evt.deltaY;
+});
+
+if('serviceWorker'in navigator){ navigator.serviceWorker.register('sw.js'); }
+
+window.onload = async () => { 
+    await loadConfig(); 
+    checkUserSession(); // Check local storage for user details
+    const flowAudio = document.getElementById('sadhana-bg-audio');
+    if (flowAudio) flowAudio.src = "./meditations/vss.mp3";
+};
 
 // --- AUDIO RECORDING BROWSER LOGIC ---
 function toggleMicrophone() {
@@ -1359,17 +1645,22 @@ function toggleMicrophone() {
     const statusText = document.getElementById('audio-status');
 
     if(!window.isRecording) {
+        // START RECORDING
         navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
             window.mediaRecorder = new MediaRecorder(stream);
             window.audioChunks = [];
 
-            window.mediaRecorder.ondataavailable = e => { if (e.data.size > 0) window.audioChunks.push(e.data); };
+            window.mediaRecorder.ondataavailable = e => {
+                if (e.data.size > 0) window.audioChunks.push(e.data);
+            };
 
             window.mediaRecorder.onstop = () => {
                 window.globalAudioBlob = new Blob(window.audioChunks, { type: 'audio/webm' });
-                audioPreview.src = URL.createObjectURL(window.globalAudioBlob);
+                const audioUrl = URL.createObjectURL(window.globalAudioBlob);
+                audioPreview.src = audioUrl;
                 audioPreview.style.display = 'block';
                 submitBtn.style.display = 'flex';
+                
                 stream.getTracks().forEach(track => track.stop());
             };
 
@@ -1392,8 +1683,13 @@ function toggleMicrophone() {
                 let s = (window.seconds % 60).toString().padStart(2, '0');
                 timerDisplay.innerText = `${m}:${s}`;
             }, 1000);
-        }).catch(err => { alert("Microphone access denied or not available on this device."); });
+
+        }).catch(err => {
+            alert("Microphone access denied or not available on this device.");
+            console.error(err);
+        });
     } else {
+        // STOP RECORDING
         window.mediaRecorder.stop();
         window.isRecording = false;
         clearInterval(window.timerInterval);
@@ -1405,18 +1701,31 @@ function toggleMicrophone() {
     }
 }
 
+// --- DIRECT GOOGLE DRIVE UPLOAD LOGIC ---
 window.submitAudioRecording = async () => {
     const submitBtn = document.getElementById('submit-audio-btn');
     const statusText = document.getElementById('audio-status');
     const audioPreview = document.getElementById('audio-preview');
     const timerDisplay = document.getElementById('record-timer');
 
-    if(!window.globalAudioBlob || window.globalAudioBlob.size === 0) return;
+    if(!window.globalAudioBlob) return;
+    if(window.globalAudioBlob.size === 0) {
+        alert("Recording failed. Your microphone did not pick up any audio.");
+        return;
+    }
 
     const userId = localStorage.getItem('vss_user_id') || 'guest_user';
     const userName = localStorage.getItem('vss_user_name') || 'Guest';
 
-    if (userId === 'guest_user') { alert("Please log in to submit your recording."); return; }
+    if (userId === 'guest_user') {
+        alert("Please log in to submit your recording.");
+        return;
+    }
+
+    if(GOOGLE_APP_URL === "YOUR_NEW_APPS_SCRIPT_URL_HERE") {
+        alert("Teacher Action Required: Please set the GOOGLE_APP_URL in the HTML file.");
+        return;
+    }
 
     submitBtn.disabled = true;
     submitBtn.innerHTML = "Processing Audio...";
@@ -1424,20 +1733,24 @@ window.submitAudioRecording = async () => {
     statusText.style.color = "var(--gold)";
 
     try {
+        // Convert Audio Blob to Base64
         const reader = new FileReader();
         reader.readAsDataURL(window.globalAudioBlob);
         
         reader.onloadend = async () => {
             const base64data = reader.result.split(',')[1]; 
+
             statusText.innerText = "Saving directly to Google Drive...";
 
+            // Dynamically assign Shloka tracking
             const shlokaNum = window.pIdx > 2 ? `Shloka ${window.pIdx - 2}` : `Setup/Intro`;
 
             const payload = {
-                userId: userId, userName: userName,
+                userId: userId,
+                userName: userName,
                 date: new Date().toISOString().split('T')[0],
                 time: new Date().toLocaleTimeString(),
-                timing: shlokaNum, 
+                timing: shlokaNum, // Saved beautifully into the Timing Column
                 action: "AUDIO_SUBMIT",
                 audioBase64: base64data,
                 mimeType: window.globalAudioBlob.type
@@ -1445,10 +1758,12 @@ window.submitAudioRecording = async () => {
 
             await fetch(GOOGLE_APP_URL, {
                 method: 'POST',
-                headers: { "Content-Type": "text/plain;charset=utf-8" },
+                mode: 'no-cors', 
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
 
+            // Clean UI and Show Success immediately after fetch completes
             statusText.innerHTML = "✅ Recording successfully submitted to the teacher!";
             statusText.style.color = "#2ed573";
             
@@ -1460,8 +1775,11 @@ window.submitAudioRecording = async () => {
             
             setTimeout(() => { statusText.innerHTML = ""; }, 5000);
         };
+
         reader.onerror = () => { throw new Error("File conversion failed"); };
+
     } catch(error) {
+        console.error(error);
         statusText.innerText = "Error uploading. Please check your internet connection.";
         statusText.style.color = "#ff4757";
         submitBtn.disabled = false;
@@ -1469,6 +1787,115 @@ window.submitAudioRecording = async () => {
         feather.replace();
     }
 };
+
+// --- SANSKRIT LIST SCROLL ISOLATION ---
+// Ensures that scrolling the active item doesn't drag the main viewport out of focus
+function renderSanskritUI(activeIndex = null) {
+    const mainList = document.getElementById('sanskrit-main-list');
+    const playerList = document.getElementById('sanskrit-player-list');
+    const data = APP_CONFIG.sanskrit || [];
+    
+    let generateListHtml = (isPlayerView = false) => {
+        let html = '';
+        data.forEach((item, index) => {
+            const isActive = index === activeIndex;
+            const isPlaylist = item.type === 'playlist';
+            const iconName = isPlaylist ? 'list' : 'youtube';
+            const activeClass = isActive ? 'active' : '';
+            const badge = isPlaylist ? `<span style="font-size: 9px; color: var(--gold); border: 1px solid var(--gold); padding: 1px 5px; border-radius: 8px; margin-left: 8px; letter-spacing: 0.5px; font-weight: 600;">PLAYLIST</span>` : '';
+            const titleColor = isActive ? 'var(--gold)' : 'white';
+            const fontWeight = isActive ? '500' : '400';
+            const bgColor = isActive ? 'rgba(251,191,36,0.08)' : 'rgba(255,255,255,0.04)';
+            const borderColor = isActive ? 'var(--gold)' : 'rgba(255,255,255,0.08)';
+
+            html += `
+                <div class="sanskrit-list-item ${activeClass}" style="background: ${bgColor}; border: 1px solid ${borderColor}; padding: 12px 15px; border-radius: 8px; margin-bottom: 8px; display: flex; align-items: center; cursor: pointer; transition: 0.2s;" onclick="openSanskritItem(${index})">
+                    <i data-feather="${iconName}" style="margin-right: 12px; color: ${titleColor}; width: 16px; height: 16px; opacity: 0.9;"></i>
+                    <div style="flex: 1; text-align: left; display: flex; align-items: center; justify-content: space-between;">
+                        <span style="font-size: 13.5px; font-weight: ${fontWeight}; color: ${titleColor}; font-family: 'Inter', sans-serif; line-height: 1.3;">${item.title}</span>
+                        ${badge}
+                    </div>
+                </div>
+            `;
+        });
+        return html;
+    };
+
+    if (mainList) mainList.innerHTML = generateListHtml(false);
+    if (playerList) playerList.innerHTML = generateListHtml(true);
+    feather.replace();
+}
+
+function openSanskritItem(index) {
+    const data = APP_CONFIG.sanskrit[index];
+    
+    document.getElementById('sanskrit-landing-view').style.display = 'none';
+    document.getElementById('sanskrit-player-view').style.display = 'flex';
+    
+    const titleEl = document.getElementById('sanskrit-player-title');
+    const badgeEl = document.getElementById('sanskrit-playlist-badge');
+    const accContainer = document.getElementById('sanskrit-playlist-container');
+    const accItems = document.getElementById('sanskrit-playlist-items');
+    
+    titleEl.innerText = data.title;
+
+    renderSanskritUI(index);
+    
+    if (data.type === 'playlist') {
+        badgeEl.style.display = 'inline-block';
+        titleEl.style.marginBottom = '10px';
+        document.getElementById('sanskrit-iframe').src = `https://www.youtube.com/embed/videoseries?list=${data.id}&autoplay=1`;
+        
+        // Show Accordion Inside Card
+        if(data.videos && data.videos.length > 0) {
+            accContainer.style.display = 'block';
+            let itemsHtml = '<div style="padding-top: 10px; display: flex; flex-direction: column; gap: 8px;">';
+            data.videos.forEach((vid) => {
+                itemsHtml += `
+                    <div onclick="playSanskritSubVideo('${vid.id}', this)" class="sanskrit-playlist-row" style="padding: 12px; background: rgba(0,0,0,0.2); border-radius: 8px; cursor: pointer; color: white; font-size: 13px; display: flex; align-items: center; gap: 10px; font-family: 'Inter', sans-serif; transition: 0.2s;">
+                        <i data-feather="play-circle" style="width: 14px; opacity: 0.7;"></i>
+                        <span>${vid.title}</span>
+                    </div>
+                `;
+            });
+            itemsHtml += '</div>';
+            accItems.innerHTML = itemsHtml;
+            
+            // Auto-highlight the first sub-video
+            setTimeout(() => {
+                const firstSubItem = accItems.querySelector('.sanskrit-playlist-row');
+                if(firstSubItem) playSanskritSubVideo(data.videos[0].id, firstSubItem);
+            }, 100);
+        } else {
+            accContainer.style.display = 'none';
+            accItems.innerHTML = '';
+        }
+
+    } else {
+        badgeEl.style.display = 'none';
+        titleEl.style.marginBottom = '0px';
+        accContainer.style.display = 'none';
+        accItems.innerHTML = '';
+        document.getElementById('sanskrit-iframe').src = `https://www.youtube.com/embed/${data.id}?autoplay=1`;
+    }
+    
+    // Explicitly scroll main window to top so video stays in focus
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    
+    setTimeout(() => {
+        checkSanskritScroll();
+        const listContainer = document.getElementById('sanskrit-player-list');
+        const activeEl = document.querySelector('#sanskrit-player-list .sanskrit-list-item.active');
+        
+        if (activeEl && listContainer) {
+            // Safely scroll ONLY the inner list, preventing the main page from jumping down
+            const scrollPos = activeEl.offsetTop - (listContainer.clientHeight / 2) + (activeEl.clientHeight / 2);
+            listContainer.scrollTo({ top: scrollPos, behavior: 'smooth' });
+        }
+    }, 300);
+    feather.replace();
+}
+
 </script>
 
 </body>
