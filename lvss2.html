@@ -607,7 +607,7 @@ function getPaneHTML(id) {
                                 <h3 class="serif" id="sanskrit-player-title" style="color: var(--gold); margin-bottom: 10px; font-size: 18px;"></h3>
                                 <span id="sanskrit-playlist-badge" style="display:none; background: rgba(251,191,36,0.15); color: var(--gold); font-size: 11px; font-weight: bold; padding: 4px 8px; border-radius: 6px; letter-spacing: 0.5px;">PLAYLIST</span>
                                 <div id="sanskrit-playlist-container" style="display:none; margin-top: 20px;">
-                                    <button onclick="toggleSanskritPlaylist()" style="width:100%; display:flex; justify-content:space-between; align-items:center; background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: white; padding: 12px 15px; border-radius: 12px; cursor: pointer; font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 500;">
+                                    <button onclick="window.toggleSanskritPlaylist()" style="width:100%; display:flex; justify-content:space-between; align-items:center; background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: white; padding: 12px 15px; border-radius: 12px; cursor: pointer; font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 500;">
                                         <span>More from this playlist</span><i data-feather="chevron-down" id="sanskrit-playlist-chevron" style="width: 18px; color: var(--gold);"></i>
                                     </button>
                                     <div id="sanskrit-playlist-items" style="max-height: 0; overflow: hidden; transition: max-height 0.4s ease-out;"></div>
@@ -616,9 +616,9 @@ function getPaneHTML(id) {
                         </div>
                     </div>
                     <div class="sanskrit-list-wrapper">
-                        <button id="sanskrit-scroll-up" onclick="scrollSanskritList(-1)" style="position: absolute; top: 0; left: 50%; transform: translateX(-50%); background: linear-gradient(to bottom, rgba(15,23,42,0.95), transparent); border: none; color: var(--gold); z-index: 10; width: 100%; height: 35px; cursor: pointer; display: none; align-items: flex-start; justify-content: center; padding-top: 5px; border-radius: 8px 8px 0 0;"><i data-feather="chevron-up" style="width: 18px; opacity: 0.9;"></i></button>
-                        <div id="sanskrit-player-list" onscroll="checkSanskritScroll()"></div>
-                        <button id="sanskrit-scroll-down" onclick="scrollSanskritList(1)" style="position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); background: linear-gradient(to top, rgba(15,23,42,0.95), transparent); border: none; color: var(--gold); z-index: 10; width: 100%; height: 35px; cursor: pointer; display: none; align-items: flex-end; justify-content: center; padding-bottom: 5px; border-radius: 0 0 8px 8px;"><i data-feather="chevron-down" style="width: 18px; opacity: 0.9;"></i></button>
+                        <button id="sanskrit-scroll-up" onclick="window.scrollSanskritList(-1)" style="position: absolute; top: 0; left: 50%; transform: translateX(-50%); background: linear-gradient(to bottom, rgba(15,23,42,0.95), transparent); border: none; color: var(--gold); z-index: 10; width: 100%; height: 35px; cursor: pointer; display: none; align-items: flex-start; justify-content: center; padding-top: 5px; border-radius: 8px 8px 0 0;"><i data-feather="chevron-up" style="width: 18px; opacity: 0.9;"></i></button>
+                        <div id="sanskrit-player-list" onscroll="window.checkSanskritScroll()"></div>
+                        <button id="sanskrit-scroll-down" onclick="window.scrollSanskritList(1)" style="position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); background: linear-gradient(to top, rgba(15,23,42,0.95), transparent); border: none; color: var(--gold); z-index: 10; width: 100%; height: 35px; cursor: pointer; display: none; align-items: flex-end; justify-content: center; padding-bottom: 5px; border-radius: 0 0 8px 8px;"><i data-feather="chevron-down" style="width: 18px; opacity: 0.9;"></i></button>
                     </div>
                 </div>
             </div>
@@ -932,7 +932,7 @@ function scrollNav(dir) {
 }
 
 function renderTabIfNeeded(tab){
-    if(tab === 'review') { loadReviews(); } // Always refresh reviews
+    if(tab === 'review') { loadReviews(); } 
     
     if(renderedTabs[tab]) return;
     if(tab === 'med') { initPicker('med'); updateMedTimerDisplay(); }
@@ -1524,7 +1524,7 @@ function getRawAudioUrl(url) {
         if (idMatch && idMatch[1]) fileId = idMatch[1];
     }
     if (fileId) {
-        return `https://docs.google.com/uc?export=download&id=${fileId}`;
+        return `https://drive.google.com/uc?export=download&id=${fileId}`;
     }
     return url;
 }
