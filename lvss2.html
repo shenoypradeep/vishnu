@@ -302,7 +302,7 @@
 
 <script>
 // ==========================================
-// 1. PASTE YOUR NEW APP SCRIPT URL HERE
+// 1. HARDCODED GOOGLE APPS SCRIPT URL
 // ==========================================
 const GOOGLE_APP_URL = "https://script.google.com/macros/s/AKfycbyRMmFeftM55MPBtPR3dMknnO05SlV2sXbV-thjweCdgzkv5HxTXaBOLawZtJBQQOR2VA/exec";
 
@@ -932,7 +932,7 @@ function scrollNav(dir) {
 }
 
 function renderTabIfNeeded(tab){
-    if(tab === 'review') { loadReviews(); } // Always refresh reviews
+    if(tab === 'review') { loadReviews(); } 
     
     if(renderedTabs[tab]) return;
     if(tab === 'med') { initPicker('med'); updateMedTimerDisplay(); }
@@ -1516,15 +1516,25 @@ window.scrollSanskritList = (dir) => {
 // --- REVIEW PANE LOGIC ---
 function getRawAudioUrl(url) {
     if (!url) return "";
-    if (url.includes("drive.google.com/file/d/")) {
-        const match = url.match(/\/d\/(.+?)\//);
-        if (match && match[1]) {
-            return `https://drive.google.com/uc?export=download&id=${match[1]}`;
-        }
+    let fileId = "";
+    
+    // Extract ID from standard view link (e.g. drive.google.com/file/d/FILE_ID/view)
+    const dMatch = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
+    if (dMatch && dMatch[1]) fileId = dMatch[1];
+    
+    // Extract ID from uc link (e.g. drive.google.com/uc?id=FILE_ID)
+    else if (url.includes("id=")) {
+        const idMatch = url.match(/id=([a-zA-Z0-9_-]+)/);
+        if (idMatch && idMatch[1]) fileId = idMatch[1];
     }
-    if (url.includes("uc?id=")) return url;
+    
+    if (fileId) {
+        return `https://drive.google.com/uc?export=download&id=${fileId}`;
+    }
     return url;
 }
+
+const GOOGLE_APP_URL = "https://script.google.com/macros/s/AKfycbyRMmFeftM55MPBtPR3dMknnO05SlV2sXbV-thjweCdgzkv5HxTXaBOLawZtJBQQOR2VA/exec";
 
 async function loadReviews() {
     document.getElementById('review-loading').style.display = 'block';
@@ -1615,7 +1625,12 @@ function buildReviewItem(log, role) {
                 <p style="font-size: 12px; color: var(--gold); margin-bottom: 5px;">Teacher Feedback</p>
                 <textarea id="feedback-text-${log.shlokaId}" class="search-input" style="min-height: 60px; margin-bottom: 10px;" placeholder="Write feedback here...">${log.feedbackText}</textarea>
                 
-                ${log.feedbackAudio ? `<div style="margin-bottom: 10px;"><span style="font-size: 11px; opacity:0.7;">Previous Voice Note:</span><br><audio src="${rawTeacherAudio}" controls style="width: 100%; height: 35px; border-radius: 8px;"></audio></div>` : ''}
+                ${log.feedbackAudio ? `
+                    <div style="margin-bottom: 10px;">
+                        <span style="font-size: 11px; opacity:0.7;">Previous Voice Note:</span><br>
+                        <audio src="${rawTeacherAudio}" controls preload="metadata" style="width: 100%; height: 35px; border-radius: 8px;"></audio>
+                        <div style="text-align: right; margin-top: 2px;"><a href="${rawTeacherAudio}" target="_blank" style="font-size: 10px; color: var(--gold); text-decoration: underline; font-family: 'Inter', sans-serif;">Alternative Play Link</a></div>
+                    </div>` : ''}
                 
                 <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 10px;">
                     <button id="fb-record-btn-${log.shlokaId}" onclick="window.toggleFeedbackRecord('${log.shlokaId}')" style="background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: white; border-radius: 50%; width: 40px; height: 40px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.3s;">
@@ -1642,7 +1657,10 @@ function buildReviewItem(log, role) {
                 <div style="margin-top: 15px; padding: 15px; background: rgba(251, 191, 36, 0.08); border-left: 2px solid var(--gold); border-radius: 8px;">
                     <p style="font-size: 12px; color: var(--gold); margin-bottom: 5px; font-weight: bold;">Teacher Review</p>
                     ${log.feedbackText ? `<p style="font-size: 13px; color: white; margin-bottom: 10px; line-height: 1.5;">${log.feedbackText}</p>` : ''}
-                    ${log.feedbackAudio ? `<audio src="${rawTeacherAudio}" controls style="width: 100%; height: 35px; border-radius: 8px;"></audio>` : ''}
+                    ${log.feedbackAudio ? `
+                        <audio src="${rawTeacherAudio}" controls preload="metadata" style="width: 100%; height: 35px; border-radius: 8px;"></audio>
+                        <div style="text-align: right; margin-top: 2px;"><a href="${rawTeacherAudio}" target="_blank" style="font-size: 10px; color: var(--gold); text-decoration: underline; font-family: 'Inter', sans-serif;">Alternative Play Link</a></div>
+                    ` : ''}
                 </div>
             `;
         } else {
@@ -1661,7 +1679,9 @@ function buildReviewItem(log, role) {
                 <span style="font-size: 11px; opacity: 0.6;">${dateStr}</span>
             </div>
             <span style="font-size: 11px; opacity: 0.7; margin-bottom: 5px; display: block;">Learner Audio:</span>
-            <audio src="${rawLearnerAudio}" controls style="width: 100%; height: 35px; border-radius: 8px;"></audio>
+            <audio src="${rawLearnerAudio}" controls preload="metadata" style="width: 100%; height: 35px; border-radius: 8px;"></audio>
+            <div style="text-align: right; margin-top: 2px;"><a href="${rawLearnerAudio}" target="_blank" style="font-size: 10px; color: var(--gold); text-decoration: underline; font-family: 'Inter', sans-serif;">Alternative Play Link</a></div>
+            
             ${learnerActions}
             ${teacherFeedbackHTML}
         </div>
