@@ -253,7 +253,10 @@
             </button>
             
             <div class="user-menu-container" style="display: flex; align-items: center; gap: 8px; position: relative;">
-                <span id="user-first-name" onclick="handleUserIconClick()" style="font-size: 15px; font-weight: 600; color: var(--gold); font-family: 'Inter', sans-serif; display: none; cursor: pointer; transition: 0.2s;"></span>
+                <div style="display: flex; flex-direction: column; align-items: flex-end; line-height: 1.2;">
+                    <span id="user-first-name" onclick="handleUserIconClick()" style="font-size: 15px; font-weight: 600; color: var(--gold); font-family: 'Inter', sans-serif; display: none; cursor: pointer; transition: 0.2s;"></span>
+                    <span id="user-role-badge" style="font-size: 9px; font-weight: bold; color: #ff4757; letter-spacing: 1px; text-transform: uppercase; display: none;"></span>
+                </div>
                 <i data-feather="user" onclick="handleUserIconClick()" style="cursor: pointer; color: white; transition: 0.2s;"></i>
                 
                 <div id="logout-dropdown" style="display: none; position: absolute; top: 120%; right: 0; background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(10px); border: 1px solid var(--border); border-radius: 8px; padding: 10px 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); z-index: 1000; min-width: 120px;">
@@ -316,12 +319,19 @@ window.pIdx = 1;
 function checkUserSession() {
     const userName = localStorage.getItem('vss_user_name');
     const userId = localStorage.getItem('vss_user_id');
+    const userRole = localStorage.getItem('vss_user_role') || 'learner';
     const nameDisplay = document.getElementById('user-first-name');
+    const roleDisplay = document.getElementById('user-role-badge');
     
     if (userId && userName && userName !== 'guest_user') {
         const firstName = userName.split(' ')[0];
         nameDisplay.innerText = firstName;
         nameDisplay.style.display = 'inline-block';
+        
+        if (userRole === 'teacher' || userRole === 'admin') {
+            roleDisplay.innerText = userRole;
+            roleDisplay.style.display = 'block';
+        }
     } else {
         nameDisplay.innerText = 'Login >';
         nameDisplay.style.display = 'inline-block';
@@ -1363,7 +1373,7 @@ function initSanskritUI(activeIndex = null) {
             const borderColor = isActive ? 'var(--gold)' : 'rgba(255,255,255,0.08)';
 
             html += `
-                <div class="sanskrit-list-item ${activeClass}" style="background: ${bgColor}; border: 1px solid ${borderColor}; padding: 12px 15px; border-radius: 8px; margin-bottom: 8px; display: flex; align-items: center; cursor: pointer; transition: 0.2s;" onclick="openSanskritItem(${index})">
+                <div class="sanskrit-list-item ${activeClass}" style="background: ${bgColor}; border: 1px solid ${borderColor}; padding: 12px 15px; border-radius: 8px; margin-bottom: 8px; display: flex; align-items: center; cursor: pointer; transition: 0.2s;" onclick="window.openSanskritItem(${index})">
                     <i data-feather="${iconName}" style="margin-right: 12px; color: ${titleColor}; width: 16px; height: 16px; opacity: 0.9;"></i>
                     <div style="flex: 1; text-align: left; display: flex; align-items: center; justify-content: space-between;">
                         <span style="font-size: 13.5px; font-weight: ${fontWeight}; color: ${titleColor}; font-family: 'Inter', sans-serif; line-height: 1.3;">${item.title}</span>
@@ -1512,6 +1522,7 @@ function getRawAudioUrl(url) {
             return `https://drive.google.com/uc?export=download&id=${match[1]}`;
         }
     }
+    if (url.includes("uc?id=")) return url;
     return url;
 }
 
