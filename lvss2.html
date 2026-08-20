@@ -932,7 +932,7 @@ function scrollNav(dir) {
 }
 
 function renderTabIfNeeded(tab){
-    if(tab === 'review') { loadReviews(); } // Always refresh reviews
+    if(tab === 'review') { loadReviews(); } 
     
     if(renderedTabs[tab]) return;
     if(tab === 'med') { initPicker('med'); updateMedTimerDisplay(); }
@@ -1533,6 +1533,8 @@ function getRawAudioUrl(url) {
     }
     return url;
 }
+
+const GOOGLE_APP_URL = "https://script.google.com/macros/s/AKfycbyRMmFeftM55MPBtPR3dMknnO05SlV2sXbV-thjweCdgzkv5HxTXaBOLawZtJBQQOR2VA/exec";
 
 async function loadReviews() {
     document.getElementById('review-loading').style.display = 'block';
