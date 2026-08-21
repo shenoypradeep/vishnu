@@ -21,190 +21,92 @@
     <style>
         :root { --bg: #1e3a8a; --gold: #fbbf24; --glass: rgba(255, 255, 255, 0.07); --border: rgba(251, 191, 36, 0.2); }
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        
         html { background-color: #0f172a; min-height: 100vh; }
-        
-        body { 
-            background: linear-gradient(135deg, #0f172a, #1e3a8a); 
-            background-attachment: fixed;
-            min-height: 100vh;
-            color: white; 
-            font-family: 'Inter', sans-serif; 
-            padding-bottom: 90px; 
-        }
-        
+        body { background: linear-gradient(135deg, #0f172a, #1e3a8a); background-attachment: fixed; min-height: 100vh; color: white; font-family: 'Inter', sans-serif; padding-bottom: 90px; }
         body.chat-open { overflow: hidden; } 
-        
         .serif { font-family: 'Playfair Display', serif; }
-        
         .header { position: sticky; top: 0; background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(10px); padding: 15px 20px; border-bottom: 1px solid var(--border); z-index: 100; }
         .nav-links { display: none; gap: 25px; list-style: none; margin: 0; padding: 0; align-items: center; }
         .nav-links a { color: white; text-decoration: none; font-weight: 500; font-size: 13px; text-transform: uppercase; letter-spacing: 0.1em; transition: color 0.3s; cursor: pointer; }
         .nav-links a:hover, .nav-links a.active-link { color: var(--gold); }
-        
         .content { padding: 10px; max-width: 1150px; margin: auto; padding-left: env(safe-area-inset-left, 10px); padding-right: env(safe-area-inset-right, 10px); }
-        
-        #v-anubhava .card, #v-drop .card, #picker-pran, #pran-timer-container, #display-pran .card, #picker-med, #med-timer-container, #display-med .card, #sadhana-container, #sanskrit-landing-view, #v-review .card {
-            max-width: 800px; margin-left: auto; margin-right: auto;
-        }
-
+        #v-anubhava .card, #v-drop .card, #picker-pran, #pran-timer-container, #display-pran .card, #picker-med, #med-timer-container, #display-med .card, #sadhana-container, #sanskrit-landing-view, #v-review .card { max-width: 800px; margin-left: auto; margin-right: auto; }
         #v-yajna .card { max-width: 1000px; margin-left: auto; margin-right: auto; }
-
         .view { display: none; }
         .view.active { display: block; animation: fadeIn 0.3s ease; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
         .search-input { width: 100%; background: var(--glass); border: 1px solid var(--border); border-radius: 12px; padding: 12px 15px; color: white; font-size: 14px; outline: none; transition: border 0.3s; font-family: inherit; resize: vertical; box-sizing: border-box; }
         .search-input:focus { border-color: var(--gold); }
-        
         .card { background: var(--glass); border: 1px solid var(--border); border-radius: 20px; overflow: hidden; margin-bottom: 20px; padding: 20px; }
         .card-body { padding: 15px; text-align: center; }
         .video-box { position: relative; padding-bottom: 56.25%; height: 0; background: transparent; border-radius: 12px; overflow: hidden;}
         .video-box iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
-
         .interactive-picker { background: var(--glass); border: 1px solid var(--border); border-radius: 15px; margin-bottom: 20px; overflow: hidden; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
         .picker-search-bar { display: flex; align-items: center; padding: 14px 15px; gap: 10px; background: rgba(0,0,0,0.2); position: relative; z-index: 2; }
         .picker-search-bar input { flex: 1; background: transparent; border: none; color: var(--gold); font-size: 15px; font-weight: 600; outline: none; font-family: 'Inter', sans-serif; text-overflow: ellipsis; }
         .picker-search-bar input::placeholder { color: rgba(255,255,255,0.6); font-weight: 400; }
         .picker-wheel-area { height: 0; position: relative; transition: height 0.3s cubic-bezier(0.4, 0, 0.2, 1); opacity: 0; overflow: hidden; }
-        .interactive-picker.expanded .picker-wheel-area, .inline-dropdown.expanded .picker-wheel-area { height: 150px; opacity: 1; }
+        .interactive-picker.expanded .picker-wheel-area { height: 150px; opacity: 1; }
         .picker-wheel { height: 100%; overflow-y: auto; scroll-snap-type: y mandatory; scrollbar-width: none; }
         .picker-wheel::-webkit-scrollbar { display: none; }
         .wheel-pad { height: 55px; } 
         .wheel-item { height: 40px; display: flex; align-items: center; justify-content: center; scroll-snap-align: center; font-size: 15px; color: white; opacity: 0.4; transition: all 0.2s; cursor: pointer; text-align: center; padding: 0 20px; font-family: 'Inter', sans-serif; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .wheel-item.active { opacity: 1; color: var(--gold); font-weight: bold; transform: scale(1.08); }
         .picker-highlight { position: absolute; top: 55px; left: 15px; right: 15px; height: 40px; border-top: 1px solid var(--gold); border-bottom: 1px solid var(--gold); background: rgba(251, 191, 36, 0.1); border-radius: 8px; pointer-events: none; z-index: 1; }
-        
         @keyframes scaleIn { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
         .media-display { animation: scaleIn 0.4s ease; transform-origin: top center; }
-
         .mode-toggle { display: flex; background: var(--glass); border-radius: 12px; padding: 2px; border: 1px solid var(--border); height: 40px; min-width: 140px; }
         .mode-btn { flex: 1; border: none; background: transparent; color: white; border-radius: 8px; cursor: pointer; font-size: 10px; transition: 0.3s; padding: 0 4px; line-height: 1.2; font-family: 'Inter', sans-serif;}
         .mode-btn.active { background: var(--gold); color: var(--bg); font-weight: bold; }
-
         #jaas-container { width: 100%; height: 70vh; border-radius: 15px; overflow: hidden; background: #000; }
-
-        /* ======== SLIDE OVERHAUL (NORMAL MODE) ======== */
-        #sadhana-container .slide-wrapper { 
-            width: 100%; height: auto; aspect-ratio: 16/9; max-height: 75vh; 
-            border-radius: 20px; 
-            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
-            margin: 30px auto; 
-            overflow: hidden; background: transparent; -webkit-tap-highlight-color: transparent; outline: none;
-        }
-        #sadhana-container img#sadhana-slide { 
-            object-fit: cover; width: 100%; height: 100%; border-radius: 20px; transition: border-radius 0.3s ease; -webkit-user-select: none; user-select: none; display: block;
-        }
-
-        #sadhana-container .flow-controls {
-            display: flex; align-items: center; justify-content: center; gap: 15px; z-index: 100; 
-            padding: 10px 20px; background: linear-gradient(135deg, rgba(15,23,42,0.9), rgba(30,58,138,0.9)); 
-            border: 1px solid var(--border); border-radius: 50px; width: fit-content; margin: 0 auto; 
-            -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); 
-            transition: all 0.3s ease; box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-        }
-
-        #recording-pane {
-            max-height: 0; opacity: 0; overflow: hidden; margin: 0 auto; padding: 0 15px; 
-            border-radius: 15px; background: rgba(0,0,0,0.3); transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); 
-            border: none; box-sizing: border-box; position: relative; max-width: 420px;
-        }
-        #recording-pane.expanded { margin-top: 25px; padding-bottom: 15px; border: 1px solid var(--border); }
-
-        /* ======== FULLSCREEN OVERHAUL ======== */
-        #sadhana-container::backdrop { background: linear-gradient(135deg, #0f172a, #1e3a8a) !important; }
         
+        #sadhana-container .slide-wrapper { width: 100%; height: auto; aspect-ratio: 16/9; max-height: 75vh; border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.3); margin: 30px auto; overflow: hidden; background: transparent; -webkit-tap-highlight-color: transparent; outline: none; }
+        #sadhana-container img#sadhana-slide { object-fit: cover; width: 100%; height: 100%; border-radius: 20px; transition: border-radius 0.3s ease; -webkit-user-select: none; user-select: none; display: block; }
+        #sadhana-container .flow-controls { display: flex; align-items: center; justify-content: center; gap: 15px; z-index: 100; padding: 10px 20px; background: linear-gradient(135deg, rgba(15,23,42,0.9), rgba(30,58,138,0.9)); border: 1px solid var(--border); border-radius: 50px; width: fit-content; margin: 0 auto; -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); transition: all 0.3s ease; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+        #recording-pane { max-height: 0; opacity: 0; overflow: hidden; margin: 0 auto; padding: 0 15px; border-radius: 15px; background: rgba(0,0,0,0.3); transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); border: none; box-sizing: border-box; position: relative; max-width: 420px; }
+        #recording-pane.expanded { margin-top: 25px; padding-bottom: 15px; border: 1px solid var(--border); }
+        
+        #sadhana-container::backdrop { background: linear-gradient(135deg, #0f172a, #1e3a8a) !important; }
         .fs-logo { display: none; position: absolute; top: 15px; left: 20px; height: 40px; width: auto; z-index: 150; filter: drop-shadow(0 0 5px rgba(251,191,36,0.3)); }
         #sadhana-container:fullscreen .fs-logo, #sadhana-container:-webkit-full-screen .fs-logo { display: block; }
-
-        #sadhana-container:fullscreen, #sadhana-container:-webkit-full-screen { 
-            background: linear-gradient(135deg, #0f172a, #1e3a8a) !important; 
-            display: flex; flex-direction: column; justify-content: center; align-items: center; 
-            padding: 20px; width: 100vw; height: 100vh; position: relative; box-sizing: border-box; gap: 25px; 
-        }
-
-        #sadhana-container:fullscreen .vss-heading-img, #sadhana-container:-webkit-full-screen .vss-heading-img { 
-            display: flex !important; flex-direction: column; align-items: center; margin: 0 !important; 
-        }
-        
-        #sadhana-container:fullscreen .slide-wrapper, #sadhana-container:-webkit-full-screen .slide-wrapper { 
-            width: 100%; max-width: 95vw; height: auto; max-height: 60vh; aspect-ratio: 16/9; 
-            margin: 0 !important; border-radius: 20px; box-shadow: 0 25px 60px -15px rgba(0,0,0,0.9);
-        }
-
-        #sadhana-container:fullscreen img#sadhana-slide, #sadhana-container:-webkit-full-screen img#sadhana-slide { 
-            border-radius: 20px; padding: 0; box-sizing: border-box; object-fit: cover;
-        }
-
-        #sadhana-container:fullscreen .flow-controls, #sadhana-container:-webkit-full-screen .flow-controls {
-            position: relative !important; margin: 0 !important; bottom: auto !important; left: auto !important; transform: none !important;
-        }
-
-        #sadhana-container:fullscreen #recording-pane.expanded, #sadhana-container:-webkit-full-screen #recording-pane.expanded {
-            position: fixed !important; bottom: 90px !important; left: 50% !important; transform: translateX(-50%) !important;
-            width: 90% !important; max-width: 420px !important; z-index: 9999 !important;
-            background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 58, 138, 0.95)) !important;
-            border: 1px solid var(--gold) !important; margin: 0 !important;
-        }
+        #sadhana-container:fullscreen, #sadhana-container:-webkit-full-screen { background: linear-gradient(135deg, #0f172a, #1e3a8a) !important; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; width: 100vw; height: 100vh; position: relative; box-sizing: border-box; gap: 25px; }
+        #sadhana-container:fullscreen .vss-heading-img, #sadhana-container:-webkit-full-screen .vss-heading-img { display: flex !important; flex-direction: column; align-items: center; margin: 0 !important; }
+        #sadhana-container:fullscreen .slide-wrapper, #sadhana-container:-webkit-full-screen .slide-wrapper { width: 100%; max-width: 95vw; height: auto; max-height: 60vh; aspect-ratio: 16/9; margin: 0 !important; border-radius: 20px; box-shadow: 0 25px 60px -15px rgba(0,0,0,0.9); }
+        #sadhana-container:fullscreen img#sadhana-slide, #sadhana-container:-webkit-full-screen img#sadhana-slide { border-radius: 20px; padding: 0; box-sizing: border-box; object-fit: cover; }
+        #sadhana-container:fullscreen .flow-controls, #sadhana-container:-webkit-full-screen .flow-controls { position: relative !important; margin: 0 !important; bottom: auto !important; left: auto !important; transform: none !important; }
+        #sadhana-container:fullscreen #recording-pane.expanded, #sadhana-container:-webkit-full-screen #recording-pane.expanded { position: fixed !important; bottom: 90px !important; left: 50% !important; transform: translateX(-50%) !important; width: 90% !important; max-width: 420px !important; z-index: 9999 !important; background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 58, 138, 0.95)) !important; border: 1px solid var(--gold) !important; margin: 0 !important; }
 
         @media screen and (max-height: 600px) and (orientation: landscape) {
             #sadhana-container:fullscreen, #sadhana-container:-webkit-full-screen { gap: 0; padding: 10px; }
             #sadhana-container:fullscreen .vss-heading-img, #sadhana-container:-webkit-full-screen .vss-heading-img { display: none !important; }
             #sadhana-container:fullscreen .fs-logo, #sadhana-container:-webkit-full-screen .fs-logo { display: none !important; }
             #sadhana-container:fullscreen .slide-wrapper, #sadhana-container:-webkit-full-screen .slide-wrapper { max-height: 85vh; width: auto; max-width: 95vw; }
-            #sadhana-container:fullscreen .flow-controls, #sadhana-container:-webkit-full-screen .flow-controls {
-                position: fixed !important; bottom: 15px !important; left: 50% !important; transform: translateX(-50%) !important; margin: 0 !important;
-            }
+            #sadhana-container:fullscreen .flow-controls, #sadhana-container:-webkit-full-screen .flow-controls { position: fixed !important; bottom: 15px !important; left: 50% !important; transform: translateX(-50%) !important; margin: 0 !important; }
             #sadhana-container:fullscreen #recording-pane.expanded, #sadhana-container:-webkit-full-screen #recording-pane.expanded { bottom: 80px !important; }
         }
 
-        /* --- AKṢARA SLEEK LAYOUT --- */
         .sanskrit-player-layout { display: flex; flex-direction: column; gap: 15px; }
-        
         .sanskrit-list-wrapper { position: relative; width: 100%; display: flex; flex-direction: column; height: 42vh; }
         .sanskrit-video-wrapper { width: 100%; }
-        
-        #sanskrit-player-list { 
-            flex: 1; overflow-y: auto; padding-right: 5px; padding-top: 5px; padding-bottom: 60px; scroll-behavior: smooth; 
-        }
+        #sanskrit-player-list { flex: 1; overflow-y: auto; padding-right: 5px; padding-top: 5px; padding-bottom: 60px; scroll-behavior: smooth; }
         #sanskrit-player-list::-webkit-scrollbar { display: none; }
         #sanskrit-player-list { scrollbar-width: none; }
 
         @media (min-width: 768px) {
-            .sanskrit-player-layout {
-                flex-direction: row-reverse; align-items: flex-start; gap: 25px;
-            }
+            .sanskrit-player-layout { flex-direction: row-reverse; align-items: flex-start; gap: 25px; }
             .sanskrit-list-wrapper { width: 320px; flex-shrink: 0; height: 65vh; }
             .sanskrit-video-wrapper { flex: 1; max-width: 800px; } 
             #sanskrit-player-list { max-height: 65vh; }
         }
         
-        .sanskrit-list-item {
-            display: flex; align-items: center; padding: 10px 12px; border-radius: 10px; margin-bottom: 6px; 
-            cursor: pointer; transition: all 0.2s ease;
-        }
+        .sanskrit-list-item { display: flex; align-items: center; padding: 10px 12px; border-radius: 10px; margin-bottom: 6px; cursor: pointer; transition: all 0.2s ease; }
         .sanskrit-list-item:hover { background: rgba(255,255,255,0.08) !important; }
-        
-        .sanskrit-sub-item {
-            padding: 8px 12px; border-radius: 8px; cursor: pointer; font-size: 12.5px; 
-            display: flex; align-items: center; gap: 8px; transition: 0.2s;
-        }
+        .sanskrit-sub-item { padding: 8px 12px; border-radius: 8px; cursor: pointer; font-size: 12.5px; display: flex; align-items: center; gap: 8px; transition: 0.2s; }
         .sanskrit-sub-item:hover { background: rgba(255,255,255,0.05) !important; color: white !important; }
 
-        /* --- GUEST POPUP OVERLAY --- */
-        .guest-popup {
-            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9);
-            background: rgba(15, 23, 42, 0.95); border: 1px solid var(--gold); border-radius: 20px;
-            padding: 30px 20px; width: 90%; max-width: 350px; text-align: center; z-index: 2147483647;
-            backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); box-shadow: 0 20px 50px rgba(0,0,0,0.8);
-            opacity: 0; pointer-events: none; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
+        .guest-popup { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9); background: rgba(15, 23, 42, 0.95); border: 1px solid var(--gold); border-radius: 20px; padding: 30px 20px; width: 90%; max-width: 350px; text-align: center; z-index: 2147483647; backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); box-shadow: 0 20px 50px rgba(0,0,0,0.8); opacity: 0; pointer-events: none; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
         .guest-popup.active { opacity: 1; pointer-events: auto; transform: translate(-50%, -50%) scale(1); }
-        .popup-overlay {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.6);
-            z-index: 2147483646; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; 
-            backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);
-        }
+        .popup-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.6); z-index: 2147483646; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); }
         .popup-overlay.active { opacity: 1; pointer-events: auto; }
 
         #sadhana-container:fullscreen .guest-popup, #sadhana-container:-webkit-full-screen .guest-popup { position: absolute !important; top: 50% !important; left: 50% !important; }
@@ -277,7 +179,6 @@
     <button class="nav-arrow right-arrow" onclick="window.scrollNav(1)"><i data-feather="chevron-right"></i></button>
 </div>
 
-<!-- GUEST GATE POPUP -->
 <div class="popup-overlay" id="guest-overlay" onclick="window.closeGuestPopup()"></div>
 <div class="guest-popup" id="guest-popup">
     <i data-feather="lock" style="color: var(--gold); width: 32px; height: 32px; margin-bottom: 15px;"></i>
@@ -370,6 +271,7 @@ function checkUserSession() {
         nameDisplay.style.display = 'inline-block';
     }
 }
+
 window.handleUserIconClick = function() {
     const userId = localStorage.getItem('vss_user_id');
     if (!userId || userId === 'guest_user') {
@@ -379,6 +281,7 @@ window.handleUserIconClick = function() {
         dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
     }
 }
+
 window.logoutUser = function() {
     localStorage.removeItem('vss_user_id');
     localStorage.removeItem('vss_user_name');
@@ -457,9 +360,7 @@ const FALLBACK_CONFIG = {
         { "title": "Sanskrit Lessons for Beginners", "id": "PLAPrVB8wngPkLgfax1hILlfRNPxljTn2L", "type": "playlist", "videos": [
             { "title": "Lesson 1: Introduction", "id": "a4rz9NbMq0M" },
             { "title": "Lesson 2: Sentence Structure", "id": "dq5VdY69RMc" }
-        ]},
-        { "title": "HOW TO Pronounce BRAHMA", "id": "QYpVUqQcJ_8", "type": "video" },
-        { "title": "Visarga pronunciation in Sanskrit", "id": "14yoCuTle6A", "type": "video" }
+        ]}
     ],
     meditations: [
         {"title":"Hari Om Meditation","audio":"./meditations/hari_om_meditation.mp3","img":"./meditations/Hari_Om_Chakras.webp"}, 
@@ -703,7 +604,7 @@ window.showTab = function(t){
     if (t !== 'yajna') window.closeYajnaOverlay();
     const nItem = document.getElementById('n-'+t);
     if(nItem) nItem.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
-    renderTabIfNeeded(t);
+    window.renderTabIfNeeded(t);
 }
 
 window.scrollNav = function(dir) {
@@ -712,7 +613,7 @@ window.scrollNav = function(dir) {
     nav.scrollBy({ left: dir * itemWidth * 2, behavior: 'smooth' });
 }
 
-function renderTabIfNeeded(tab){
+window.renderTabIfNeeded = function(tab){
     if(tab === 'review') { window.loadReviews(); } 
     if(window.renderedTabs[tab]) return;
     if(tab === 'med') { window.initPicker('med'); window.updateMedTimerDisplay(); }
@@ -1087,7 +988,10 @@ window.submitAudioRecording = async () => {
         const shlokaNum = window.pIdx > 2 ? `Shloka ${window.pIdx - 2}` : `Setup/Intro`;
         const ext = window.globalAudioBlob.type.includes("mp4") ? "mp4" : "webm";
         const fileName = `chant_${timestamp}_${userId}.${ext}`;
-        const shlokaId = `${timestamp}_${userId}_${shlokaNum}`;
+        
+        // Critical Fix: Sanitize shlokaNum to prevent Firestore subcollection path errors
+        const safeShlokaNum = shlokaNum.replace(/\//g, '-');
+        const shlokaId = `${timestamp}_${userId}_${safeShlokaNum}`;
 
         const storageRef = ref(storage, `VSS_Recordings/${fileName}`);
         await uploadBytes(storageRef, window.globalAudioBlob);
@@ -1116,6 +1020,7 @@ window.submitAudioRecording = async () => {
         
         setTimeout(() => { statusText.innerHTML = ""; }, 5000);
     } catch(error) {
+        console.error(error);
         statusText.innerText = "Error uploading. Please check your internet connection.";
         statusText.style.color = "#ff4757";
         submitBtn.disabled = false;
@@ -1551,17 +1456,6 @@ window.deleteRecording = async (shlokaId) => {
     }
 };
 
-window.setPresetTimer = setPresetTimer;
-window.adjPranTimer = adjPranTimer;
-window.togglePranTimer = togglePranTimer;
-window.resetPranTimer = resetPranTimer;
-window.clearPranSelection = clearPranSelection;
-window.adjMedTimer = adjMedTimer;
-window.toggleMedTimer = toggleMedTimer;
-window.resetMedTimer = resetMedTimer;
-window.clearMedSelection = clearMedSelection;
-window.toggleCardAudio = toggleCardAudio;
-window.toggleAudioPlay = toggleAudioPlay;
 </script>
 
 </body>
