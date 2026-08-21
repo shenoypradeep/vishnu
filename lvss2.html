@@ -277,6 +277,7 @@
     <button class="nav-arrow right-arrow" onclick="scrollNav(1)"><i data-feather="chevron-right"></i></button>
 </div>
 
+<!-- GUEST GATE POPUP -->
 <div class="popup-overlay" id="guest-overlay" onclick="closeGuestPopup()"></div>
 <div class="guest-popup" id="guest-popup">
     <i data-feather="lock" style="color: var(--gold); width: 32px; height: 32px; margin-bottom: 15px;"></i>
@@ -306,7 +307,7 @@
 // ==========================================
 const GOOGLE_APP_URL = "https://script.google.com/macros/s/AKfycbyRMmFeftM55MPBtPR3dMknnO05SlV2sXbV-thjweCdgzkv5HxTXaBOLawZtJBQQOR2VA/exec";
 
-// --- GLOBAL RECORDING VARIABLES ---
+// --- GLOBAL VARIABLES ---
 window.globalAudioBlob = null;
 let mediaRecorder;
 let audioChunks = [];
@@ -314,6 +315,23 @@ let isRecording = false;
 let timerInterval;
 let seconds = 0;
 window.pIdx = 1;
+
+let scrollTimeouts = {};
+let renderedTabs = { med: false, pran: false, sadhana: false, sanskrit: false, yajna: false, review: false };
+
+let pranTotalSecs = 5 * 60;
+let pranSecsLeft = 5 * 60;
+let pranTimerRunning = false;
+let pranTimerInterval;
+
+let medTotalSecs = 20 * 60;
+let medSecsLeft = 20 * 60;
+let medTimerRunning = false;
+let medTimerInterval;
+
+let yajnaSynth = window.speechSynthesis;
+let yajnaUtterance = null;
+let anubhavaStore = JSON.parse(localStorage.getItem('vss_anubhava_logs')) || {};
 
 // --- USER SESSION AND GUEST LOGIC ---
 function checkUserSession() {
@@ -703,203 +721,6 @@ function bindTouchEvents() {
     }
 }
 
-// --- UNIVERSAL PRESET TIMERS ---
-function setPresetTimer(type, mins) {
-    document.getElementById(`toggle-5m-${type}`).classList.toggle('active', mins === 5);
-    document.getElementById(`toggle-20m-${type}`).classList.toggle('active', mins === 20);
-    
-    if (type === 'med') {
-        clearInterval(medTimerInterval);
-        medTimerRunning = false;
-        medTotalSecs = mins * 60;
-        medSecsLeft = medTotalSecs;
-        updateMedTimerDisplay();
-        document.getElementById('med-timer-btn').innerHTML = '<i data-feather="play" style="width: 26px; height: 26px; margin-left: 3px;"></i>';
-        feather.replace();
-    } else if (type === 'pran') {
-        clearInterval(pranTimerInterval);
-        pranTimerRunning = false;
-        pranTotalSecs = mins * 60;
-        pranSecsLeft = pranTotalSecs;
-        updatePranTimerDisplay();
-        document.getElementById('pran-timer-btn').innerHTML = '<i data-feather="play" style="width: 26px; height: 26px; margin-left: 3px;"></i>';
-        feather.replace();
-    }
-}
-
-// --- PRANAYAMA TIMER LOGIC ---
-let pranTotalSecs = 5 * 60;
-let pranSecsLeft = 5 * 60;
-let pranTimerRunning = false;
-let pranTimerInterval;
-
-function updatePranTimerDisplay() {
-    let m = Math.floor(pranSecsLeft / 60);
-    let s = pranSecsLeft % 60;
-    const display = document.getElementById('pran-timer-display');
-    if (display) display.innerText = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
-    let ring = document.getElementById('pran-timer-ring');
-    if (ring) ring.style.strokeDashoffset = 282.7 * (1 - (pranSecsLeft / pranTotalSecs));
-}
-
-function adjPranTimer(mins) {
-    if (pranTimerRunning) return;
-    let newMins = Math.floor(pranTotalSecs / 60) + mins;
-    if (newMins < 1) newMins = 1;
-    if (newMins > 120) newMins = 120;
-    pranTotalSecs = newMins * 60;
-    pranSecsLeft = pranTotalSecs;
-    updatePranTimerDisplay();
-}
-
-function togglePranTimer() {
-    pranTimerRunning = !pranTimerRunning;
-    let btn = document.getElementById('pran-timer-btn');
-    let bell = document.getElementById('pran-bell');
-    
-    if (pranTimerRunning) {
-        if(bell) bell.load(); 
-        btn.innerHTML = '<i data-feather="square" style="width: 20px; height: 20px; fill: white;"></i>'; 
-        feather.replace();
-        pranTimerInterval = setInterval(() => {
-            pranSecsLeft--;
-            if (pranSecsLeft <= 0) {
-                clearInterval(pranTimerInterval);
-                pranTimerRunning = false;
-                pranSecsLeft = pranTotalSecs; 
-                updatePranTimerDisplay();
-                if(bell) bell.play().catch(e => console.log(e));
-                btn.innerHTML = '<i data-feather="play" style="width: 26px; height: 26px; margin-left: 3px;"></i>';
-                feather.replace();
-            } else { updatePranTimerDisplay(); }
-        }, 1000);
-    } else {
-        clearInterval(pranTimerInterval);
-        if(bell) { bell.pause(); bell.currentTime = 0; }
-        pranSecsLeft = pranTotalSecs; 
-        updatePranTimerDisplay();
-        btn.innerHTML = '<i data-feather="play" style="width: 26px; height: 26px; margin-left: 3px;"></i>';
-        feather.replace();
-    }
-}
-
-function resetPranTimer() {
-    clearInterval(pranTimerInterval);
-    pranTimerRunning = false;
-    let bell = document.getElementById('pran-bell');
-    if(bell) { bell.pause(); bell.currentTime = 0; }
-    pranSecsLeft = pranTotalSecs;
-    updatePranTimerDisplay();
-    let btn = document.getElementById('pran-timer-btn');
-    if (btn) {
-        btn.innerHTML = '<i data-feather="play" style="width: 26px; height: 26px; margin-left: 3px;"></i>';
-        feather.replace();
-    }
-}
-
-function clearPranSelection() {
-    document.getElementById('input-pran').value = '';
-    document.getElementById('display-pran').style.display = 'none';
-    document.getElementById('display-pran').innerHTML = '';
-    document.getElementById('pran-timer-container').style.display = 'block';
-}
-
-// --- MEDITATION TIMER LOGIC ---
-let medTotalSecs = 20 * 60;
-let medSecsLeft = 20 * 60;
-let medTimerRunning = false;
-let medTimerInterval;
-
-function updateMedTimerDisplay() {
-    let m = Math.floor(medSecsLeft / 60);
-    let s = medSecsLeft % 60;
-    const display = document.getElementById('med-timer-display');
-    if (display) display.innerText = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
-    let ring = document.getElementById('med-timer-ring');
-    if (ring) ring.style.strokeDashoffset = 282.7 * (1 - (medSecsLeft / medTotalSecs));
-}
-
-function adjMedTimer(mins) {
-    if (medTimerRunning) return;
-    let newMins = Math.floor(medTotalSecs / 60) + mins;
-    if (newMins < 1) newMins = 1;
-    if (newMins > 120) newMins = 120;
-    medTotalSecs = newMins * 60;
-    medSecsLeft = medTotalSecs;
-    updateMedTimerDisplay();
-}
-
-function toggleMedTimer() {
-    medTimerRunning = !medTimerRunning;
-    let btn = document.getElementById('med-timer-btn');
-    let bell = document.getElementById('med-bell');
-    
-    if (medTimerRunning) {
-        bell.load(); 
-        btn.innerHTML = '<i data-feather="square" style="width: 20px; height: 20px; fill: white;"></i>'; 
-        feather.replace();
-        medTimerInterval = setInterval(() => {
-            medSecsLeft--;
-            if (medSecsLeft <= 0) {
-                clearInterval(medTimerInterval);
-                medTimerRunning = false;
-                medSecsLeft = medTotalSecs; 
-                updateMedTimerDisplay();
-                bell.play().catch(e => console.log(e));
-                btn.innerHTML = '<i data-feather="play" style="width: 26px; height: 26px; margin-left: 3px;"></i>';
-                feather.replace();
-            } else { updateMedTimerDisplay(); }
-        }, 1000);
-    } else {
-        clearInterval(medTimerInterval);
-        bell.pause();
-        bell.currentTime = 0;
-        medSecsLeft = medTotalSecs; 
-        updateMedTimerDisplay();
-        btn.innerHTML = '<i data-feather="play" style="width: 26px; height: 26px; margin-left: 3px;"></i>';
-        feather.replace();
-    }
-}
-
-function resetMedTimer() {
-    clearInterval(medTimerInterval);
-    medTimerRunning = false;
-    let bell = document.getElementById('med-bell');
-    if(bell) { bell.pause(); bell.currentTime = 0; }
-    medSecsLeft = medTotalSecs;
-    updateMedTimerDisplay();
-    let btn = document.getElementById('med-timer-btn');
-    if (btn) {
-        btn.innerHTML = '<i data-feather="play" style="width: 26px; height: 26px; margin-left: 3px;"></i>';
-        feather.replace();
-    }
-}
-
-function clearMedSelection() {
-    document.getElementById('input-med').value = '';
-    document.getElementById('display-med').style.display = 'none';
-    if(window.currentMedAudio) { window.currentMedAudio.pause(); }
-    document.getElementById('med-timer-container').style.display = 'block';
-}
-
-function toggleAudioPlay() {
-    const audio = document.getElementById('sadhana-bg-audio');
-    const icon = document.getElementById('audio-play-icon');
-    if (!audio.src || audio.src.endsWith('undefined')) audio.src = "./meditations/vss.mp3";
-
-    if (audio.paused) {
-        audio.play().then(() => {
-            icon.setAttribute('data-feather', 'pause'); feather.replace();
-        }).catch(e => {});
-    } else {
-        audio.pause();
-        icon.setAttribute('data-feather', 'play'); feather.replace();
-    }
-}
-
-let scrollTimeouts = {};
-let renderedTabs = { med: false, pran: false, sadhana: false, sanskrit: false, yajna: false, review: false };
-
 function showTab(t){
     const userId = localStorage.getItem('vss_user_id') || 'guest_user';
     
@@ -932,7 +753,7 @@ function scrollNav(dir) {
 }
 
 function renderTabIfNeeded(tab){
-    if(tab === 'review') { loadReviews(); } // Always refresh reviews
+    if(tab === 'review') { loadReviews(); } 
     
     if(renderedTabs[tab]) return;
     if(tab === 'med') { initPicker('med'); updateMedTimerDisplay(); }
@@ -1048,28 +869,28 @@ function selectFromWheel(type, origIdx) {
     collapsePicker(type);
 }
 
-window.currentMedAudio = new Audio();
+let currentCardAudio = new Audio();
 function toggleCardAudio(src) {
     let btnIcon = document.getElementById('card-audio-icon');
-    if (window.currentMedAudio.src && window.currentMedAudio.src.includes(src) && !window.currentMedAudio.paused) {
-        window.currentMedAudio.pause();
+    if (currentCardAudio.src && currentCardAudio.src.includes(src) && !currentCardAudio.paused) {
+        currentCardAudio.pause();
         btnIcon.setAttribute('data-feather', 'play');
     } else {
-        if (!window.currentMedAudio.src || !window.currentMedAudio.src.includes(src)) { window.currentMedAudio.src = src; }
-        window.currentMedAudio.play().catch(e => console.log(e));
+        if (!currentCardAudio.src || !currentCardAudio.src.includes(src)) { currentCardAudio.src = src; }
+        currentCardAudio.play().catch(e => console.log(e));
         btnIcon.setAttribute('data-feather', 'pause');
     }
     feather.replace();
 
-    window.currentMedAudio.ontimeupdate = () => {
-        let rem = window.currentMedAudio.duration - window.currentMedAudio.currentTime;
+    currentCardAudio.ontimeupdate = () => {
+        let rem = currentCardAudio.duration - currentCardAudio.currentTime;
         if(isNaN(rem)) return;
         let m = Math.floor(rem / 60);
         let s = Math.floor(rem % 60);
         const display = document.getElementById('card-audio-time');
         if(display) display.innerText = `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')} remaining`;
     };
-    window.currentMedAudio.onended = () => { btnIcon.setAttribute('data-feather', 'play'); feather.replace(); };
+    currentCardAudio.onended = () => { btnIcon.setAttribute('data-feather', 'play'); feather.replace(); };
 }
 
 function renderMediaHTML(type, data) {
@@ -1088,7 +909,7 @@ function renderMediaHTML(type, data) {
     } else if (type === 'med') {
         document.getElementById('med-timer-container').style.display = 'none';
         display.style.display = 'block';
-        if(window.currentMedAudio) window.currentMedAudio.pause(); 
+        if(currentCardAudio) currentCardAudio.pause(); 
         
         display.innerHTML = `
             <div class="card">
@@ -1116,9 +937,6 @@ function initJitsi() {
         });
     } else { setTimeout(initJitsi, 1000); }
 }
-
-let yajnaSynth = window.speechSynthesis;
-let yajnaUtterance = null;
 
 async function openYajnaOverlay() {
     const overlay = document.getElementById('yajna-overlay');
@@ -1229,12 +1047,19 @@ document.getElementById('main-nav').addEventListener('wheel', (evt) => {
 
 if('serviceWorker'in navigator){ navigator.serviceWorker.register('sw.js'); }
 
-window.onload = async () => { 
-    await loadConfig(); 
-    checkUserSession(); 
-    const flowAudio = document.getElementById('sadhana-bg-audio');
-    if (flowAudio) flowAudio.src = "./meditations/vss.mp3";
-};
+// UI RENDER GUARANTEE (Instead of slow window.onload)
+document.addEventListener('DOMContentLoaded', async () => { 
+    try {
+        await loadConfig(); 
+        checkUserSession(); 
+        const flowAudio = document.getElementById('sadhana-bg-audio');
+        if (flowAudio) flowAudio.src = "./meditations/vss.mp3";
+    } catch (e) {
+        console.error("Initialization Failed:", e);
+        APP_CONFIG = FALLBACK_CONFIG;
+        initDynamicUI();
+    }
+});
 
 // --- AUDIO RECORDING BROWSER LOGIC ---
 function toggleMicrophone() {
@@ -1514,27 +1339,25 @@ window.scrollSanskritList = (dir) => {
 };
 
 // --- REVIEW PANE LOGIC ---
-function getRawAudioUrl(url) {
+function getRawAudioUrl(url, forDownload = false) {
     if (!url) return "";
     let fileId = "";
     
-    // Extract ID from standard view link (e.g. drive.google.com/file/d/FILE_ID/view)
     const dMatch = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
     if (dMatch && dMatch[1]) fileId = dMatch[1];
-    
-    // Extract ID from uc link (e.g. drive.google.com/uc?id=FILE_ID)
     else if (url.includes("id=")) {
         const idMatch = url.match(/id=([a-zA-Z0-9_-]+)/);
         if (idMatch && idMatch[1]) fileId = idMatch[1];
     }
     
     if (fileId) {
-        return `https://docs.google.com/uc?export=download&id=${fileId}`;
+        // export=view forces stream inline, export=download forces safe fallback
+        return forDownload 
+            ? `https://drive.google.com/uc?export=download&id=${fileId}`
+            : `https://drive.google.com/uc?export=view&id=${fileId}`;
     }
     return url;
 }
-
-const GOOGLE_APP_URL = "https://script.google.com/macros/s/AKfycbyRMmFeftM55MPBtPR3dMknnO05SlV2sXbV-thjweCdgzkv5HxTXaBOLawZtJBQQOR2VA/exec";
 
 async function loadReviews() {
     document.getElementById('review-loading').style.display = 'block';
@@ -1613,8 +1436,12 @@ function buildReviewItem(log, role) {
     let teacherFeedbackHTML = '';
     let learnerActions = '';
     
-    let rawLearnerAudio = getRawAudioUrl(log.audioLink);
-    let rawTeacherAudio = getRawAudioUrl(log.feedbackAudio);
+    let streamLearnerAudio = getRawAudioUrl(log.audioLink, false);
+    let dlLearnerAudio = getRawAudioUrl(log.audioLink, true);
+    
+    let streamTeacherAudio = getRawAudioUrl(log.feedbackAudio, false);
+    let dlTeacherAudio = getRawAudioUrl(log.feedbackAudio, true);
+    
     let isPending = !log.feedbackText && !log.feedbackAudio;
 
     if (role === 'teacher' || role === 'admin') {
@@ -1628,8 +1455,8 @@ function buildReviewItem(log, role) {
                 ${log.feedbackAudio ? `
                     <div style="margin-bottom: 10px;">
                         <span style="font-size: 11px; opacity:0.7;">Previous Voice Note:</span><br>
-                        <audio src="${rawTeacherAudio}" controls preload="metadata" style="width: 100%; height: 35px; border-radius: 8px;"></audio>
-                        <div style="text-align: right; margin-top: 2px;"><a href="${rawTeacherAudio}" target="_blank" style="font-size: 10px; color: var(--gold); text-decoration: underline; font-family: 'Inter', sans-serif;">Alternative Play Link</a></div>
+                        <audio src="${streamTeacherAudio}" controls preload="metadata" style="width: 100%; height: 35px; border-radius: 8px;"></audio>
+                        <div style="text-align: right; margin-top: 2px;"><a href="${dlTeacherAudio}" target="_blank" style="font-size: 10px; color: var(--gold); text-decoration: underline; font-family: 'Inter', sans-serif;">Alternative Play Link</a></div>
                     </div>` : ''}
                 
                 <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 10px;">
@@ -1658,8 +1485,8 @@ function buildReviewItem(log, role) {
                     <p style="font-size: 12px; color: var(--gold); margin-bottom: 5px; font-weight: bold;">Teacher Review</p>
                     ${log.feedbackText ? `<p style="font-size: 13px; color: white; margin-bottom: 10px; line-height: 1.5;">${log.feedbackText}</p>` : ''}
                     ${log.feedbackAudio ? `
-                        <audio src="${rawTeacherAudio}" controls preload="metadata" style="width: 100%; height: 35px; border-radius: 8px;"></audio>
-                        <div style="text-align: right; margin-top: 2px;"><a href="${rawTeacherAudio}" target="_blank" style="font-size: 10px; color: var(--gold); text-decoration: underline; font-family: 'Inter', sans-serif;">Alternative Play Link</a></div>
+                        <audio src="${streamTeacherAudio}" controls preload="metadata" style="width: 100%; height: 35px; border-radius: 8px;"></audio>
+                        <div style="text-align: right; margin-top: 2px;"><a href="${dlTeacherAudio}" target="_blank" style="font-size: 10px; color: var(--gold); text-decoration: underline; font-family: 'Inter', sans-serif;">Alternative Play Link</a></div>
                     ` : ''}
                 </div>
             `;
@@ -1679,8 +1506,8 @@ function buildReviewItem(log, role) {
                 <span style="font-size: 11px; opacity: 0.6;">${dateStr}</span>
             </div>
             <span style="font-size: 11px; opacity: 0.7; margin-bottom: 5px; display: block;">Learner Audio:</span>
-            <audio src="${rawLearnerAudio}" controls preload="metadata" style="width: 100%; height: 35px; border-radius: 8px;"></audio>
-            <div style="text-align: right; margin-top: 2px;"><a href="${rawLearnerAudio}" target="_blank" style="font-size: 10px; color: var(--gold); text-decoration: underline; font-family: 'Inter', sans-serif;">Alternative Play Link</a></div>
+            <audio src="${streamLearnerAudio}" controls preload="metadata" style="width: 100%; height: 35px; border-radius: 8px;"></audio>
+            <div style="text-align: right; margin-top: 2px;"><a href="${dlLearnerAudio}" target="_blank" style="font-size: 10px; color: var(--gold); text-decoration: underline; font-family: 'Inter', sans-serif;">Alternative Play Link</a></div>
             
             ${learnerActions}
             ${teacherFeedbackHTML}
