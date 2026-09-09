@@ -16,7 +16,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
     
-    <!-- Firebase Compat SDKs -->
+    <!-- Firebase Compat SDKs (Ensures all JS functions remain globally accessible) -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
     
@@ -72,7 +72,7 @@
         .mode-btn.active { background: var(--gold); color: var(--bg); font-weight: bold; }
         #jaas-container { width: 100%; height: 70vh; border-radius: 15px; overflow: hidden; background: #000; }
 
-        /* ======== SLIDE OVERHAUL ======== */
+        /* ======== SLIDE OVERHAUL (NORMAL MODE) ======== */
         #sadhana-container .slide-wrapper { width: 100%; height: auto; aspect-ratio: 16/9; max-height: 75vh; border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.3); margin: 30px auto; overflow: hidden; background: transparent; -webkit-tap-highlight-color: transparent; outline: none; }
         #sadhana-container img#sadhana-slide { object-fit: cover; width: 100%; height: 100%; border-radius: 20px; transition: border-radius 0.3s ease; -webkit-user-select: none; user-select: none; display: block; }
         #sadhana-container .flow-controls { display: flex; align-items: center; justify-content: center; gap: 15px; z-index: 100; padding: 10px 20px; background: linear-gradient(135deg, rgba(15,23,42,0.9), rgba(30,58,138,0.9)); border: 1px solid var(--border); border-radius: 50px; width: fit-content; margin: 0 auto; -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); transition: all 0.3s ease; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
@@ -154,7 +154,7 @@
 
     </style>
 </head>
-<body onkeydown="handleKeys(event)">
+<body onkeydown="window.handleKeys(event)">
 
 <header class="header">
     <div style="width: 100%; max-width: 1200px; margin: auto; display: flex; justify-content: space-between; align-items: center;">
@@ -170,13 +170,13 @@
             
             <div class="user-menu-container" style="display: flex; align-items: center; gap: 8px; position: relative;">
                 <div style="display: flex; flex-direction: column; align-items: flex-end; line-height: 1.2;">
-                    <span id="user-first-name" onclick="handleUserIconClick()" style="font-size: 15px; font-weight: 600; color: var(--gold); font-family: 'Inter', sans-serif; display: none; cursor: pointer; transition: 0.2s;"></span>
+                    <span id="user-first-name" onclick="window.handleUserIconClick()" style="font-size: 15px; font-weight: 600; color: var(--gold); font-family: 'Inter', sans-serif; display: none; cursor: pointer; transition: 0.2s;"></span>
                     <span id="user-role-badge" style="font-size: 9px; font-weight: bold; color: #ff4757; letter-spacing: 1px; text-transform: uppercase; display: none;"></span>
                 </div>
-                <i data-feather="user" onclick="handleUserIconClick()" style="cursor: pointer; color: white; transition: 0.2s;"></i>
+                <i data-feather="user" onclick="window.handleUserIconClick()" style="cursor: pointer; color: white; transition: 0.2s;"></i>
                 
                 <div id="logout-dropdown" style="display: none; position: absolute; top: 120%; right: 0; background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(10px); border: 1px solid var(--border); border-radius: 8px; padding: 10px 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); z-index: 1000; min-width: 120px;">
-                    <a href="#" onclick="logoutUser()" style="color: white; text-decoration: none; font-size: 13px; font-family: 'Inter', sans-serif; display: flex; align-items: center; gap: 8px; font-weight: 500;">
+                    <a href="#" onclick="window.logoutUser()" style="color: white; text-decoration: none; font-size: 13px; font-family: 'Inter', sans-serif; display: flex; align-items: center; gap: 8px; font-weight: 500;">
                         <i data-feather="log-out" style="width: 14px; color: #ff4757;"></i> Logout
                     </a>
                 </div>
@@ -188,29 +188,29 @@
 <div class="content" id="app-content-container"></div>
 
 <div class="mobile-nav-wrapper">
-    <button class="nav-arrow left-arrow" onclick="scrollNav(-1)"><i data-feather="chevron-left"></i></button>
+    <button class="nav-arrow left-arrow" onclick="window.scrollNav(-1)"><i data-feather="chevron-left"></i></button>
     <nav class="mobile-nav" id="main-nav"></nav>
-    <button class="nav-arrow right-arrow" onclick="scrollNav(1)"><i data-feather="chevron-right"></i></button>
+    <button class="nav-arrow right-arrow" onclick="window.scrollNav(1)"><i data-feather="chevron-right"></i></button>
 </div>
 
 <!-- GUEST GATE POPUP -->
-<div class="popup-overlay" id="guest-overlay" onclick="closeGuestPopup()"></div>
+<div class="popup-overlay" id="guest-overlay" onclick="window.closeGuestPopup()"></div>
 <div class="guest-popup" id="guest-popup">
     <i data-feather="lock" style="color: var(--gold); width: 32px; height: 32px; margin-bottom: 15px;"></i>
     <h3 class="serif" style="color: var(--gold); margin-bottom: 10px; font-size: 1.3rem;">Join the Sangha</h3>
     <p style="font-size: 14px; opacity: 0.9; margin-bottom: 25px; line-height: 1.5; color: white;">Join the Vedic Space course to unlock all Shlokas, Meditations, Prāṇāyāma, and community features!</p>
     <a href="https://tinyurl.com/vedicspace" target="_blank" style="display: block; width: 100%; background: linear-gradient(135deg, var(--gold), #d97706); color: var(--bg); padding: 12px; border-radius: 12px; font-weight: bold; text-decoration: none; font-size: 14px; margin-bottom: 10px; font-family: 'Inter', sans-serif;">Explore Course</a>
-    <button onclick="closeGuestPopup()" style="background: transparent; border: none; color: rgba(255,255,255,0.5); font-size: 12px; cursor: pointer; text-decoration: underline; font-family: 'Inter', sans-serif;">Maybe later</button>
+    <button onclick="window.closeGuestPopup()" style="background: transparent; border: none; color: rgba(255,255,255,0.5); font-size: 12px; cursor: pointer; text-decoration: underline; font-family: 'Inter', sans-serif;">Maybe later</button>
 </div>
 
 <div id="yajna-overlay" class="yajna-overlay">
     <div class="yajna-header">
         <h3 class="serif" style="color: var(--gold); margin: 0; font-size: 1.2rem;">What is Yajna?</h3>
-        <i data-feather="x" style="cursor: pointer; color: white;" onclick="closeYajnaOverlay()"></i>
+        <i data-feather="x" style="cursor: pointer; color: white;" onclick="window.closeYajnaOverlay()"></i>
     </div>
     <div id="yajna-content" class="yajna-content-area serif">Loading wisdom...</div>
     <div style="position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); padding: 10px 20px; border-radius: 30px; border: 1px solid var(--border); display: flex; align-items: center; gap: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
-        <button onclick="toggleYajnaAudio()" id="yajna-audio-btn" style="background: var(--gold); border: none; color: var(--bg); border-radius: 50%; width: 45px; height: 45px; cursor: pointer; display: flex; justify-content: center; align-items: center;">
+        <button onclick="window.toggleYajnaAudio()" id="yajna-audio-btn" style="background: var(--gold); border: none; color: var(--bg); border-radius: 50%; width: 45px; height: 45px; cursor: pointer; display: flex; justify-content: center; align-items: center;">
             <i data-feather="play" id="yajna-audio-icon" style="margin-left: 2px;"></i>
         </button>
         <span style="font-family: 'Inter', sans-serif; font-size: 12px; opacity: 0.8;">Listen to Gurudev</span>
@@ -219,11 +219,11 @@
 
 <script>
 // ==========================================
-// 1. CONFIGURATION & FIREBASE INIT
+// CONFIGURATION & FIREBASE INIT
 // ==========================================
 const GOOGLE_APP_URL = "https://script.google.com/macros/s/AKfycbyRMmFeftM55MPBtPR3dMknnO05SlV2sXbV-thjweCdgzkv5HxTXaBOLawZtJBQQOR2VA/exec";
 
-// SAFE FIREBASE INITIALIZATION
+// Firebase initialization
 let db = null;
 try {
     firebase.initializeApp({
@@ -236,31 +236,31 @@ try {
     console.error("Firebase init failed:", e);
 }
 
-// --- GLOBAL VARIABLES ---
+// --- GLOBAL VARIABLES (STRICT SCOPE DEFINITION) ---
 window.globalAudioBlob = null;
-let mediaRecorder;
-let audioChunks = [];
+window.mediaRecorder = null;
+window.audioChunks = [];
 window.isRecording = false;
 window.timerInterval = null;
 window.seconds = 0;
 window.pIdx = 1;
 
-let scrollTimeouts = {};
-let renderedTabs = { med: false, pran: false, sadhana: false, sanskrit: false, yajna: false, review: false };
+window.scrollTimeouts = {};
+window.renderedTabs = { med: false, pran: false, sadhana: false, sanskrit: false, yajna: false, review: false, anubhava: false, drop: false };
 
-let pranTotalSecs = 5 * 60;
-let pranSecsLeft = 5 * 60;
-let pranTimerRunning = false;
-let pranTimerInterval;
+window.pranTotalSecs = 5 * 60;
+window.pranSecsLeft = 5 * 60;
+window.pranTimerRunning = false;
+window.pranTimerInterval = null;
 
-let medTotalSecs = 20 * 60;
-let medSecsLeft = 20 * 60;
-let medTimerRunning = false;
-let medTimerInterval;
+window.medTotalSecs = 20 * 60;
+window.medSecsLeft = 20 * 60;
+window.medTimerRunning = false;
+window.medTimerInterval = null;
 
-let yajnaSynth = window.speechSynthesis;
-let yajnaUtterance = null;
-let anubhavaStore = JSON.parse(localStorage.getItem('vss_anubhava_logs')) || {};
+window.yajnaSynth = window.speechSynthesis;
+window.yajnaUtterance = null;
+window.anubhavaStore = JSON.parse(localStorage.getItem('vss_anubhava_logs')) || {};
 
 // --- USER SESSION AND GUEST LOGIC ---
 window.checkUserSession = function() {
@@ -343,8 +343,8 @@ window.closeGuestPopup = function() {
 
 // --- STATE RESET & RECORDING UI TOGGLE ---
 window.resetRecordingUI = function() {
-    if(window.isRecording && mediaRecorder) {
-        mediaRecorder.stop();
+    if(window.isRecording && window.mediaRecorder) {
+        window.mediaRecorder.stop();
         window.isRecording = false;
         clearInterval(window.timerInterval);
         const recordBtn = document.getElementById('record-btn');
@@ -432,7 +432,9 @@ const FALLBACK_CONFIG = {
         { id: "pran", title: "Prāṇa", icon: "loader", enabled: true },
         { id: "med", title: "Dhyāna", icon: "moon", enabled: true },
         { id: "review", title: "Shloka Review", icon: "check-circle", enabled: true },
-        { id: "yajna", title: "Yajna", icon: "video", enabled: true }
+        { id: "yajna", title: "Yajna", icon: "video", enabled: true },
+        { id: "drop", title: "Arpanam", icon: "wind", enabled: true }, 
+        { id: "anubhava", title: "Anubhava", icon: "edit-3", enabled: true }
     ],
     sanskrit: [
         { "title": "Sanskrit Alphabets for beginners", "id": "PLFLFOfuyaIHvExkYbtlMM_mS1m5yRZtO2", "type": "playlist", "videos": [
@@ -477,10 +479,12 @@ window.initDynamicUI = function() {
     
     dNav.innerHTML = ''; mNav.innerHTML = ''; contentContainer.innerHTML = '';
     
-    APP_CONFIG.navigation.filter(item => item.enabled !== false && !['mandala', 'learn', 'sangha', 'anubhava', 'drop'].includes(item.id)).forEach(item => {
+    APP_CONFIG.navigation.filter(item => item.enabled !== false && !['mandala', 'learn', 'sangha'].includes(item.id)).forEach(item => {
         let title = item.title;
         if(item.id === 'sanskrit') title = 'Akṣara';
+        if(item.id === 'drop') title = 'Arpanam';
         if(item.id === 'review' && userRole === 'guest') return; 
+        if(item.id === 'anubhava' && userRole === 'guest') return; 
 
         dNav.innerHTML += `<li><a onclick="window.showTab('${item.id}')" id="t-${item.id}">${title}</a></li>`;
         mNav.innerHTML += `<div class="nav-item" onclick="window.showTab('${item.id}')" id="n-${item.id}"><i data-feather="${item.icon}"></i><span style="margin-top: 4px; font-family:'Inter', sans-serif;">${title}</span></div>`;
@@ -488,7 +492,7 @@ window.initDynamicUI = function() {
     });
 
     feather.replace();
-    const firstPane = APP_CONFIG.navigation.find(item => item.enabled !== false && !['mandala', 'learn', 'sangha', 'anubhava', 'drop'].includes(item.id));
+    const firstPane = APP_CONFIG.navigation.find(item => item.enabled !== false && !['mandala', 'learn', 'sangha'].includes(item.id));
     if(firstPane) window.showTab(firstPane.id); 
     window.bindTouchEvents();
 }
@@ -500,6 +504,16 @@ window.getPaneHTML = function(id) {
                 <h3 class="serif" style="margin-bottom: 25px; color: var(--gold); text-align: center; font-size: 1.4rem;">Shloka Review</h3>
                 <div id="review-loading" style="text-align: center; color: var(--gold); font-size: 13px;">Loading recordings...</div>
                 <div id="review-container"></div>
+            </div>
+        </section>`;
+
+    if(id === 'anubhava') return `
+        <section id="v-anubhava" class="view">
+            <div class="card" style="padding: 25px 20px; text-align: center;">
+                <h3 class="serif" style="color: var(--gold); margin-bottom: 10px; font-size: 1.4rem;">Share your Anubhava</h3>
+                <p style="font-size: 13px; opacity: 0.8; margin-bottom: 25px; font-family:'Inter',sans-serif;">Share your on-going experiences, learnings, realisations with the group.</p>
+                <textarea id="anubhava-observations" class="search-input" style="min-height: 160px; padding: 15px; line-height: 1.5; box-shadow: inset 0 2px 5px rgba(0,0,0,0.2);" placeholder="Log any spiritual experiences, deep observations, or passing thoughts..."></textarea>
+                <button onclick="window.logAnubhavaSnapshot()" style="width: 100%; margin-top: 20px; background: linear-gradient(135deg, var(--gold), #d97706); border: none; color: var(--bg); padding: 16px; border-radius: 12px; font-weight: bold; font-size: 14px; cursor: pointer; box-shadow: 0 4px 15px rgba(251, 191, 36, 0.3); transition: transform 0.2s; font-family:'Inter',sans-serif;">Record Anubhava</button>
             </div>
         </section>`;
 
@@ -650,6 +664,15 @@ window.getPaneHTML = function(id) {
                 <h3 class="serif" style="margin-bottom: 5px; color: var(--gold); text-align: center;">Yajna Online</h3>
                 <button onclick="window.openYajnaOverlay()" style="width: 100%; max-width: 400px; margin: 0 auto 15px auto; background: linear-gradient(135deg, var(--gold), #d97706); border: none; color: var(--bg); padding: 12px; border-radius: 20px; font-weight: bold; font-size: 13px; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; box-shadow: 0 4px 15px rgba(251, 191, 36, 0.3); transition: transform 0.2s; font-family:'Inter',sans-serif;"><i data-feather="sun" style="width: 16px;"></i> What is Yajna?.. Gurudev enlightens . .</button>
                 <div id="jaas-container"></div>
+            </div>
+        </section>`;
+
+    if(id === 'drop') return `
+        <section id="v-drop" class="view">
+            <div class="card" style="padding: 30px 20px; text-align: center;">
+                <h2 class="serif" style="color: var(--gold); margin-bottom: 10px;">Arpanam</h2>
+                <textarea id="botheration-input" class="search-input" style="min-height: 120px; margin-bottom: 20px; font-size: 15px; padding: 15px; box-shadow: inset 0 2px 5px rgba(0,0,0,0.2);" placeholder="Offer your thoughts, actions, or worries to the Divine..."></textarea>
+                <button onclick="window.dropBotheration()" style="width: 100%; background: linear-gradient(135deg, #0f172a, var(--gold)); border: 1px solid var(--gold); color: white; padding: 16px; border-radius: 12px; font-weight: bold; font-size: 15px; cursor: pointer; box-shadow: 0 4px 15px rgba(251, 191, 36, 0.2); transition: transform 0.2s; display: flex; justify-content: center; align-items: center; gap: 10px; font-family:'Inter',sans-serif;"><i data-feather="sun"></i> Offer to Divine</button>
             </div>
         </section>`;
 
@@ -812,7 +835,6 @@ window.selectFromWheel = function(type, origIdx) {
     window.collapsePicker(type);
 }
 
-window.currentMedAudio = new Audio();
 window.toggleCardAudio = function(src) {
     let btnIcon = document.getElementById('card-audio-icon');
     if (window.currentMedAudio.src && window.currentMedAudio.src.includes(src) && !window.currentMedAudio.paused) {
@@ -892,7 +914,7 @@ window.openYajnaOverlay = async function() {
             const text = await res.text();
             content.innerHTML = text.replace(/\n/g, '<br>');
             
-            if(window.yajnaSynth.speaking) window.yajnaSynth.cancel();
+            if(window.yajnaSynth && window.yajnaSynth.speaking) window.yajnaSynth.cancel();
             window.yajnaUtterance = new SpeechSynthesisUtterance(text);
             
             const voices = window.yajnaSynth.getVoices();
@@ -913,14 +935,19 @@ window.openYajnaOverlay = async function() {
 }
 
 window.closeYajnaOverlay = function() {
-    document.getElementById('yajna-overlay').classList.remove('active');
-    if(window.yajnaSynth.speaking) window.yajnaSynth.cancel();
-    document.getElementById('yajna-audio-icon').setAttribute('data-feather', 'play');
+    const overlay = document.getElementById('yajna-overlay');
+    if(overlay) overlay.classList.remove('active');
+    
+    // SAFETY NULL CHECK TO PREVENT BROWSER CRASH
+    if(window.yajnaSynth && window.yajnaSynth.speaking) window.yajnaSynth.cancel();
+    
+    const icon = document.getElementById('yajna-audio-icon');
+    if(icon) icon.setAttribute('data-feather', 'play');
     feather.replace();
 }
 
 window.toggleYajnaAudio = function() {
-    if(!window.yajnaUtterance) return;
+    if(!window.yajnaUtterance || !window.yajnaSynth) return;
     const icon = document.getElementById('yajna-audio-icon');
     if (window.yajnaSynth.speaking) {
         if (window.yajnaSynth.paused) { window.yajnaSynth.resume(); icon.setAttribute('data-feather', 'pause'); } 
@@ -991,13 +1018,56 @@ document.getElementById('main-nav').addEventListener('wheel', (evt) => {
     evt.preventDefault(); document.getElementById('main-nav').scrollLeft += evt.deltaY;
 });
 
-// Fixed Load Guarantee!
+// Ensures App loads only after the Document fully mounts!
 document.addEventListener('DOMContentLoaded', async () => { 
     await loadConfig(); 
     window.checkUserSession(); 
     const flowAudio = document.getElementById('sadhana-bg-audio');
     if (flowAudio) flowAudio.src = "./meditations/vss.mp3";
 });
+
+window.logAnubhavaSnapshot = function() {
+    const today = new Date().toISOString().split('T')[0];
+    const obsText = document.getElementById('anubhava-observations').value || "";
+    
+    if(!obsText.trim()) {
+        alert("Please write something to share your Anubhava.");
+        return;
+    }
+
+    const snapshot = {
+        userId: localStorage.getItem('vss_user_id') || 'guest_user',
+        userName: localStorage.getItem('vss_user_name') || 'guest_user',
+        date: today,
+        time: new Date().toLocaleTimeString(),
+        timestamp: new Date().getTime(),
+        obs: obsText
+    };
+
+    if (!window.anubhavaStore[today]) window.anubhavaStore[today] = [];
+    window.anubhavaStore[today].push(snapshot);
+    localStorage.setItem('vss_anubhava_logs', JSON.stringify(window.anubhavaStore));
+    
+    let fetchUrl = GOOGLE_APP_URL; 
+    fetchUrl += `?obs=${encodeURIComponent(obsText)}`;
+
+    fetch(fetchUrl, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(snapshot)
+    }).catch(error => console.error("Cloud sync failed:", error));
+
+    alert("Anubhava successfully recorded and shared!");
+    document.getElementById('anubhava-observations').value = "";
+}
+
+window.dropBotheration = function() {
+    const input = document.getElementById('botheration-input');
+    if(!input || !input.value.trim()) return;
+    input.value = '';
+    alert('Offered to the Divine...');
+}
 
 // --- AUDIO RECORDING BROWSER LOGIC ---
 window.toggleAudioPlay = function() {
@@ -1331,7 +1401,7 @@ window.loadReviews = async function() {
             q = q.where("User_ID", "==", userId);
         }
         
-        // This query is now lightning fast because Base64 strings are completely removed from it!
+        // Lightning fast query!
         const querySnapshot = await q.get();
         const logs = [];
         querySnapshot.forEach((doc) => logs.push(doc.data()));
@@ -1374,7 +1444,6 @@ window.renderReviews = function(logs, role) {
 
             html += `
                 <div style="margin-bottom: 10px; background: rgba(0,0,0,0.3); ${highlightStyle} border-radius: 12px; overflow: visible; position: relative;">
-                    <!-- STICKY ACCORDION HEADER FOR TEACHERS -->
                     <button onclick="window.toggleReviewAccordion('${idSafe}')" style="position: sticky; top: 70px; z-index: 99; width: 100%; background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(10px); padding: 15px; border: 1px solid var(--border); border-radius: 8px; color: white; display: flex; justify-content: space-between; align-items: center; font-family: 'Inter', sans-serif; cursor: pointer; font-weight: 500; box-shadow: 0 4px 10px rgba(0,0,0,0.3);">
                         <span>${studentName} <span style="font-size: 11px; color: var(--gold); background: rgba(251,191,36,0.1); padding: 2px 6px; border-radius: 6px; margin-left: 8px;">${studentLogs.length} Total</span> ${pendingBadge} ${completedBadge}</span>
                         <i data-feather="chevron-down" id="chevron-${idSafe}" style="width: 16px; color: var(--gold);"></i>
@@ -1494,7 +1563,6 @@ window.buildReviewItem = function(log, role) {
             </div>
             <span style="font-size: 11px; opacity: 0.7; margin-bottom: 5px; display: block;">Learner Audio:</span>
             
-            <!-- ON DEMAND AUDIO LOADER -->
             <div id="learner-audio-container-${log.Shloka_ID}" style="margin-bottom: 10px;">
                 <button onclick="window.fetchAudio('${log.Shloka_ID}', false)" style="background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: white; padding: 6px 12px; border-radius: 8px; font-size: 12px; cursor: pointer; display: flex; align-items: center; gap: 5px;">
                     <i data-feather="play-circle" style="width: 14px;"></i> Load Audio
@@ -1520,7 +1588,7 @@ window.fetchAudio = async function(shlokaId, isTeacher) {
         if (audioDoc.exists) {
             src = isTeacher ? audioDoc.data().Teacher_Audio_Link : audioDoc.data().Audio_Link;
         } else {
-            // Fallback for legacy format (If you still have old records sitting in shloka_logs)
+            // Fallback for legacy format
             const logDoc = await db.collection("shloka_logs").doc(shlokaId).get();
             if (logDoc.exists) {
                 src = isTeacher ? logDoc.data().Teacher_Audio_Link : logDoc.data().Audio_Link;
@@ -1538,7 +1606,6 @@ window.fetchAudio = async function(shlokaId, isTeacher) {
     }
 }
 
-// NO SCROLLING LIMIT FOR 47+ SHLOKAS
 window.toggleReviewAccordion = function(id) {
     const items = document.getElementById('acc-' + id);
     const chevron = document.getElementById('chevron-' + id);
@@ -1569,13 +1636,6 @@ window.toggleFeedbackPanel = function(id) {
     }
     feather.replace();
 };
-
-window.feedbackBlob = null;
-window.feedbackMediaRecorder = null;
-window.feedbackAudioChunks = [];
-window.activeFeedbackId = null;
-window.feedbackTimerInterval = null;
-window.feedbackSeconds = 0;
 
 window.toggleFeedbackRecord = function(shlokaId) {
     if (window.activeFeedbackId && window.activeFeedbackId !== shlokaId) {
@@ -1660,7 +1720,6 @@ window.submitFeedback = async function(shlokaId) {
                 reader.onloadend = () => resolve(reader.result);
             });
             
-            // Save Teacher Audio to the audio collection
             await db.collection("shloka_audio").doc(shlokaId).set({
                 Teacher_Audio_Link: fbAudioDataUrl
             }, { merge: true });
@@ -1672,7 +1731,6 @@ window.submitFeedback = async function(shlokaId) {
         };
         if (fbAudioDataUrl) updateData.Has_Teacher_Audio = true;
         
-        // Save Metadata to logs collection
         await db.collection("shloka_logs").doc(shlokaId).update(updateData);
 
         status.innerText = "✅ Feedback & Status Saved!";
