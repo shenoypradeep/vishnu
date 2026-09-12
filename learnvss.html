@@ -11,7 +11,7 @@
     <meta name="apple-mobile-web-app-title" content="Learn VSS">
     <link rel="apple-touch-icon" href="../assets/logo.webp">
 	
-    <title>Vedic Space | Spark App</title>
+    <title>Vedic Space | Learn VSS</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
@@ -289,7 +289,7 @@ function checkUserSession() {
 function handleUserIconClick() {
     const userId = localStorage.getItem('vss_user_id');
     if (!userId || userId === 'guest_user') {
-        window.location.href = 'login_test.html'; 
+        window.location.href = 'login.html'; 
     } else {
         const dropdown = document.getElementById('logout-dropdown');
         dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
@@ -309,7 +309,7 @@ function logoutUser() {
     localStorage.removeItem('vss_user_id');
     localStorage.removeItem('vss_user_name');
     localStorage.removeItem('vss_user_role');
-    window.location.href = 'login_test.html'; 
+    window.location.href = 'login.html'; 
 }
 
 window.addEventListener('click', function(e) {
