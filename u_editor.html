@@ -65,12 +65,11 @@
         .export-group { display: flex; gap: 4px; align-items: center; }
         .play-page-btn { background: var(--accent-color) !important; color: white !important; }
 
-        /* Sync Lines & Audio Controls */
+        /* Sync Lines & Edit Flags */
         .sync-line-wrapper { display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px; padding: 8px; border-radius: 6px; border: 1px solid #e2e8f0; background: #f8fafc; position: relative; }
         @media (min-width: 768px) { .sync-line-wrapper { flex-direction: row; justify-content: space-between; align-items: center; } }
         .sync-line-wrapper.active-highlight { background: var(--highlight-color); border-left: 4px solid var(--gold); }
         
-        /* Edit Flagging Styles */
         .sync-line-wrapper.is-edited { border-left: 4px solid var(--edited-color); background: #eff6ff; }
         .edit-badge { display: none; font-size: 10px; background: var(--edited-color); color: white; padding: 2px 6px; border-radius: 4px; font-weight: bold; margin-bottom: 4px; align-self: flex-start; }
         .sync-line-wrapper.is-edited .edit-badge { display: inline-block; }
@@ -157,7 +156,7 @@
     <div id="toast" class="toast"></div>
 
     <script>
-        // MUST REPLACE THIS WITH YOUR FIREBASE REALTIME DATABASE URL (Keep the .json at the end)
+        // REPLACE WITH YOUR FIREBASE DB URL. Must end with .json
         const FIREBASE_DB_URL = "https://vedic-space-default-rtdb.asia-southeast1.firebasedatabase.app/workspace.json";
         
         let appState = { pages: {} };
@@ -167,7 +166,6 @@
         
         let currentAudio = null;
         let currentPlayingBtn = null;
-        
         let pagePlaybackQueue = [];
         let isPagePlaying = false;
         let activePageLang = '';
@@ -196,7 +194,6 @@
                     loadPage(orderedPageKeys[0]);
                     showToast("Workspace loaded from Firebase.");
                 } else {
-                    // Fallback to local file if Firebase is empty/uninitialized
                     fallbackToLocalJSON();
                 }
             } catch (err) {
@@ -226,7 +223,7 @@
             try {
                 saveCurrentPageEdits();
                 await fetch(FIREBASE_DB_URL, {
-                    method: 'PUT', // PUT overwrites the specific node in Firebase
+                    method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(appState)
                 });
@@ -239,11 +236,14 @@
 
         function saveCurrentPageEdits() {
             if (orderedPageKeys.length === 0) return;
-            const pageKey = orderedPageKeys[currentPageIndex];
+            const englishContent = document.getElementById('english-content');
             
-            // Using .innerHTML to ensure text isn't lost if the pane is collapsed/hidden
-            const currentEnLines = Array.from(document.getElementById('english-content').children).map(el => el.querySelector('.sync-text').innerHTML.trim());
-            const currentEditFlags = Array.from(document.getElementById('english-content').children).map(el => el.classList.contains('is-edited'));
+            // CRITICAL FIX: Prevent overwriting appState with blanks if the pane isn't rendered yet
+            if (!englishContent || englishContent.children.length === 0) return; 
+
+            const pageKey = orderedPageKeys[currentPageIndex];
+            const currentEnLines = Array.from(englishContent.children).map(el => el.querySelector('.sync-text').innerHTML.trim());
+            const currentEditFlags = Array.from(englishContent.children).map(el => el.classList.contains('is-edited'));
 
             appState.pages[pageKey].en = currentEnLines;
             appState.pages[pageKey].edited_en = currentEditFlags;
@@ -251,12 +251,12 @@
 
         function bindEditSavers() {
             document.querySelectorAll('#english-content .sync-text').forEach((el) => {
-                // Capture original value on focus
                 el.onfocus = function() {
-                    this.dataset.initialValue = this.innerHTML.trim();
+                    if (!this.dataset.initialValue) {
+                        this.dataset.initialValue = this.innerHTML.trim();
+                    }
                 };
                 
-                // Check for edits on blur
                 el.onblur = function() {
                     if(!annotationsEnabled) return;
                     const currentValue = this.innerHTML.trim();
@@ -277,10 +277,9 @@
             const otherPaneId = paneId === 'kannada' ? 'english' : 'kannada';
             const otherPane = document.getElementById(`pane-${otherPaneId}`);
 
-            // Safety check: Do not allow both panes to be collapsed
+            // FIX: Auto-expand the other pane if the user attempts to hide both
             if (!pane.classList.contains('collapsed') && otherPane.classList.contains('collapsed')) {
-                showToast("Cannot minimize both panes.");
-                return;
+                otherPane.classList.remove('collapsed');
             }
             
             pane.classList.toggle('collapsed');
