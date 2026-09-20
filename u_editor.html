@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Koteshwara Sthala Purana - Mobile Translator</title>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.21/mammoth.browser.min.js"></script>
+    <script src="https://unpkg.com/feather-icons" defer></script>
+
+    <style>
+        :root {
+            --bg-color: #f8fafc;
+            --panel-bg: #ffffff;
+            --text-color: #1e293b;
+            --border-color: #cbd5e1;
+            --highlight-color: #fef08a;
+            --highlight-hover: #fef9c3;
+            --accent-color: #2563eb;
+            --header-bg: #0f172a;
+            --gold: #fbbf24;
+            --success: #10b981;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Segoe UI', system-ui, sans-serif; background-color: var(--bg-color); color: var(--text-color); display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+
+        /* Toolbar */
+        .toolbar { background-color: var(--header-bg); color: white; padding: 10px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; z-index: 10; font-size: 13px; overflow-x: auto; white-space: nowrap; }
+        .toolbar-group { display: flex; align-items: center; gap: 8px; border-right: 1px solid #334155; padding-right: 8px; }
+        .toolbar-group:last-child { border-right: none; }
+
+        button { background: #334155; color: white; border: 1px solid #475569; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: 500; transition: all 0.2s; display: flex; align-items: center; gap: 6px; }
+        button:hover { background: var(--accent-color); border-color: var(--accent-color); }
+        .btn-rustpad { background: #10b981; border-color: #059669; }
+
+        select { background: #334155; color: white; border: 1px solid #475569; padding: 6px; border-radius: 4px; font-size: 13px; outline: none; }
+        
+        /* Toggles */
+        .toggle-wrapper { display: flex; align-items: center; gap: 6px; font-size: 12px; }
+        .switch { position: relative; display: inline-block; width: 34px; height: 18px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #475569; transition: .4s; border-radius: 20px; }
+        .slider:before { position: absolute; content: ""; height: 12px; width: 12px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: var(--gold); }
+        input:checked + .slider:before { transform: translateX(16px); }
+
+        .checkbox-wrapper { display: flex; align-items: center; gap: 6px; background: rgba(0,0,0,0.05); padding: 4px 8px; border-radius: 4px; cursor: pointer; border: 1px solid var(--border-color); font-weight: 600; font-size: 11px; }
+        .checkbox-wrapper.complete { background: #d1fae5; border-color: var(--success); color: #065f46; }
+
+        /* Workspace Panels (Mobile First) */
+        .workspace { display: flex; flex-direction: column; flex: 1; overflow: hidden; position: relative; }
+        @media (min-width: 768px) { .workspace { flex-direction: row; } }
+        
+        .panel-container { flex: 1; display: flex; flex-direction: column; border-bottom: 2px solid var(--border-color); background: var(--panel-bg); width: 100%; transition: all 0.3s ease; }
+        @media (min-width: 768px) { .panel-container { border-bottom: none; border-right: 2px solid var(--border-color); width: 50%; } }
+        .panel-container.collapsed { flex: 0; min-height: 0; height: 0; padding: 0; border: none; overflow: hidden; opacity: 0; }
+        
+        .panel-header { padding: 8px 12px; background: #f1f5f9; border-bottom: 1px solid var(--border-color); font-weight: 600; font-size: 13px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px; }
+        .panel-content { flex: 1; overflow-y: auto; padding: 15px; font-size: 15px; line-height: 1.6; outline: none; }
+
+        /* Sync Lines & Audio Controls */
+        .sync-line-wrapper { display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px; padding: 8px; border-radius: 6px; border: 1px solid #e2e8f0; background: #f8fafc; }
+        @media (min-width: 768px) { .sync-line-wrapper { flex-direction: row; justify-content: space-between; align-items: center; } }
+        .sync-line-wrapper.active-highlight { background: var(--highlight-color); border-left: 4px solid var(--gold); }
+        
+        .sync-text { flex: 1; outline: none; text-align: left; }
+        .sync-text[contenteditable="true"]:focus { background: #fff; box-shadow: 0 0 0 2px var(--accent-color); border-radius: 4px; padding: 2px; }
+
+        .inline-audio-controls { display: flex; gap: 6px; align-self: flex-end; }
+        .inline-btn { background: #e2e8f0; border: 1px solid #cbd5e1; color: #475569; padding: 6px 12px; border-radius: 4px; display: flex; align-items: center; gap: 4px; font-size: 11px; font-weight: bold; }
+        .inline-btn.playing { background: var(--success); color: white; border-color: var(--success); }
+
+        .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #1e293b; color: white; padding: 12px 24px; border-radius: 6px; display: none; z-index: 1000; font-weight: 500; font-size: 13px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); white-space: nowrap; }
+    </style>
+</head>
+<body id="app-body">
+
+    <!-- Mobile-Friendly Toolbar -->
+    <div class="toolbar">
+        <div class="toolbar-group">
+            <button class="btn-rustpad" onclick="syncToRustpad()" title="Force Sync to Rustpad">
+                <i data-feather="cloud" style="width: 14px;"></i> Sync Editor
+            </button>
+        </div>
+        
+        <div class="toolbar-group">
+            <button onclick="navigatePage(-1)"><i data-feather="chevron-left" style="width: 16px;"></i></button>
+            <select id="page-selector" onchange="loadPage(this.value)" style="width: 100px;">
+                <option value="Intro">Intro</option>
+            </select>
+            <button onclick="navigatePage(1)"><i data-feather="chevron-right" style="width: 16px;"></i></button>
+        </div>
+
+        <div class="toolbar-group">
+            <label class="toggle-wrapper">
+                Edits:
+                <label class="switch">
+                    <input type="checkbox" id="annotation-toggle" checked onchange="toggleAnnotations()">
+                    <span class="slider"></span>
+                </label>
+            </label>
+        </div>
+    </div>
+
+    <!-- Workspace -->
+    <div class="workspace" id="workspace">
+
+        <!-- Left Pane: Kannada -->
+        <div class="panel-container" id="pane-kannada">
+            <div class="panel-header">
+                <span id="kn-header-label">Kannada</span>
+                <div style="display: flex; gap: 4px;">
+                    <button onclick="togglePane('english')" title="Collapse English"><i data-feather="maximize-2" style="width:12px;"></i></button>
+                    <button onclick="stopAudio()"><i data-feather="square" style="width:12px;"></i></button>
+                </div>
+            </div>
+            <div class="panel-content" id="kannada-content"></div>
+        </div>
+
+        <!-- Right Pane: English (With Audio Toggle) -->
+        <div class="panel-container" id="pane-english">
+            <div class="panel-header">
+                <span id="en-header-label">English</span>
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <label class="toggle-wrapper" style="background: #e2e8f0; padding: 4px 8px; border-radius: 4px;">
+                        Audio: <b>KN</b>
+                        <label class="switch" style="margin: 0 4px;">
+                            <input type="checkbox" id="audio-lang-toggle" checked>
+                            <span class="slider"></span>
+                        </label>
+                        <b>EN</b>
+                    </label>
+
+                    <label class="checkbox-wrapper" id="page-complete-label">
+                        <input type="checkbox" id="page-complete-toggle" onchange="togglePageComplete()" style="display:none;">
+                        <i data-feather="check-circle" style="width: 12px;" id="page-complete-icon"></i> <span id="page-complete-text">Done</span>
+                    </label>
+
+                    <button onclick="togglePane('kannada')" title="Collapse Kannada"><i data-feather="maximize-2" style="width:12px;"></i></button>
+                </div>
+            </div>
+            <div class="panel-content" id="english-content"></div>
+        </div>
+    </div>
+
+    <div id="toast" class="toast"></div>
+
+    <script>
+        const RUSTPAD_API_URL = "https://rustpad.io/api/document/UWqGsS";
+        
+        let appState = { pages: {} };
+        let orderedPageKeys = [];
+        let currentPageIndex = 0;
+        let annotationsEnabled = true;
+        let currentAudio = null;
+        let currentPlayingBtn = null;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            feather.replace();
+            loadFromRustpad();
+        });
+
+        // ==========================================
+        // 1. RUSTPAD SYNC (GITHUB PAGES COMPATIBLE)
+        // ==========================================
+        async function loadFromRustpad() {
+            showToast("Connecting to Rustpad...");
+            try {
+                const response = await fetch(RUSTPAD_API_URL);
+                const data = await response.json();
+                
+                if (data && data.text) {
+                    appState = JSON.parse(data.text);
+                    orderedPageKeys = Object.keys(appState.pages);
+                    updatePageSelectorUI();
+                    loadPage(orderedPageKeys[0]);
+                    showToast("Workspace loaded from Rustpad.");
+                } else {
+                    showToast("Rustpad document is empty.");
+                }
+            } catch (err) {
+                console.error("Failed to load from Rustpad", err);
+                showToast("Failed to load remote workspace. Check connection.");
+            }
+        }
+
+        async function syncToRustpad() {
+            showToast("Syncing to Rustpad...");
+            try {
+                // Save current page edits to state before pushing
+                saveCurrentPageEdits();
+                
+                await fetch(RUSTPAD_API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ text: JSON.stringify(appState, null, 2) })
+                });
+                showToast("Edits synced securely to Rustpad!");
+            } catch (err) {
+                console.error("Failed to sync", err);
+                showToast("Sync failed. Check network.");
+            }
+        }
+
+        function saveCurrentPageEdits() {
+            if (orderedPageKeys.length === 0) return;
+            const pageKey = orderedPageKeys[currentPageIndex];
+            const currentEnLines = Array.from(document.getElementById('english-content').children).map(el => el.querySelector('.sync-text').innerText);
+            appState.pages[pageKey].en = currentEnLines;
+        }
+
+        function bindEditSavers() {
+            document.querySelectorAll('#english-content .sync-text').forEach((el) => {
+                el.onblur = function() {
+                    if(!annotationsEnabled) return;
+                    syncToRustpad(); // Auto-sync to Rustpad on blur
+                };
+            });
+        }
+
+        // ==========================================
+        // 2. UI NAVIGATION & TOGGLES
+        // ==========================================
+        function togglePane(paneId) {
+            document.getElementById(`pane-${paneId}`).classList.toggle('collapsed');
+        }
+
+        function updatePageSelectorUI() {
+            const selector = document.getElementById('page-selector');
+            selector.innerHTML = '';
+            orderedPageKeys.forEach(page => {
+                let opt = document.createElement('option');
+                opt.value = page;
+                opt.textContent = appState.pages[page].completed ? `✅ Pg ${page}` : `Pg ${page}`;
+                selector.appendChild(opt);
+            });
+        }
+
+        function navigatePage(dir) {
+            let targetIndex = currentPageIndex + dir;
+            if(targetIndex >= 0 && targetIndex < orderedPageKeys.length) {
+                document.getElementById('page-selector').value = orderedPageKeys[targetIndex];
+                loadPage(orderedPageKeys[targetIndex]);
+            }
+        }
+
+        function togglePageComplete() {
+            const isComplete = document.getElementById('page-complete-toggle').checked;
+            const pageKey = orderedPageKeys[currentPageIndex];
+            appState.pages[pageKey].completed = isComplete;
+            updatePageSelectorUI();
+            document.getElementById('page-selector').value = pageKey;
+            syncToRustpad();
+        }
+
+        function loadPage(pageKey) {
+            saveCurrentPageEdits();
+            currentPageIndex = orderedPageKeys.indexOf(pageKey);
+            const pageData = appState.pages[pageKey];
+
+            document.getElementById('kn-header-label').innerText = `Kannada (Pg ${pageKey})`;
+            document.getElementById('en-header-label').innerText = `English (Pg ${pageKey})`;
+            document.getElementById('page-complete-toggle').checked = pageData.completed || false;
+
+            const maxLen = Math.max(pageData.kn.length, pageData.en.length);
+            let knHtml = "";
+            let enHtml = "";
+
+            for(let idx = 0; idx < maxLen; idx++) {
+                let kStr = pageData.kn[idx] || "";
+                let eStr = pageData.en[idx] || "";
+
+                knHtml += `
+                    <div class="sync-line-wrapper" data-idx="${idx}" data-lang="kn">
+                        <div class="sync-text">${kStr}</div>
+                        <div class="inline-audio-controls">
+                            <button class="inline-btn" onclick="playStaticAudio('kn', '${pageKey}', ${idx}, this)"><i data-feather="play"></i> Play</button>
+                        </div>
+                    </div>`;
+
+                // English Pane utilizes the global Audio Toggle switch to decide which language to fetch
+                enHtml += `
+                    <div class="sync-line-wrapper" data-idx="${idx}" data-lang="en">
+                        <div class="sync-text" ${annotationsEnabled ? 'contenteditable="true"' : 'contenteditable="false"'}>${eStr}</div>
+                        <div class="inline-audio-controls" contenteditable="false">
+                            <button class="inline-btn" onclick="playDynamicAudio('${pageKey}', ${idx}, this)"><i data-feather="play"></i> Play</button>
+                        </div>
+                    </div>`;
+            }
+
+            document.getElementById('kannada-content').innerHTML = knHtml;
+            document.getElementById('english-content').innerHTML = enHtml;
+            feather.replace();
+            bindEditSavers();
+        }
+
+        // ==========================================
+        // 3. STATIC WORKSPACE AUDIO PLAYBACK
+        // ==========================================
+        function playDynamicAudio(pageKey, lineIdx, btnElement) {
+            const isEnglish = document.getElementById('audio-lang-toggle').checked;
+            const targetLang = isEnglish ? 'en' : 'kn';
+            playStaticAudio(targetLang, pageKey, lineIdx, btnElement, 'en');
+        }
+
+        function playStaticAudio(targetLang, pageKey, lineIdx, btnElement, sourcePaneLang = 'kn') {
+            highlightPair(lineIdx, sourcePaneLang);
+            stopAudio();
+
+            // Fetches statically hosted MP3s from the GitHub Repo Workspace folder
+            const filename = `./Workspace/audio_P${pageKey}_L${lineIdx}_${targetLang}.mp3`;
+            
+            currentPlayingBtn = btnElement;
+            btnElement.classList.add('playing');
+            btnElement.innerHTML = `<i data-feather="pause"></i> Play`;
+            feather.replace();
+
+            currentAudio = new Audio(filename);
+            currentAudio.onended = stopAudio;
+            currentAudio.onerror = () => {
+                stopAudio();
+                showToast(`Audio missing: ${filename}`);
+            };
+            currentAudio.play();
+        }
+
+        function stopAudio() {
+            if (currentAudio) {
+                currentAudio.pause();
+                currentAudio.currentTime = 0;
+                currentAudio = null;
+            }
+            if (currentPlayingBtn) {
+                currentPlayingBtn.classList.remove('playing');
+                currentPlayingBtn.innerHTML = `<i data-feather="play"></i> Play`;
+                feather.replace();
+                currentPlayingBtn = null;
+            }
+        }
+
+        function highlightPair(idx, sourceLang) {
+            document.querySelectorAll('.active-highlight').forEach(el => el.classList.remove('active-highlight'));
+            const leftEl = document.querySelector(`#kannada-content .sync-line-wrapper[data-idx="${idx}"]`);
+            const rightEl = document.querySelector(`#english-content .sync-line-wrapper[data-idx="${idx}"]`);
+            
+            if(leftEl) leftEl.classList.add('active-highlight');
+            if(rightEl) rightEl.classList.add('active-highlight');
+
+            if (sourceLang === 'kn' && rightEl) {
+                rightEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            } else if (sourceLang === 'en' && leftEl) {
+                leftEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+        }
+
+        function toggleAnnotations() {
+            annotationsEnabled = document.getElementById('annotation-toggle').checked;
+            document.querySelectorAll('#english-content .sync-text').forEach(el => el.setAttribute('contenteditable', annotationsEnabled ? 'true' : 'false'));
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            toast.innerText = msg; toast.style.display = 'block';
+            setTimeout(() => toast.style.display = 'none', 3000);
+        }
+    </script>
+</body>
+</html>
