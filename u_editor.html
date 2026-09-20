@@ -155,9 +155,9 @@
 
     <div id="toast" class="toast"></div>
 
-    <script>
+<script>
         // REPLACE WITH YOUR FIREBASE DB URL. Must end with .json
-        const FIREBASE_DB_URL = "https://vedic-space-default-rtdb.asia-southeast1.firebasedatabase.app/workspace.json";
+        const FIREBASE_DB_URL = "https://vedic-space-default-rtdb.asia-southeast1.firebasedatabase.app/worker.json";
         
         let appState = { pages: {} };
         let orderedPageKeys = [];
@@ -182,7 +182,8 @@
         async function loadWorkspace() {
             showToast("Fetching from Firebase...");
             try {
-                const response = await fetch(FIREBASE_DB_URL);
+                // Cache-busting added to ensure fresh Firebase fetch
+                const response = await fetch(FIREBASE_DB_URL + "?nocache=" + new Date().getTime());
                 if (!response.ok) throw new Error("Firebase DB not found or permission denied");
                 
                 const data = await response.json();
@@ -194,17 +195,19 @@
                     loadPage(orderedPageKeys[0]);
                     showToast("Workspace loaded from Firebase.");
                 } else {
+                    console.log("Firebase is empty, triggering fallback.");
                     fallbackToLocalJSON();
                 }
             } catch (err) {
-                console.error("Firebase load failed, trying local fallback.", err);
+                console.warn("Firebase load failed, trying local fallback.", err);
                 fallbackToLocalJSON();
             }
         }
 
         async function fallbackToLocalJSON() {
             try {
-                const response = await fetch('./Workspace/workspace.json');
+                // CACHE-BUSTER FIX: Forces browser to ignore cached blank file and fetch the real one
+                const response = await fetch('./Workspace/workspace.json?t=' + new Date().getTime());
                 const data = await response.json();
                 if (data && data.pages) {
                     appState = data;
@@ -212,14 +215,19 @@
                     updatePageSelectorUI();
                     loadPage(orderedPageKeys[0]);
                     showToast("Loaded local workspace fallback.");
+                    
+                    // Push the fresh local data up to Firebase so it's ready for future edits
+                    syncToFirebase();
                 }
             } catch (e) {
                 showToast("Failed to load workspace.");
+                console.error(e);
             }
         }
 
         async function syncToFirebase() {
-            showToast("Saving to Firebase...");
+            document.getElementById('toast').style.display = 'block';
+            document.getElementById('toast').innerText = "Saving to Firebase...";
             try {
                 saveCurrentPageEdits();
                 await fetch(FIREBASE_DB_URL, {
@@ -238,7 +246,6 @@
             if (orderedPageKeys.length === 0) return;
             const englishContent = document.getElementById('english-content');
             
-            // CRITICAL FIX: Prevent overwriting appState with blanks if the pane isn't rendered yet
             if (!englishContent || englishContent.children.length === 0) return; 
 
             const pageKey = orderedPageKeys[currentPageIndex];
@@ -277,7 +284,6 @@
             const otherPaneId = paneId === 'kannada' ? 'english' : 'kannada';
             const otherPane = document.getElementById(`pane-${otherPaneId}`);
 
-            // FIX: Auto-expand the other pane if the user attempts to hide both
             if (!pane.classList.contains('collapsed') && otherPane.classList.contains('collapsed')) {
                 otherPane.classList.remove('collapsed');
             }
@@ -517,7 +523,8 @@
 
         function showToast(msg) {
             const toast = document.getElementById('toast');
-            toast.innerText = msg; toast.style.display = 'block';
+            toast.innerText = msg;
+            toast.style.display = 'block';
             setTimeout(() => toast.style.display = 'none', 3000);
         }
     </script>
