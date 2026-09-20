@@ -158,37 +158,39 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             feather.replace();
-            loadFromRustpad();
+            loadWorkspace();
         });
 
         // ==========================================
-        // 1. RUSTPAD SYNC (GITHUB PAGES COMPATIBLE)
+        // 1. GITHUB LOCAL READ & RUSTPAD SYNC
         // ==========================================
-        async function loadFromRustpad() {
-            showToast("Connecting to Rustpad...");
+        async function loadWorkspace() {
+            showToast("Loading from ./Workspace/workspace.json...");
             try {
-                const response = await fetch(RUSTPAD_API_URL);
+                // Fetch the static workspace JSON file hosted in your GitHub repo
+                const response = await fetch('./Workspace/workspace.json');
+                if (!response.ok) throw new Error("Local workspace.json not found");
+                
                 const data = await response.json();
                 
-                if (data && data.text) {
-                    appState = JSON.parse(data.text);
+                if (data && data.pages && Object.keys(data.pages).length > 0) {
+                    appState = data;
                     orderedPageKeys = Object.keys(appState.pages);
                     updatePageSelectorUI();
                     loadPage(orderedPageKeys[0]);
-                    showToast("Workspace loaded from Rustpad.");
+                    showToast("Workspace loaded successfully.");
                 } else {
-                    showToast("Rustpad document is empty.");
+                    showToast("Workspace document is empty.");
                 }
             } catch (err) {
-                console.error("Failed to load from Rustpad", err);
-                showToast("Failed to load remote workspace. Check connection.");
+                console.error("Failed to load local workspace.json", err);
+                showToast("Failed to load ./Workspace/workspace.json");
             }
         }
 
         async function syncToRustpad() {
             showToast("Syncing to Rustpad...");
             try {
-                // Save current page edits to state before pushing
                 saveCurrentPageEdits();
                 
                 await fetch(RUSTPAD_API_URL, {
@@ -214,7 +216,7 @@
             document.querySelectorAll('#english-content .sync-text').forEach((el) => {
                 el.onblur = function() {
                     if(!annotationsEnabled) return;
-                    syncToRustpad(); // Auto-sync to Rustpad on blur
+                    syncToRustpad(); 
                 };
             });
         }
@@ -249,6 +251,16 @@
             const isComplete = document.getElementById('page-complete-toggle').checked;
             const pageKey = orderedPageKeys[currentPageIndex];
             appState.pages[pageKey].completed = isComplete;
+            
+            const label = document.getElementById('page-complete-label');
+            if(isComplete) {
+                label.classList.add('complete');
+                document.getElementById('page-complete-text').innerText = "Done";
+            } else {
+                label.classList.remove('complete');
+                document.getElementById('page-complete-text').innerText = "Done";
+            }
+            
             updatePageSelectorUI();
             document.getElementById('page-selector').value = pageKey;
             syncToRustpad();
@@ -261,7 +273,15 @@
 
             document.getElementById('kn-header-label').innerText = `Kannada (Pg ${pageKey})`;
             document.getElementById('en-header-label').innerText = `English (Pg ${pageKey})`;
-            document.getElementById('page-complete-toggle').checked = pageData.completed || false;
+            
+            const statusLabel = document.getElementById('page-complete-label');
+            const statusCheckbox = document.getElementById('page-complete-toggle');
+            statusCheckbox.checked = pageData.completed || false;
+            if (pageData.completed) {
+                statusLabel.classList.add('complete');
+            } else {
+                statusLabel.classList.remove('complete');
+            }
 
             const maxLen = Math.max(pageData.kn.length, pageData.en.length);
             let knHtml = "";
@@ -279,7 +299,6 @@
                         </div>
                     </div>`;
 
-                // English Pane utilizes the global Audio Toggle switch to decide which language to fetch
                 enHtml += `
                     <div class="sync-line-wrapper" data-idx="${idx}" data-lang="en">
                         <div class="sync-text" ${annotationsEnabled ? 'contenteditable="true"' : 'contenteditable="false"'}>${eStr}</div>
@@ -348,9 +367,9 @@
             if(rightEl) rightEl.classList.add('active-highlight');
 
             if (sourceLang === 'kn' && rightEl) {
-                rightEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                rightEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
             } else if (sourceLang === 'en' && leftEl) {
-                leftEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                leftEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
             }
         }
 
