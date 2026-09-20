@@ -48,16 +48,23 @@
         .checkbox-wrapper { display: flex; align-items: center; gap: 6px; background: rgba(0,0,0,0.05); padding: 4px 8px; border-radius: 4px; cursor: pointer; border: 1px solid var(--border-color); font-weight: 600; font-size: 11px; }
         .checkbox-wrapper.complete { background: #d1fae5; border-color: var(--success); color: #065f46; }
 
-        /* Workspace Panels (Mobile First) */
+        /* Workspace Panels */
         .workspace { display: flex; flex-direction: column; flex: 1; overflow: hidden; position: relative; }
         @media (min-width: 768px) { .workspace { flex-direction: row; } }
         
-        .panel-container { flex: 1; display: flex; flex-direction: column; border-bottom: 2px solid var(--border-color); background: var(--panel-bg); width: 100%; transition: all 0.3s ease; }
+        .panel-container { flex: 1; display: flex; flex-direction: column; border-bottom: 2px solid var(--border-color); background: var(--panel-bg); width: 100%; transition: all 0.3s ease; overflow: hidden; }
         @media (min-width: 768px) { .panel-container { border-bottom: none; border-right: 2px solid var(--border-color); width: 50%; } }
-        .panel-container.collapsed { flex: 0; min-height: 0; height: 0; padding: 0; border: none; overflow: hidden; opacity: 0; }
+        
+        /* Fixed collapse logic for mobile */
+        .panel-container.collapsed { display: none; }
         
         .panel-header { padding: 8px 12px; background: #f1f5f9; border-bottom: 1px solid var(--border-color); font-weight: 600; font-size: 13px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px; }
-        .panel-content { flex: 1; overflow-y: auto; padding: 15px; font-size: 15px; line-height: 1.6; outline: none; }
+        
+        /* Fixed mobile scrolling */
+        .panel-content { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 15px; font-size: 15px; line-height: 1.6; outline: none; }
+
+        .export-group { display: flex; gap: 4px; align-items: center; }
+        .play-page-btn { background: var(--accent-color) !important; color: white !important; }
 
         /* Sync Lines & Audio Controls */
         .sync-line-wrapper { display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px; padding: 8px; border-radius: 6px; border: 1px solid #e2e8f0; background: #f8fafc; }
@@ -110,9 +117,9 @@
         <div class="panel-container" id="pane-kannada">
             <div class="panel-header">
                 <span id="kn-header-label">Kannada</span>
-                <div style="display: flex; gap: 4px;">
-                    <button onclick="togglePane('english')" title="Collapse English"><i data-feather="maximize-2" style="width:12px;"></i></button>
-                    <button onclick="stopAudio()"><i data-feather="square" style="width:12px;"></i></button>
+                <div class="export-group">
+                    <button onclick="togglePageAudio('kn', this)" class="play-page-btn" id="btn-page-kn"><i data-feather="play" style="width:12px;"></i> Play Page</button>
+                    <button onclick="togglePane('kannada')" title="Minimize Kannada"><i data-feather="minimize-2" style="width:12px;"></i></button>
                 </div>
             </div>
             <div class="panel-content" id="kannada-content"></div>
@@ -137,7 +144,8 @@
                         <i data-feather="check-circle" style="width: 12px;" id="page-complete-icon"></i> <span id="page-complete-text">Done</span>
                     </label>
 
-                    <button onclick="togglePane('kannada')" title="Collapse Kannada"><i data-feather="maximize-2" style="width:12px;"></i></button>
+                    <button onclick="togglePageAudio('en', this)" class="play-page-btn" id="btn-page-en"><i data-feather="play" style="width:12px;"></i> Play Page</button>
+                    <button onclick="togglePane('english')" title="Minimize English"><i data-feather="minimize-2" style="width:12px;"></i></button>
                 </div>
             </div>
             <div class="panel-content" id="english-content"></div>
@@ -153,8 +161,15 @@
         let orderedPageKeys = [];
         let currentPageIndex = 0;
         let annotationsEnabled = true;
+        
         let currentAudio = null;
         let currentPlayingBtn = null;
+        
+        // Page level playback state
+        let pagePlaybackQueue = [];
+        let isPagePlaying = false;
+        let activePageLang = '';
+        let activePageBtn = null;
 
         document.addEventListener('DOMContentLoaded', () => {
             feather.replace();
@@ -167,7 +182,6 @@
         async function loadWorkspace() {
             showToast("Loading from ./Workspace/workspace.json...");
             try {
-                // Fetch the static workspace JSON file hosted in your GitHub repo
                 const response = await fetch('./Workspace/workspace.json');
                 if (!response.ok) throw new Error("Local workspace.json not found");
                 
@@ -192,7 +206,6 @@
             showToast("Syncing to Rustpad...");
             try {
                 saveCurrentPageEdits();
-                
                 await fetch(RUSTPAD_API_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -255,10 +268,8 @@
             const label = document.getElementById('page-complete-label');
             if(isComplete) {
                 label.classList.add('complete');
-                document.getElementById('page-complete-text').innerText = "Done";
             } else {
                 label.classList.remove('complete');
-                document.getElementById('page-complete-text').innerText = "Done";
             }
             
             updatePageSelectorUI();
@@ -268,6 +279,8 @@
 
         function loadPage(pageKey) {
             saveCurrentPageEdits();
+            stopAudio(); // Stop any active playback on page flip
+            
             currentPageIndex = orderedPageKeys.indexOf(pageKey);
             const pageData = appState.pages[pageKey];
 
@@ -295,7 +308,7 @@
                     <div class="sync-line-wrapper" data-idx="${idx}" data-lang="kn">
                         <div class="sync-text">${kStr}</div>
                         <div class="inline-audio-controls">
-                            <button class="inline-btn" onclick="playStaticAudio('kn', '${pageKey}', ${idx}, this)"><i data-feather="play"></i> Play</button>
+                            <button class="inline-btn" onclick="playStaticAudio('kn', '${pageKey}', ${idx}, this)"><i data-feather="play" style="width:14px;"></i> Play</button>
                         </div>
                     </div>`;
 
@@ -303,7 +316,7 @@
                     <div class="sync-line-wrapper" data-idx="${idx}" data-lang="en">
                         <div class="sync-text" ${annotationsEnabled ? 'contenteditable="true"' : 'contenteditable="false"'}>${eStr}</div>
                         <div class="inline-audio-controls" contenteditable="false">
-                            <button class="inline-btn" onclick="playDynamicAudio('${pageKey}', ${idx}, this)"><i data-feather="play"></i> Play</button>
+                            <button class="inline-btn" onclick="playDynamicAudio('${pageKey}', ${idx}, this)"><i data-feather="play" style="width:14px;"></i> Play</button>
                         </div>
                     </div>`;
             }
@@ -317,6 +330,12 @@
         // ==========================================
         // 3. STATIC WORKSPACE AUDIO PLAYBACK
         // ==========================================
+        function setBtnIcon(btn, iconName, text) {
+            if (!btn) return;
+            btn.innerHTML = `<i data-feather="${iconName}" style="width:14px;"></i> ${text || ''}`;
+            feather.replace();
+        }
+
         function playDynamicAudio(pageKey, lineIdx, btnElement) {
             const isEnglish = document.getElementById('audio-lang-toggle').checked;
             const targetLang = isEnglish ? 'en' : 'kn';
@@ -324,22 +343,91 @@
         }
 
         function playStaticAudio(targetLang, pageKey, lineIdx, btnElement, sourcePaneLang = 'kn') {
-            highlightPair(lineIdx, sourcePaneLang);
-            stopAudio();
+            // Unify Play/Pause Toggle behavior for Lines
+            if (currentPlayingBtn === btnElement && currentAudio) {
+                if (!currentAudio.paused) {
+                    currentAudio.pause();
+                    btnElement.classList.remove('playing');
+                    setBtnIcon(btnElement, 'play', 'Play');
+                } else {
+                    currentAudio.play();
+                    btnElement.classList.add('playing');
+                    setBtnIcon(btnElement, 'pause', 'Pause');
+                }
+                return;
+            }
 
-            // Fetches statically hosted MP3s from the GitHub Repo Workspace folder
+            stopAudio();
+            highlightPair(lineIdx, sourcePaneLang);
+
             const filename = `./Workspace/audio_P${pageKey}_L${lineIdx}_${targetLang}.mp3`;
             
             currentPlayingBtn = btnElement;
             btnElement.classList.add('playing');
-            btnElement.innerHTML = `<i data-feather="pause"></i> Play`;
-            feather.replace();
+            setBtnIcon(btnElement, 'pause', 'Pause');
 
             currentAudio = new Audio(filename);
             currentAudio.onended = stopAudio;
             currentAudio.onerror = () => {
                 stopAudio();
                 showToast(`Audio missing: ${filename}`);
+            };
+            currentAudio.play();
+        }
+
+        // Unified Page Play/Pause Sequencer using Local Files
+        function togglePageAudio(lang, btnElement) {
+            if (isPagePlaying && activePageLang === lang) {
+                if (currentAudio && !currentAudio.paused) {
+                    currentAudio.pause();
+                    setBtnIcon(btnElement, 'play', 'Play Page');
+                } else if (currentAudio && currentAudio.paused) {
+                    currentAudio.play();
+                    setBtnIcon(btnElement, 'pause', 'Pause Page');
+                }
+                return;
+            }
+
+            // Start Fresh
+            stopAudio();
+            activePageLang = lang;
+            isPagePlaying = true;
+            activePageBtn = btnElement;
+            setBtnIcon(btnElement, 'pause', 'Pause Page');
+            
+            const pageKey = orderedPageKeys[currentPageIndex];
+            const pageData = appState.pages[pageKey];
+            const linesToPlay = pageData[lang];
+            
+            pagePlaybackQueue = [];
+            for (let i = 0; i < linesToPlay.length; i++) {
+                // If English pane, respect the audio toggle switch
+                let fetchLang = lang;
+                if (lang === 'en') {
+                    fetchLang = document.getElementById('audio-lang-toggle').checked ? 'en' : 'kn';
+                }
+                pagePlaybackQueue.push({ pageKey, lineIdx: i, fetchLang, highlightLang: lang });
+            }
+            
+            playNextInQueue();
+        }
+
+        function playNextInQueue() {
+            if (!isPagePlaying || pagePlaybackQueue.length === 0) {
+                stopAudio();
+                return;
+            }
+            
+            const next = pagePlaybackQueue.shift();
+            const filename = `./Workspace/audio_P${next.pageKey}_L${next.lineIdx}_${next.fetchLang}.mp3`;
+            
+            highlightPair(next.lineIdx, next.highlightLang);
+            
+            currentAudio = new Audio(filename);
+            currentAudio.onended = playNextInQueue;
+            currentAudio.onerror = () => {
+                console.warn("Skipping missing page audio: " + filename);
+                playNextInQueue();
             };
             currentAudio.play();
         }
@@ -352,9 +440,15 @@
             }
             if (currentPlayingBtn) {
                 currentPlayingBtn.classList.remove('playing');
-                currentPlayingBtn.innerHTML = `<i data-feather="play"></i> Play`;
-                feather.replace();
+                setBtnIcon(currentPlayingBtn, 'play', 'Play');
                 currentPlayingBtn = null;
+            }
+            // Reset Page Audio State
+            isPagePlaying = false;
+            activePageLang = '';
+            if (activePageBtn) {
+                setBtnIcon(activePageBtn, 'play', 'Play Page');
+                activePageBtn = null;
             }
         }
 
