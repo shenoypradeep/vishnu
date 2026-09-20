@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Koteshwara Sthala Purana - Mobile Translator</title>
+    <title>Koteshwara Sthala Purana - Firebase Mobile Editor</title>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.21/mammoth.browser.min.js"></script>
     <script src="https://unpkg.com/feather-icons" defer></script>
@@ -20,6 +20,7 @@
             --header-bg: #0f172a;
             --gold: #fbbf24;
             --success: #10b981;
+            --edited-color: #3b82f6;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -32,7 +33,8 @@
 
         button { background: #334155; color: white; border: 1px solid #475569; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: 500; transition: all 0.2s; display: flex; align-items: center; gap: 6px; }
         button:hover { background: var(--accent-color); border-color: var(--accent-color); }
-        .btn-rustpad { background: #10b981; border-color: #059669; }
+        .btn-firebase { background: #f59e0b; border-color: #d97706; color: white; }
+        .btn-firebase:hover { background: #d97706; }
 
         select { background: #334155; color: white; border: 1px solid #475569; padding: 6px; border-radius: 4px; font-size: 13px; outline: none; }
         
@@ -48,31 +50,33 @@
         .checkbox-wrapper { display: flex; align-items: center; gap: 6px; background: rgba(0,0,0,0.05); padding: 4px 8px; border-radius: 4px; cursor: pointer; border: 1px solid var(--border-color); font-weight: 600; font-size: 11px; }
         .checkbox-wrapper.complete { background: #d1fae5; border-color: var(--success); color: #065f46; }
 
-        /* Workspace Panels */
+        /* Workspace Panels (Mobile First) */
         .workspace { display: flex; flex-direction: column; flex: 1; overflow: hidden; position: relative; }
         @media (min-width: 768px) { .workspace { flex-direction: row; } }
         
         .panel-container { flex: 1; display: flex; flex-direction: column; border-bottom: 2px solid var(--border-color); background: var(--panel-bg); width: 100%; transition: all 0.3s ease; overflow: hidden; }
         @media (min-width: 768px) { .panel-container { border-bottom: none; border-right: 2px solid var(--border-color); width: 50%; } }
         
-        /* Fixed collapse logic for mobile */
         .panel-container.collapsed { display: none; }
         
         .panel-header { padding: 8px 12px; background: #f1f5f9; border-bottom: 1px solid var(--border-color); font-weight: 600; font-size: 13px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px; }
-        
-        /* Fixed mobile scrolling */
         .panel-content { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 15px; font-size: 15px; line-height: 1.6; outline: none; }
 
         .export-group { display: flex; gap: 4px; align-items: center; }
         .play-page-btn { background: var(--accent-color) !important; color: white !important; }
 
         /* Sync Lines & Audio Controls */
-        .sync-line-wrapper { display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px; padding: 8px; border-radius: 6px; border: 1px solid #e2e8f0; background: #f8fafc; }
+        .sync-line-wrapper { display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px; padding: 8px; border-radius: 6px; border: 1px solid #e2e8f0; background: #f8fafc; position: relative; }
         @media (min-width: 768px) { .sync-line-wrapper { flex-direction: row; justify-content: space-between; align-items: center; } }
         .sync-line-wrapper.active-highlight { background: var(--highlight-color); border-left: 4px solid var(--gold); }
         
+        /* Edit Flagging Styles */
+        .sync-line-wrapper.is-edited { border-left: 4px solid var(--edited-color); background: #eff6ff; }
+        .edit-badge { display: none; font-size: 10px; background: var(--edited-color); color: white; padding: 2px 6px; border-radius: 4px; font-weight: bold; margin-bottom: 4px; align-self: flex-start; }
+        .sync-line-wrapper.is-edited .edit-badge { display: inline-block; }
+        
         .sync-text { flex: 1; outline: none; text-align: left; }
-        .sync-text[contenteditable="true"]:focus { background: #fff; box-shadow: 0 0 0 2px var(--accent-color); border-radius: 4px; padding: 2px; }
+        .sync-text[contenteditable="true"]:focus { background: #fff; box-shadow: 0 0 0 2px var(--accent-color); border-radius: 4px; padding: 4px; }
 
         .inline-audio-controls { display: flex; gap: 6px; align-self: flex-end; }
         .inline-btn { background: #e2e8f0; border: 1px solid #cbd5e1; color: #475569; padding: 6px 12px; border-radius: 4px; display: flex; align-items: center; gap: 4px; font-size: 11px; font-weight: bold; }
@@ -83,11 +87,10 @@
 </head>
 <body id="app-body">
 
-    <!-- Mobile-Friendly Toolbar -->
     <div class="toolbar">
         <div class="toolbar-group">
-            <button class="btn-rustpad" onclick="syncToRustpad()" title="Force Sync to Rustpad">
-                <i data-feather="cloud" style="width: 14px;"></i> Sync Editor
+            <button class="btn-firebase" onclick="syncToFirebase()" title="Force Sync to Firebase">
+                <i data-feather="database" style="width: 14px;"></i> Sync to DB
             </button>
         </div>
         
@@ -110,7 +113,6 @@
         </div>
     </div>
 
-    <!-- Workspace -->
     <div class="workspace" id="workspace">
 
         <!-- Left Pane: Kannada -->
@@ -125,7 +127,7 @@
             <div class="panel-content" id="kannada-content"></div>
         </div>
 
-        <!-- Right Pane: English (With Audio Toggle) -->
+        <!-- Right Pane: English -->
         <div class="panel-container" id="pane-english">
             <div class="panel-header">
                 <span id="en-header-label">English</span>
@@ -155,7 +157,8 @@
     <div id="toast" class="toast"></div>
 
     <script>
-        const RUSTPAD_API_URL = "https://rustpad.io/api/document/UWqGsS";
+        // MUST REPLACE THIS WITH YOUR FIREBASE REALTIME DATABASE URL (Keep the .json at the end)
+        const FIREBASE_DB_URL = "https://your-firebase-project-id.firebaseio.com/workspace.json";
         
         let appState = { pages: {} };
         let orderedPageKeys = [];
@@ -165,7 +168,6 @@
         let currentAudio = null;
         let currentPlayingBtn = null;
         
-        // Page level playback state
         let pagePlaybackQueue = [];
         let isPagePlaying = false;
         let activePageLang = '';
@@ -177,13 +179,13 @@
         });
 
         // ==========================================
-        // 1. GITHUB LOCAL READ & RUSTPAD SYNC
+        // 1. FIREBASE LOAD & SYNC
         // ==========================================
         async function loadWorkspace() {
-            showToast("Loading from ./Workspace/workspace.json...");
+            showToast("Fetching from Firebase...");
             try {
-                const response = await fetch('./Workspace/workspace.json');
-                if (!response.ok) throw new Error("Local workspace.json not found");
+                const response = await fetch(FIREBASE_DB_URL);
+                if (!response.ok) throw new Error("Firebase DB not found or permission denied");
                 
                 const data = await response.json();
                 
@@ -192,28 +194,45 @@
                     orderedPageKeys = Object.keys(appState.pages);
                     updatePageSelectorUI();
                     loadPage(orderedPageKeys[0]);
-                    showToast("Workspace loaded successfully.");
+                    showToast("Workspace loaded from Firebase.");
                 } else {
-                    showToast("Workspace document is empty.");
+                    // Fallback to local file if Firebase is empty/uninitialized
+                    fallbackToLocalJSON();
                 }
             } catch (err) {
-                console.error("Failed to load local workspace.json", err);
-                showToast("Failed to load ./Workspace/workspace.json");
+                console.error("Firebase load failed, trying local fallback.", err);
+                fallbackToLocalJSON();
             }
         }
 
-        async function syncToRustpad() {
-            showToast("Syncing to Rustpad...");
+        async function fallbackToLocalJSON() {
+            try {
+                const response = await fetch('./Workspace/workspace.json');
+                const data = await response.json();
+                if (data && data.pages) {
+                    appState = data;
+                    orderedPageKeys = Object.keys(appState.pages);
+                    updatePageSelectorUI();
+                    loadPage(orderedPageKeys[0]);
+                    showToast("Loaded local workspace fallback.");
+                }
+            } catch (e) {
+                showToast("Failed to load workspace.");
+            }
+        }
+
+        async function syncToFirebase() {
+            showToast("Saving to Firebase...");
             try {
                 saveCurrentPageEdits();
-                await fetch(RUSTPAD_API_URL, {
-                    method: 'POST',
+                await fetch(FIREBASE_DB_URL, {
+                    method: 'PUT', // PUT overwrites the specific node in Firebase
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ text: JSON.stringify(appState, null, 2) })
+                    body: JSON.stringify(appState)
                 });
-                showToast("Edits synced securely to Rustpad!");
+                showToast("Saved to Firebase securely!");
             } catch (err) {
-                console.error("Failed to sync", err);
+                console.error("Failed to sync to Firebase", err);
                 showToast("Sync failed. Check network.");
             }
         }
@@ -221,15 +240,31 @@
         function saveCurrentPageEdits() {
             if (orderedPageKeys.length === 0) return;
             const pageKey = orderedPageKeys[currentPageIndex];
-            const currentEnLines = Array.from(document.getElementById('english-content').children).map(el => el.querySelector('.sync-text').innerText);
+            
+            // Using .innerHTML to ensure text isn't lost if the pane is collapsed/hidden
+            const currentEnLines = Array.from(document.getElementById('english-content').children).map(el => el.querySelector('.sync-text').innerHTML.trim());
+            const currentEditFlags = Array.from(document.getElementById('english-content').children).map(el => el.classList.contains('is-edited'));
+
             appState.pages[pageKey].en = currentEnLines;
+            appState.pages[pageKey].edited_en = currentEditFlags;
         }
 
         function bindEditSavers() {
             document.querySelectorAll('#english-content .sync-text').forEach((el) => {
+                // Capture original value on focus
+                el.onfocus = function() {
+                    this.dataset.initialValue = this.innerHTML.trim();
+                };
+                
+                // Check for edits on blur
                 el.onblur = function() {
                     if(!annotationsEnabled) return;
-                    syncToRustpad(); 
+                    const currentValue = this.innerHTML.trim();
+                    
+                    if (currentValue !== this.dataset.initialValue) {
+                        this.closest('.sync-line-wrapper').classList.add('is-edited');
+                    }
+                    syncToFirebase(); 
                 };
             });
         }
@@ -238,7 +273,17 @@
         // 2. UI NAVIGATION & TOGGLES
         // ==========================================
         function togglePane(paneId) {
-            document.getElementById(`pane-${paneId}`).classList.toggle('collapsed');
+            const pane = document.getElementById(`pane-${paneId}`);
+            const otherPaneId = paneId === 'kannada' ? 'english' : 'kannada';
+            const otherPane = document.getElementById(`pane-${otherPaneId}`);
+
+            // Safety check: Do not allow both panes to be collapsed
+            if (!pane.classList.contains('collapsed') && otherPane.classList.contains('collapsed')) {
+                showToast("Cannot minimize both panes.");
+                return;
+            }
+            
+            pane.classList.toggle('collapsed');
         }
 
         function updatePageSelectorUI() {
@@ -274,12 +319,12 @@
             
             updatePageSelectorUI();
             document.getElementById('page-selector').value = pageKey;
-            syncToRustpad();
+            syncToFirebase();
         }
 
         function loadPage(pageKey) {
             saveCurrentPageEdits();
-            stopAudio(); // Stop any active playback on page flip
+            stopAudio(); 
             
             currentPageIndex = orderedPageKeys.indexOf(pageKey);
             const pageData = appState.pages[pageKey];
@@ -300,9 +345,12 @@
             let knHtml = "";
             let enHtml = "";
 
+            const editedFlags = pageData.edited_en || [];
+
             for(let idx = 0; idx < maxLen; idx++) {
                 let kStr = pageData.kn[idx] || "";
                 let eStr = pageData.en[idx] || "";
+                let isEdited = editedFlags[idx] ? "is-edited" : "";
 
                 knHtml += `
                     <div class="sync-line-wrapper" data-idx="${idx}" data-lang="kn">
@@ -313,7 +361,8 @@
                     </div>`;
 
                 enHtml += `
-                    <div class="sync-line-wrapper" data-idx="${idx}" data-lang="en">
+                    <div class="sync-line-wrapper ${isEdited}" data-idx="${idx}" data-lang="en">
+                        <span class="edit-badge">EDITED</span>
                         <div class="sync-text" ${annotationsEnabled ? 'contenteditable="true"' : 'contenteditable="false"'}>${eStr}</div>
                         <div class="inline-audio-controls" contenteditable="false">
                             <button class="inline-btn" onclick="playDynamicAudio('${pageKey}', ${idx}, this)"><i data-feather="play" style="width:14px;"></i> Play</button>
@@ -343,7 +392,6 @@
         }
 
         function playStaticAudio(targetLang, pageKey, lineIdx, btnElement, sourcePaneLang = 'kn') {
-            // Unify Play/Pause Toggle behavior for Lines
             if (currentPlayingBtn === btnElement && currentAudio) {
                 if (!currentAudio.paused) {
                     currentAudio.pause();
@@ -375,7 +423,6 @@
             currentAudio.play();
         }
 
-        // Unified Page Play/Pause Sequencer using Local Files
         function togglePageAudio(lang, btnElement) {
             if (isPagePlaying && activePageLang === lang) {
                 if (currentAudio && !currentAudio.paused) {
@@ -388,7 +435,6 @@
                 return;
             }
 
-            // Start Fresh
             stopAudio();
             activePageLang = lang;
             isPagePlaying = true;
@@ -401,7 +447,6 @@
             
             pagePlaybackQueue = [];
             for (let i = 0; i < linesToPlay.length; i++) {
-                // If English pane, respect the audio toggle switch
                 let fetchLang = lang;
                 if (lang === 'en') {
                     fetchLang = document.getElementById('audio-lang-toggle').checked ? 'en' : 'kn';
@@ -443,7 +488,6 @@
                 setBtnIcon(currentPlayingBtn, 'play', 'Play');
                 currentPlayingBtn = null;
             }
-            // Reset Page Audio State
             isPagePlaying = false;
             activePageLang = '';
             if (activePageBtn) {
