@@ -207,7 +207,6 @@
                 showToast("Database empty. Seeding from local JSON...", false, 4000);
                 
                 const localResp = await fetch('/Workspace/workspace.json?nocache=' + new Date().getTime());
-                
                 if (!localResp.ok) throw new Error(`HTTP ${localResp.status} - Could not reach /Workspace/workspace.json`);
                 
                 const textData = await localResp.text();
@@ -219,7 +218,20 @@
                 }
                 
                 if (localData && localData.pages) {
-                    appState = localData;
+                    
+                    // FIREBASE FIX: Sanitize all keys to remove '.', '#', '$', '[', ']'
+                    function sanitizeForFirebase(obj) {
+                        if (typeof obj !== 'object' || obj === null) return obj;
+                        if (Array.isArray(obj)) return obj.map(sanitizeForFirebase);
+                        const newObj = {};
+                        for (const key in obj) {
+                            const safeKey = key.replace(/[.$#\[\]\/]/g, '_');
+                            newObj[safeKey] = sanitizeForFirebase(obj[key]);
+                        }
+                        return newObj;
+                    }
+
+                    appState = sanitizeForFirebase(localData);
                     orderedPageKeys = Object.keys(appState.pages);
                     
                     showToast("Uploading book to Firebase...", false, 3000);
@@ -230,7 +242,6 @@
                         body: JSON.stringify(appState)
                     });
                     
-                    // FIX: Catch the exact Firebase rejection reason
                     if (!seedResp.ok) {
                         const fbError = await seedResp.text();
                         throw new Error(`Firebase Status ${seedResp.status}: ${fbError}`);
@@ -244,12 +255,12 @@
                 }
             } catch (e) {
                 console.error("Seeding failed:", e);
-                // This will now print the exact Firebase rejection message
                 alert("SEED ERROR:\n" + e.message);
                 showToast("Seed failed. See alert for details.", true, 8000); 
             }
         }
-        async function fallbackToOfflineMode() {
+		
+		async function fallbackToOfflineMode() {
             try {
                 const localResp = await fetch('/Workspace/workspace.json?nocache=' + new Date().getTime());
                 if (!localResp.ok) throw new Error(`HTTP ${localResp.status} - Local file not found.`);
