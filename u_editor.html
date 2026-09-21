@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Koteshwara Sthala Purana - Diagnostic Editor</title>
+    <title>Koteshwara Sthala Purana - Firebase Mobile Editor</title>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.21/mammoth.browser.min.js"></script>
     <script src="https://unpkg.com/feather-icons" defer></script>
@@ -27,7 +27,6 @@
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Segoe UI', system-ui, sans-serif; background-color: var(--bg-color); color: var(--text-color); display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
 
-        /* Toolbar */
         .toolbar { background-color: var(--header-bg); color: white; padding: 10px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; z-index: 10; font-size: 13px; overflow-x: auto; white-space: nowrap; }
         .toolbar-group { display: flex; align-items: center; gap: 8px; border-right: 1px solid #334155; padding-right: 8px; }
         .toolbar-group:last-child { border-right: none; }
@@ -39,7 +38,6 @@
 
         select { background: #334155; color: white; border: 1px solid #475569; padding: 6px; border-radius: 4px; font-size: 13px; outline: none; }
         
-        /* Toggles */
         .toggle-wrapper { display: flex; align-items: center; gap: 6px; font-size: 12px; }
         .switch { position: relative; display: inline-block; width: 34px; height: 18px; }
         .switch input { opacity: 0; width: 0; height: 0; }
@@ -51,7 +49,6 @@
         .checkbox-wrapper { display: flex; align-items: center; gap: 6px; background: rgba(0,0,0,0.05); padding: 4px 8px; border-radius: 4px; cursor: pointer; border: 1px solid var(--border-color); font-weight: 600; font-size: 11px; transition: all 0.2s; }
         .checkbox-wrapper.complete { background: var(--success); border-color: #059669; color: white; }
 
-        /* Workspace Panels */
         .workspace { display: flex; flex-direction: column; flex: 1; overflow: hidden; position: relative; }
         @media (min-width: 768px) { .workspace { flex-direction: row; } }
         
@@ -66,12 +63,10 @@
         .export-group { display: flex; gap: 4px; align-items: center; }
         .play-page-btn { background: var(--accent-color) !important; color: white !important; }
 
-        /* Sync Lines & Edit Flags */
         .sync-line-wrapper { display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px; padding: 10px; border-radius: 6px; border: 1px solid #e2e8f0; background: #f8fafc; position: relative; transition: all 0.2s; }
         @media (min-width: 768px) { .sync-line-wrapper { flex-direction: row; justify-content: space-between; align-items: center; } }
         .sync-line-wrapper.active-highlight { background: var(--highlight-color); border-left: 4px solid var(--gold); }
         
-        /* Edited Text Flag Styles */
         .sync-line-wrapper.is-edited { border-left: 4px solid var(--edited-color); background: #eff6ff; }
         .edit-badge { display: none; font-size: 10px; background: var(--edited-color); color: white; padding: 2px 6px; border-radius: 4px; font-weight: bold; margin-bottom: 4px; align-self: flex-start; letter-spacing: 0.5px; }
         .sync-line-wrapper.is-edited .edit-badge { display: inline-block; }
@@ -91,7 +86,7 @@
 
     <div class="toolbar">
         <div class="toolbar-group">
-            <button class="btn-firebase" onclick="syncToFirebase()" title="Force Sync to Firebase">
+            <button class="btn-firebase" onclick="syncCurrentPageToFirebase()" title="Force Sync to Firebase">
                 <i data-feather="database" style="width: 14px;"></i> Sync to DB
             </button>
         </div>
@@ -116,7 +111,6 @@
     </div>
 
     <div class="workspace" id="workspace">
-        <!-- Left Pane: Kannada -->
         <div class="panel-container" id="pane-kannada">
             <div class="panel-header">
                 <span id="kn-header-label">Kannada</span>
@@ -128,7 +122,6 @@
             <div class="panel-content" id="kannada-content"></div>
         </div>
 
-        <!-- Right Pane: English -->
         <div class="panel-container" id="pane-english">
             <div class="panel-header">
                 <span id="en-header-label">English</span>
@@ -158,7 +151,7 @@
     <div id="toast" class="toast"></div>
 
     <script>
-        // MUST END WITH .json! Example: "https://my-project-123.firebaseio.com/workspace.json"
+        // Confirmed DB String from User
         const FIREBASE_DB_URL = "https://vedic-space-default-rtdb.asia-southeast1.firebasedatabase.app/workspace.json";
         
         let appState = { pages: {} };
@@ -175,87 +168,99 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             feather.replace();
-            loadWorkspace();
+            initializeApplication();
         });
 
         // ==========================================
-        // 1. STRICT DIAGNOSTIC FIREBASE SYNC
+        // 1. SMART DB SEEDING & SYNC ENGINE
         // ==========================================
-        async function loadWorkspace() {
-            showToast("Fetching from Firebase...");
+        async function initializeApplication() {
+            showToast("Connecting to Database...");
             try {
-                // Strong Cache Buster
-                const separator = FIREBASE_DB_URL.includes('?') ? '&' : '?';
-                const cacheBusterUrl = FIREBASE_DB_URL + separator + "t=" + new Date().getTime();
-                
+                const cacheBusterUrl = FIREBASE_DB_URL + "?nocache=" + new Date().getTime();
                 const response = await fetch(cacheBusterUrl);
                 
-                if (!response.ok) {
-                    const errText = await response.text();
-                    throw new Error(`HTTP ${response.status}: ${errText || response.statusText}`);
-                }
+                if (!response.ok) throw new Error("Firebase HTTP Error: " + response.status);
                 
                 const data = await response.json();
                 
-                // If DB is completely empty, it returns null
+                // If DB has data, load it immediately
                 if (data && data.pages && Object.keys(data.pages).length > 0) {
                     appState = data;
                     orderedPageKeys = Object.keys(appState.pages);
                     updatePageSelectorUI();
                     loadPage(orderedPageKeys[0]);
-                    showToast("Workspace loaded from Firebase.");
+                    showToast("Workspace loaded from Cloud.");
                 } else {
-                    console.warn("Firebase returned empty or null data. Initializing from local repository.");
-                    await initializeFirebaseFromLocal();
+                    // Database is empty (null). We must permanently seed it from the local workspace.json
+                    console.log("Database is empty. Initiating permanent cloud seed...");
+                    await seedEmptyDatabase();
                 }
             } catch (err) {
-                console.error(err);
-                alert("FIREBASE READ ERROR:\n" + err.message + "\n\nPlease verify your Firebase Rules are set to public read/write.");
-                showToast("Firebase Read Failed.", true);
+                console.error("Initialization error:", err);
+                showToast("Connection failed. Attempting local offline mode...", true);
+                fallbackToOfflineMode();
             }
         }
 
-        async function initializeFirebaseFromLocal() {
+        async function seedEmptyDatabase() {
             try {
-                const response = await fetch('./Workspace/workspace.json?t=' + new Date().getTime());
-                const data = await response.json();
+                showToast("Seeding database for the first time...");
+                const localResp = await fetch('./Workspace/workspace.json?nocache=' + new Date().getTime());
+                const localData = await localResp.json();
                 
-                if (data && data.pages) {
-                    appState = data;
+                if (localData && localData.pages) {
+                    appState = localData;
                     orderedPageKeys = Object.keys(appState.pages);
-                    updatePageSelectorUI();
-                    loadPage(orderedPageKeys[0]);
-                    showToast("Loaded local workspace. Uploading to Firebase...");
                     
-                    // Upload the ENTIRE book to Firebase so it is permanently seeded
-                    const putResponse = await fetch(FIREBASE_DB_URL, {
+                    // Push the ENTIRE book to Firebase via PUT so it is never null again
+                    const seedResp = await fetch(FIREBASE_DB_URL, {
                         method: 'PUT',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(appState)
                     });
                     
-                    if(!putResponse.ok) throw new Error("Failed to seed Firebase via PUT");
-                    showToast("Firebase successfully initialized with full book.");
+                    if (!seedResp.ok) throw new Error("Seed upload rejected by Firebase.");
+                    
+                    updatePageSelectorUI();
+                    loadPage(orderedPageKeys[0]);
+                    showToast("Cloud Database successfully seeded!");
                 }
             } catch (e) {
-                alert("LOCAL FALLBACK ERROR:\nCould not read ./Workspace/workspace.json.\n" + e.message);
+                console.error("Seeding failed:", e);
+                showToast("Failed to locate local workspace.json for seeding.", true);
             }
         }
 
-        async function syncToFirebase() {
+        async function fallbackToOfflineMode() {
+            try {
+                const localResp = await fetch('./Workspace/workspace.json?nocache=' + new Date().getTime());
+                const localData = await localResp.json();
+                if (localData && localData.pages) {
+                    appState = localData;
+                    orderedPageKeys = Object.keys(appState.pages);
+                    updatePageSelectorUI();
+                    loadPage(orderedPageKeys[0]);
+                    showToast("Running in offline local mode.");
+                }
+            } catch (e) {
+                showToast("Fatal Error: Could not load any data.", true);
+            }
+        }
+
+        async function syncCurrentPageToFirebase() {
+            if (orderedPageKeys.length === 0) return;
             const toast = document.getElementById('toast');
-            toast.className = 'toast'; // Reset error styling
+            toast.className = 'toast'; 
             toast.style.display = 'block';
-            toast.innerText = "Syncing to DB...";
+            toast.innerText = "Syncing page to DB...";
             
             try {
-                saveCurrentPageEdits();
-                if (orderedPageKeys.length === 0) return;
-                
+                captureEditState();
                 const pageKey = orderedPageKeys[currentPageIndex];
                 const pageData = appState.pages[pageKey];
                 
-                // Targeted PATCH request
+                // Targeted PATCH request: Updates ONLY this specific page
                 const patchPayload = {};
                 patchPayload[`pages/${pageKey}`] = pageData;
 
@@ -265,24 +270,18 @@
                     body: JSON.stringify(patchPayload)
                 });
                 
-                if (!response.ok) {
-                    const errText = await response.text();
-                    throw new Error(`HTTP ${response.status}: ${errText}`);
-                }
+                if (!response.ok) throw new Error("Firebase write rejected.");
                 
-                toast.innerText = "Saved to DB securely!";
+                toast.innerText = "Synced successfully!";
                 setTimeout(() => toast.style.display = 'none', 2000);
             } catch (err) {
                 console.error(err);
-                alert("FIREBASE WRITE ERROR:\n" + err.message);
                 showToast("Sync failed. Check connection.", true);
             }
         }
 
-        function saveCurrentPageEdits() {
-            if (orderedPageKeys.length === 0) return;
+        function captureEditState() {
             const englishContent = document.getElementById('english-content');
-            
             if (!englishContent || englishContent.children.length === 0) return; 
 
             const pageKey = orderedPageKeys[currentPageIndex];
@@ -309,8 +308,9 @@
                     
                     if (currentValue !== initialValue) {
                         this.closest('.sync-line-wrapper').classList.add('is-edited');
+                        // Auto-sync targeted page on blur
+                        syncCurrentPageToFirebase(); 
                     }
-                    syncToFirebase(); 
                 };
             });
         }
@@ -367,11 +367,11 @@
             
             updatePageSelectorUI();
             document.getElementById('page-selector').value = pageKey;
-            syncToFirebase();
+            syncCurrentPageToFirebase();
         }
 
         function loadPage(pageKey) {
-            saveCurrentPageEdits();
+            captureEditState();
             stopAudio(); 
             
             currentPageIndex = orderedPageKeys.indexOf(pageKey);
