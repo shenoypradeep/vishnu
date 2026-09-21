@@ -203,10 +203,18 @@
             }
         }
 
-        async function seedEmptyDatabase() {
+async function seedEmptyDatabase() {
             try {
                 showToast("Seeding database for the first time...");
-                const localResp = await fetch('./Workspace/workspace.json?nocache=' + new Date().getTime());
+                
+                // Trying a strict relative path without the dot
+                const localResp = await fetch('Workspace/workspace.json?nocache=' + new Date().getTime());
+                
+                // FIX: Check if GitHub actually found the file before parsing
+                if (!localResp.ok) {
+                    throw new Error(`GitHub returned HTTP ${localResp.status} (${localResp.statusText}). The file path is incorrect or missing.`);
+                }
+
                 const localData = await localResp.json();
                 
                 if (localData && localData.pages) {
@@ -228,13 +236,20 @@
                 }
             } catch (e) {
                 console.error("Seeding failed:", e);
+                // This will now pop up an alert telling you EXACTLY what failed (e.g. 404)
+                alert("SEEDING ERROR:\n" + e.message);
                 showToast("Failed to locate local workspace.json for seeding.", true);
             }
         }
 
         async function fallbackToOfflineMode() {
             try {
-                const localResp = await fetch('./Workspace/workspace.json?nocache=' + new Date().getTime());
+                const localResp = await fetch('Workspace/workspace.json?nocache=' + new Date().getTime());
+                
+                if (!localResp.ok) {
+                    throw new Error(`HTTP ${localResp.status}: File not found at this path.`);
+                }
+
                 const localData = await localResp.json();
                 if (localData && localData.pages) {
                     appState = localData;
@@ -244,6 +259,7 @@
                     showToast("Running in offline local mode.");
                 }
             } catch (e) {
+                alert("OFFLINE FALLBACK ERROR:\n" + e.message);
                 showToast("Fatal Error: Could not load any data.", true);
             }
         }
