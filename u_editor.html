@@ -47,8 +47,8 @@
         input:checked + .slider { background-color: var(--gold); }
         input:checked + .slider:before { transform: translateX(16px); }
 
-        .checkbox-wrapper { display: flex; align-items: center; gap: 6px; background: rgba(0,0,0,0.05); padding: 4px 8px; border-radius: 4px; cursor: pointer; border: 1px solid var(--border-color); font-weight: 600; font-size: 11px; }
-        .checkbox-wrapper.complete { background: #d1fae5; border-color: var(--success); color: #065f46; }
+        .checkbox-wrapper { display: flex; align-items: center; gap: 6px; background: rgba(0,0,0,0.05); padding: 4px 8px; border-radius: 4px; cursor: pointer; border: 1px solid var(--border-color); font-weight: 600; font-size: 11px; transition: all 0.2s; }
+        .checkbox-wrapper.complete { background: var(--success); border-color: #059669; color: white; }
 
         /* Workspace Panels (Mobile First) */
         .workspace { display: flex; flex-direction: column; flex: 1; overflow: hidden; position: relative; }
@@ -66,15 +66,16 @@
         .play-page-btn { background: var(--accent-color) !important; color: white !important; }
 
         /* Sync Lines & Edit Flags */
-        .sync-line-wrapper { display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px; padding: 8px; border-radius: 6px; border: 1px solid #e2e8f0; background: #f8fafc; position: relative; }
+        .sync-line-wrapper { display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px; padding: 10px; border-radius: 6px; border: 1px solid #e2e8f0; background: #f8fafc; position: relative; transition: all 0.2s; }
         @media (min-width: 768px) { .sync-line-wrapper { flex-direction: row; justify-content: space-between; align-items: center; } }
         .sync-line-wrapper.active-highlight { background: var(--highlight-color); border-left: 4px solid var(--gold); }
         
+        /* Edited Text Flag Styles */
         .sync-line-wrapper.is-edited { border-left: 4px solid var(--edited-color); background: #eff6ff; }
-        .edit-badge { display: none; font-size: 10px; background: var(--edited-color); color: white; padding: 2px 6px; border-radius: 4px; font-weight: bold; margin-bottom: 4px; align-self: flex-start; }
+        .edit-badge { display: none; font-size: 10px; background: var(--edited-color); color: white; padding: 2px 6px; border-radius: 4px; font-weight: bold; margin-bottom: 4px; align-self: flex-start; letter-spacing: 0.5px; }
         .sync-line-wrapper.is-edited .edit-badge { display: inline-block; }
         
-        .sync-text { flex: 1; outline: none; text-align: left; }
+        .sync-text { flex: 1; outline: none; text-align: left; transition: background 0.2s; }
         .sync-text[contenteditable="true"]:focus { background: #fff; box-shadow: 0 0 0 2px var(--accent-color); border-radius: 4px; padding: 4px; }
 
         .inline-audio-controls { display: flex; gap: 6px; align-self: flex-end; }
@@ -155,9 +156,9 @@
 
     <div id="toast" class="toast"></div>
 
-<script>
+    <script>
         // REPLACE WITH YOUR FIREBASE DB URL. Must end with .json
-        const FIREBASE_DB_URL = "https://vedic-space-default-rtdb.asia-southeast1.firebasedatabase.app/worker.json";
+        const FIREBASE_DB_URL = "https://vedic-space-default-rtdb.asia-southeast1.firebasedatabase.app/work1.json";
         
         let appState = { pages: {} };
         let orderedPageKeys = [];
@@ -177,13 +178,16 @@
         });
 
         // ==========================================
-        // 1. FIREBASE LOAD & SYNC
+        // 1. FIREBASE LOAD & TARGETED PATCH SYNC
         // ==========================================
         async function loadWorkspace() {
             showToast("Fetching from Firebase...");
             try {
-                // Cache-busting added to ensure fresh Firebase fetch
-                const response = await fetch(FIREBASE_DB_URL + "?nocache=" + new Date().getTime());
+                // Safe Cache-Busting ensuring URL integrity
+                const separator = FIREBASE_DB_URL.includes('?') ? '&' : '?';
+                const cacheBusterUrl = FIREBASE_DB_URL + separator + "nocache=" + new Date().getTime();
+                
+                const response = await fetch(cacheBusterUrl);
                 if (!response.ok) throw new Error("Firebase DB not found or permission denied");
                 
                 const data = await response.json();
@@ -195,18 +199,18 @@
                     loadPage(orderedPageKeys[0]);
                     showToast("Workspace loaded from Firebase.");
                 } else {
-                    console.log("Firebase is empty, triggering fallback.");
+                    console.log("Firebase is empty. Falling back to local repo file.");
                     fallbackToLocalJSON();
                 }
             } catch (err) {
-                console.warn("Firebase load failed, trying local fallback.", err);
+                console.warn("Firebase load failed. Falling back to local.", err);
                 fallbackToLocalJSON();
             }
         }
 
         async function fallbackToLocalJSON() {
             try {
-                // CACHE-BUSTER FIX: Forces browser to ignore cached blank file and fetch the real one
+                // Local cache-buster prevents reading old blank file
                 const response = await fetch('./Workspace/workspace.json?t=' + new Date().getTime());
                 const data = await response.json();
                 if (data && data.pages) {
@@ -220,25 +224,39 @@
                     syncToFirebase();
                 }
             } catch (e) {
-                showToast("Failed to load workspace.");
-                console.error(e);
+                showToast("Failed to load local workspace fallback.");
             }
         }
 
         async function syncToFirebase() {
-            document.getElementById('toast').style.display = 'block';
-            document.getElementById('toast').innerText = "Saving to Firebase...";
+            const toast = document.getElementById('toast');
+            toast.style.display = 'block';
+            toast.innerText = "Syncing to DB...";
+            
             try {
                 saveCurrentPageEdits();
+                
+                if (orderedPageKeys.length === 0) return;
+                const pageKey = orderedPageKeys[currentPageIndex];
+                const pageData = appState.pages[pageKey];
+                
+                // CRITICAL FIX: Send a PATCH payload of ONLY the current page. 
+                // This prevents 180 pages from timing out on mobile networks.
+                const patchPayload = {};
+                patchPayload[`pages/${pageKey}`] = pageData;
+
                 await fetch(FIREBASE_DB_URL, {
-                    method: 'PUT',
+                    method: 'PATCH',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(appState)
+                    body: JSON.stringify(patchPayload)
                 });
-                showToast("Saved to Firebase securely!");
+                
+                toast.innerText = "Saved to DB securely!";
+                setTimeout(() => toast.style.display = 'none', 2000);
             } catch (err) {
                 console.error("Failed to sync to Firebase", err);
-                showToast("Sync failed. Check network.");
+                toast.innerText = "Sync failed. Check network.";
+                setTimeout(() => toast.style.display = 'none', 3000);
             }
         }
 
@@ -246,9 +264,12 @@
             if (orderedPageKeys.length === 0) return;
             const englishContent = document.getElementById('english-content');
             
+            // Safety check: Prevent overwriting appState if pane isn't rendered
             if (!englishContent || englishContent.children.length === 0) return; 
 
             const pageKey = orderedPageKeys[currentPageIndex];
+            
+            // Extract the precise HTML structure to preserve formatting
             const currentEnLines = Array.from(englishContent.children).map(el => el.querySelector('.sync-text').innerHTML.trim());
             const currentEditFlags = Array.from(englishContent.children).map(el => el.classList.contains('is-edited'));
 
@@ -258,19 +279,24 @@
 
         function bindEditSavers() {
             document.querySelectorAll('#english-content .sync-text').forEach((el) => {
+                // Capture original value on focus
                 el.onfocus = function() {
-                    if (!this.dataset.initialValue) {
-                        this.dataset.initialValue = this.innerHTML.trim();
+                    if (!this.hasAttribute('data-initial-value')) {
+                        this.setAttribute('data-initial-value', this.innerHTML.trim());
                     }
                 };
                 
+                // Compare values on blur to flag edits
                 el.onblur = function() {
                     if(!annotationsEnabled) return;
-                    const currentValue = this.innerHTML.trim();
                     
-                    if (currentValue !== this.dataset.initialValue) {
+                    const currentValue = this.innerHTML.trim();
+                    const initialValue = this.getAttribute('data-initial-value');
+                    
+                    if (currentValue !== initialValue) {
                         this.closest('.sync-line-wrapper').classList.add('is-edited');
                     }
+                    // Trigger the targeted PATCH sync
                     syncToFirebase(); 
                 };
             });
@@ -284,6 +310,7 @@
             const otherPaneId = paneId === 'kannada' ? 'english' : 'kannada';
             const otherPane = document.getElementById(`pane-${otherPaneId}`);
 
+            // Safety check: Automatically expand the other pane if the user tries to hide both
             if (!pane.classList.contains('collapsed') && otherPane.classList.contains('collapsed')) {
                 otherPane.classList.remove('collapsed');
             }
@@ -316,18 +343,25 @@
             appState.pages[pageKey].completed = isComplete;
             
             const label = document.getElementById('page-complete-label');
+            const textElement = document.getElementById('page-complete-text');
+            
             if(isComplete) {
                 label.classList.add('complete');
+                textElement.innerText = "Done";
             } else {
                 label.classList.remove('complete');
+                textElement.innerText = "Mark Complete";
             }
             
             updatePageSelectorUI();
             document.getElementById('page-selector').value = pageKey;
+            
+            // Trigger Targeted Sync
             syncToFirebase();
         }
 
         function loadPage(pageKey) {
+            // Save any active edits before flipping the page
             saveCurrentPageEdits();
             stopAudio(); 
             
@@ -337,19 +371,25 @@
             document.getElementById('kn-header-label').innerText = `Kannada (Pg ${pageKey})`;
             document.getElementById('en-header-label').innerText = `English (Pg ${pageKey})`;
             
+            // Restore Done State
             const statusLabel = document.getElementById('page-complete-label');
             const statusCheckbox = document.getElementById('page-complete-toggle');
+            const textElement = document.getElementById('page-complete-text');
+            
             statusCheckbox.checked = pageData.completed || false;
             if (pageData.completed) {
                 statusLabel.classList.add('complete');
+                textElement.innerText = "Done";
             } else {
                 statusLabel.classList.remove('complete');
+                textElement.innerText = "Mark Complete";
             }
 
             const maxLen = Math.max(pageData.kn.length, pageData.en.length);
             let knHtml = "";
             let enHtml = "";
 
+            // Restore Edited Flags
             const editedFlags = pageData.edited_en || [];
 
             for(let idx = 0; idx < maxLen; idx++) {
@@ -378,6 +418,8 @@
             document.getElementById('kannada-content').innerHTML = knHtml;
             document.getElementById('english-content').innerHTML = enHtml;
             feather.replace();
+            
+            // Re-bind the blur savers to the newly generated HTML
             bindEditSavers();
         }
 
