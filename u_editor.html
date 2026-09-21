@@ -111,6 +111,7 @@
     </div>
 
     <div class="workspace" id="workspace">
+        <!-- Left Pane: Kannada -->
         <div class="panel-container" id="pane-kannada">
             <div class="panel-header">
                 <span id="kn-header-label">Kannada</span>
@@ -122,6 +123,7 @@
             <div class="panel-content" id="kannada-content"></div>
         </div>
 
+        <!-- Right Pane: English -->
         <div class="panel-container" id="pane-english">
             <div class="panel-header">
                 <span id="en-header-label">English</span>
@@ -151,7 +153,6 @@
     <div id="toast" class="toast"></div>
 
     <script>
-        // Confirmed DB String from User
         const FIREBASE_DB_URL = "https://vedic-space-default-rtdb.asia-southeast1.firebasedatabase.app/workspace.json";
         
         let appState = { pages: {} };
@@ -175,7 +176,7 @@
         // 1. SMART DB SEEDING & SYNC ENGINE
         // ==========================================
         async function initializeApplication() {
-            showToast("Connecting to Database...");
+            showToast("Connecting to Database...", false, 3000);
             try {
                 const cacheBusterUrl = FIREBASE_DB_URL + "?nocache=" + new Date().getTime();
                 const response = await fetch(cacheBusterUrl);
@@ -184,44 +185,48 @@
                 
                 const data = await response.json();
                 
-                // If DB has data, load it immediately
                 if (data && data.pages && Object.keys(data.pages).length > 0) {
                     appState = data;
                     orderedPageKeys = Object.keys(appState.pages);
                     updatePageSelectorUI();
                     loadPage(orderedPageKeys[0]);
-                    showToast("Workspace loaded from Cloud.");
+                    showToast("Workspace loaded from Cloud.", false, 3000);
                 } else {
-                    // Database is empty (null). We must permanently seed it from the local workspace.json
                     console.log("Database is empty. Initiating permanent cloud seed...");
                     await seedEmptyDatabase();
                 }
             } catch (err) {
                 console.error("Initialization error:", err);
-                showToast("Connection failed. Attempting local offline mode...", true);
-                fallbackToOfflineMode();
+                showToast("Cloud fetch failed. Attempting local mode...", true, 3000);
+                await fallbackToOfflineMode();
             }
         }
 
-async function seedEmptyDatabase() {
+        async function seedEmptyDatabase() {
             try {
-                showToast("Seeding database for the first time...");
+                showToast("Database empty. Seeding from local JSON...", false, 4000);
                 
-                // Trying a strict relative path without the dot
-                const localResp = await fetch('Workspace/workspace.json?nocache=' + new Date().getTime());
+                // CRITICAL FIX: Absolute path ensuring it checks the root directory, ignoring subfolder masks
+                const localResp = await fetch('/Workspace/workspace.json?nocache=' + new Date().getTime());
                 
-                // FIX: Check if GitHub actually found the file before parsing
-                if (!localResp.ok) {
-                    throw new Error(`GitHub returned HTTP ${localResp.status} (${localResp.statusText}). The file path is incorrect or missing.`);
+                if (!localResp.ok) throw new Error(`HTTP ${localResp.status} - Could not reach /Workspace/workspace.json`);
+                
+                // Parse text first to prevent silent JSON crashes
+                const textData = await localResp.text();
+                let localData;
+                try {
+                    localData = JSON.parse(textData);
+                } catch (parseErr) {
+                    throw new Error("Syntax Error in workspace.json file format.");
                 }
-
-                const localData = await localResp.json();
                 
                 if (localData && localData.pages) {
                     appState = localData;
                     orderedPageKeys = Object.keys(appState.pages);
                     
-                    // Push the ENTIRE book to Firebase via PUT so it is never null again
+                    showToast("Uploading book to Firebase...", false, 3000);
+                    
+                    // Push the ENTIRE book to Firebase via PUT
                     const seedResp = await fetch(FIREBASE_DB_URL, {
                         method: 'PUT',
                         headers: { 'Content-Type': 'application/json' },
@@ -232,44 +237,39 @@ async function seedEmptyDatabase() {
                     
                     updatePageSelectorUI();
                     loadPage(orderedPageKeys[0]);
-                    showToast("Cloud Database successfully seeded!");
+                    showToast("Cloud Database successfully seeded!", false, 3000);
+                } else {
+                    throw new Error("Local JSON is missing the 'pages' object.");
                 }
             } catch (e) {
                 console.error("Seeding failed:", e);
-                // This will now pop up an alert telling you EXACTLY what failed (e.g. 404)
-                alert("SEEDING ERROR:\n" + e.message);
-                showToast("Failed to locate local workspace.json for seeding.", true);
+                showToast("SEED ERROR: " + e.message, true, 8000); // Shows exact error on screen for 8s
             }
         }
 
         async function fallbackToOfflineMode() {
             try {
-                const localResp = await fetch('Workspace/workspace.json?nocache=' + new Date().getTime());
+                const localResp = await fetch('/Workspace/workspace.json?nocache=' + new Date().getTime());
+                if (!localResp.ok) throw new Error(`HTTP ${localResp.status} - Local file not found.`);
                 
-                if (!localResp.ok) {
-                    throw new Error(`HTTP ${localResp.status}: File not found at this path.`);
-                }
-
-                const localData = await localResp.json();
+                const textData = await localResp.text();
+                const localData = JSON.parse(textData);
+                
                 if (localData && localData.pages) {
                     appState = localData;
                     orderedPageKeys = Object.keys(appState.pages);
                     updatePageSelectorUI();
                     loadPage(orderedPageKeys[0]);
-                    showToast("Running in offline local mode.");
+                    showToast("Running in offline local mode.", false, 4000);
                 }
             } catch (e) {
-                alert("OFFLINE FALLBACK ERROR:\n" + e.message);
-                showToast("Fatal Error: Could not load any data.", true);
+                showToast("OFFLINE ERROR: " + e.message, true, 8000);
             }
         }
 
         async function syncCurrentPageToFirebase() {
             if (orderedPageKeys.length === 0) return;
-            const toast = document.getElementById('toast');
-            toast.className = 'toast'; 
-            toast.style.display = 'block';
-            toast.innerText = "Syncing page to DB...";
+            showToast("Syncing page to DB...", false, 2000);
             
             try {
                 captureEditState();
@@ -288,11 +288,10 @@ async function seedEmptyDatabase() {
                 
                 if (!response.ok) throw new Error("Firebase write rejected.");
                 
-                toast.innerText = "Synced successfully!";
-                setTimeout(() => toast.style.display = 'none', 2000);
+                showToast("Synced successfully!", false, 2000);
             } catch (err) {
                 console.error(err);
-                showToast("Sync failed. Check connection.", true);
+                showToast("Sync failed. Check connection.", true, 4000);
             }
         }
 
@@ -324,7 +323,6 @@ async function seedEmptyDatabase() {
                     
                     if (currentValue !== initialValue) {
                         this.closest('.sync-line-wrapper').classList.add('is-edited');
-                        // Auto-sync targeted page on blur
                         syncCurrentPageToFirebase(); 
                     }
                 };
@@ -475,7 +473,8 @@ async function seedEmptyDatabase() {
             stopAudio();
             highlightPair(lineIdx, sourcePaneLang);
 
-            const filename = `./Workspace/audio_P${pageKey}_L${lineIdx}_${targetLang}.mp3`;
+            // Absolute pathing for the audio files to prevent routing failures
+            const filename = `/Workspace/audio_P${pageKey}_L${lineIdx}_${targetLang}.mp3`;
             
             currentPlayingBtn = btnElement;
             btnElement.classList.add('playing');
@@ -485,7 +484,7 @@ async function seedEmptyDatabase() {
             currentAudio.onended = stopAudio;
             currentAudio.onerror = () => {
                 stopAudio();
-                showToast(`Audio missing: ${filename}`, true);
+                showToast(`Audio missing: audio_P${pageKey}_L${lineIdx}_${targetLang}.mp3`, true);
             };
             currentAudio.play();
         }
@@ -531,7 +530,7 @@ async function seedEmptyDatabase() {
             }
             
             const next = pagePlaybackQueue.shift();
-            const filename = `./Workspace/audio_P${next.pageKey}_L${next.lineIdx}_${next.fetchLang}.mp3`;
+            const filename = `/Workspace/audio_P${next.pageKey}_L${next.lineIdx}_${next.fetchLang}.mp3`;
             
             highlightPair(next.lineIdx, next.highlightLang);
             
@@ -583,12 +582,12 @@ async function seedEmptyDatabase() {
             document.querySelectorAll('#english-content .sync-text').forEach(el => el.setAttribute('contenteditable', annotationsEnabled ? 'true' : 'false'));
         }
 
-        function showToast(msg, isError = false) {
+        function showToast(msg, isError = false, duration = 3000) {
             const toast = document.getElementById('toast');
             toast.className = isError ? 'toast error' : 'toast';
             toast.innerText = msg;
             toast.style.display = 'block';
-            setTimeout(() => toast.style.display = 'none', 3000);
+            setTimeout(() => toast.style.display = 'none', duration);
         }
     </script>
 </body>
