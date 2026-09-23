@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vedic Space - Goals</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: #0b0f19;
+      color: #f8fafc;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 24px 16px;
+    }
+    .container { width: 100%; max-width: 640px; display: flex; flex-direction: column; gap: 20px; }
+    header { border-bottom: 1px solid #334155; padding-bottom: 16px; }
+    header h1 { font-size: 24px; color: #a5b4fc; margin-bottom: 4px; }
+    header small { color: #94a3b8; font-size: 14px; }
+    .card {
+      background: #131b2e;
+      border: 1px solid #334155;
+      border-radius: 12px;
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .input-row { display: flex; gap: 8px; }
+    input[type="text"], textarea {
+      width: 100%;
+      background: #1e293b;
+      border: 1px solid #334155;
+      color: #f8fafc;
+      padding: 10px 14px;
+      border-radius: 8px;
+      outline: none;
+      font-size: 14px;
+    }
+    input[type="text"]:focus, textarea:focus { border-color: #6366f1; }
+    .btn {
+      font-family: inherit;
+      border-radius: 8px;
+      border: none;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 14px;
+      transition: opacity 0.2s;
+    }
+    .btn:hover { opacity: 0.9; }
+    .btn-primary { background: #6366f1; color: #ffffff; padding: 10px 18px; }
+    .btn-secondary { background: #1e293b; border: 1px solid #334155; color: #f8fafc; padding: 10px 14px; }
+    .btn-accent { background: #ec4899; color: #ffffff; padding: 6px 12px; font-size: 13px; }
+    .btn-danger { background: transparent; border: 1px solid #ef4444; color: #ef4444; font-size: 12px; padding: 5px 10px; }
+    .flex-end { display: flex; justify-content: flex-end; }
+    .goal-card {
+      background: #131b2e;
+      border: 1px solid #334155;
+      border-radius: 12px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .goal-top { display: flex; align-items: flex-start; gap: 12px; }
+    .checkbox {
+      width: 22px;
+      height: 22px;
+      border-radius: 6px;
+      border: 2px solid #334155;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .goal-card.completed .checkbox { background: #10b981; border-color: #10b981; }
+    .goal-card.completed .checkbox::after {
+      content: "\2713"; color: #ffffff; font-size: 13px; font-weight: bold;
+    }
+    .goal-card.completed .goal-title { text-decoration: line-through; color: #94a3b8; }
+    .goal-info { flex: 1; }
+    .goal-title { font-size: 16px; font-weight: 600; margin-bottom: 4px; }
+    .goal-desc { font-size: 13px; color: #94a3b8; line-height: 1.4; }
+    .meter { height: 6px; background: #1e293b; border-radius: 99px; overflow: hidden; margin-top: 8px; }
+    .meter-fill { height: 100%; background: #6366f1; width: 0%; transition: width 0.3s; }
+    .milestones { display: flex; flex-direction: column; gap: 6px; padding-left: 34px; }
+    .milestone-item { display: flex; align-items: center; gap: 8px; font-size: 13px; color: #94a3b8; cursor: pointer; }
+    .milestone-item.done span { text-decoration: line-through; }
+    .actions-row { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #334155; padding-top: 10px; }
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header>
+      <h1>Vedic Space Goals</h1>
+      <small>Action Meets Alignment</small>
+    </header>
+
+    <div class="card">
+      <div class="input-row">
+        <input type="text" id="goal-title-input" placeholder="What goal are you accomplishing?" required="true">
+        <button id="mic-btn" class="btn btn-secondary" type="button">Voice</button>
+      </div>
+      <textarea id="goal-desc-input" rows="2" placeholder="Sensory details: What does living this completed reality feel like?"></textarea>
+      <input type="text" id="goal-milestones-input" placeholder="Milestones (comma separated, e.g. Design UI, Deploy)">
+      <div class="flex-end">
+        <button id="add-goal-btn" class="btn btn-primary" type="button">Track & Manifest</button>
+      </div>
+    </div>
+
+    <div id="goals-list" style="display: flex; flex-direction: column; gap: 14px;"></div>
+  </div>
+
+  <script>
+    var goals = JSON.parse(localStorage.getItem('vedic_goals_data')) || [
+      {
+        id: 1,
+        title: "Launch Vedic Space Goals App",
+        desc: "Personal attainment and alignment ritual tracker.",
+        completed: false,
+        milestones: [
+          { text: "Deploy to GitHub Pages", done: true },
+          { text: "Test audio TTS synthesis", done: false }
+        ]
+      }
+    ];
+
+    var goalsList = document.getElementById('goals-list');
+    var addGoalBtn = document.getElementById('add-goal-btn');
+    var micBtn = document.getElementById('mic-btn');
+
+    function saveAndRender() {
+      localStorage.setItem('vedic_goals_data', JSON.stringify(goals));
+      goalsList.innerHTML = '';
+      
+      goals.forEach(function(goal) {
+        var card = document.createElement('div');
+        card.className = 'goal-card' + (goal.completed ? ' completed' : '');
+
+        var total = goal.milestones ? goal.milestones.length : 0;
+        var doneCount = 0;
+        if (total !== 0) {
+          goal.milestones.forEach(function(m) {
+            if (m.done) doneCount++;
+          });
+        }
+        var percent = total !== 0 ? (doneCount / total) * 100 : (goal.completed ? 100 : 0);
+
+        var milestonesHtml = '';
+        if (total !== 0) {
+          milestonesHtml = '<div class="milestones">';
+          goal.milestones.forEach(function(m, idx) {
+            milestonesHtml += '<label class="milestone-item ' + (m.done ? 'done' : '') + '">';
+            milestonesHtml += '<input type="checkbox" ' + (m.done ? 'checked' : '') + ' data-idx="' + idx + '">';
+            milestonesHtml += '<span>' + m.text + '</span>';
+            milestonesHtml += '</label>';
+          });
+          milestonesHtml += '</div>';
+        }
+
+        card.innerHTML = 
+          '<div class="goal-top">' +
+            '<div class="checkbox"></div>' +
+            '<div class="goal-info">' +
+              '<div class="goal-title">' + goal.title + '</div>' +
+              (goal.desc ? '<div class="goal-desc">' + goal.desc + '</div>' : '') +
+              '<div class="meter"><div class="meter-fill" style="width: ' + percent + '%;"></div></div>' +
+            '</div>' +
+          '</div>' +
+          milestonesHtml +
+          '<div class="actions-row">' +
+            '<button class="btn btn-accent" type="button" data-action="tts">Manifest Audio (TTS)</button>' +
+            '<button class="btn btn-danger" type="button" data-action="del">Delete</button>' +
+          '</div>';
+
+        card.querySelector('.checkbox').onclick = function() {
+          goal.completed = !goal.completed;
+          saveAndRender();
+        };
+
+        var checkboxes = card.querySelectorAll('.milestone-item input');
+        checkboxes.forEach(function(chk) {
+          chk.onchange = function(e) {
+            var idx = Number(e.target.getAttribute('data-idx'));
+            goal.milestones[idx].done = e.target.checked;
+            saveAndRender();
+          };
+        });
+
+        card.querySelector('[data-action="tts"]').onclick = function() {
+          if ('speechSynthesis' in window) {
+            window.speechSynthesis.cancel();
+            var text = 'Take a deep breath. Embody the feeling of having completed: ' + goal.title + '. ' + (goal.desc || '') + '. It is done.';
+            var msg = new SpeechSynthesisUtterance(text);
+            msg.rate = 0.88;
+            window.speechSynthesis.speak(msg);
+          }
+        };
+
+        card.querySelector('[data-action="del"]').onclick = function() {
+          var newGoals = [];
+          goals.forEach(function(g) {
+            if (g.id !== goal.id) newGoals.push(g);
+          });
+          goals = newGoals;
+          saveAndRender();
+        };
+
+        goalsList.appendChild(card);
+      });
+    }
+
+    addGoalBtn.onclick = function() {
+      var titleInput = document.getElementById('goal-title-input');
+      var descInput = document.getElementById('goal-desc-input');
+      var milesInput = document.getElementById('goal-milestones-input');
+
+      var titleVal = titleInput.value.trim();
+      if (!titleVal) return;
+
+      var rawMiles = milesInput.value;
+      var milestones = [];
+      if (rawMiles) {
+        var parts = rawMiles.split(',');
+        parts.forEach(function(part) {
+          var item = part.trim();
+          if (item) milestones.push({ text: item, done: false });
+        });
+      }
+
+      goals.unshift({
+        id: Date.now(),
+        title: titleVal,
+        desc: descInput.value.trim(),
+        milestones: milestones,
+        completed: false
+      });
+
+      titleInput.value = '';
+      descInput.value = '';
+      milesInput.value = '';
+      saveAndRender();
+    };
+
+    var SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (SpeechRec) {
+      var rec = new SpeechRec();
+      micBtn.onclick = function() {
+        try { rec.start(); micBtn.textContent = 'Listening...'; } catch(e) { rec.stop(); }
+      };
+      rec.onresult = function(e) {
+        document.getElementById('goal-title-input').value = e.results[0][0].transcript;
+      };
+      rec.onend = function() { micBtn.textContent = 'Voice'; };
+    } else {
+      micBtn.style.display = 'none';
+    }
+
+    saveAndRender();
+  </script>
+</body>
+</html>
