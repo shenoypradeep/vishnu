@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Vedic Space - Manifestation Engine</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap');
@@ -12,8 +12,8 @@
       --surface: #111111;
       --surface-light: #1a1a1a;
       --border: #2a2a2a;
-      --primary: #d4af37;
-      --primary-dim: rgba(212, 175, 55, 0.15);
+      --primary: #d4af37; /* Vedic Gold */
+      --primary-dim: rgba(212, 175, 55, 0.2);
       --text: #f5f5f5;
       --text-muted: #888888;
       --success: #2e8b57;
@@ -23,32 +23,30 @@
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
     body { background: var(--bg); color: var(--text); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
     
+    /* Scrollbar */
     ::-webkit-scrollbar { width: 6px; }
     ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
     
-    .btn { background: var(--surface-light); color: var(--text); border: 1px solid var(--border); padding: 12px 16px; border-radius: 8px; cursor: pointer; font-weight: 600; transition: all 0.3s; }
+    /* Reusables */
+    .btn { background: var(--surface-light); color: var(--text); border: 1px solid var(--border); padding: 10px 16px; border-radius: 8px; cursor: pointer; font-weight: 600; transition: all 0.3s; }
     .btn:hover { border-color: var(--primary); color: var(--primary); }
     .btn-gold { background: var(--primary); color: #000; border: none; }
     .btn-gold:hover { background: #ebd171; color: #000; box-shadow: 0 0 15px var(--primary-dim); }
-    input, textarea, select { width: 100%; background: var(--surface-light); border: 1px solid var(--border); color: var(--text); padding: 14px; border-radius: 8px; outline: none; transition: border 0.3s; font-size: 16px; }
+    input, textarea, select { width: 100%; background: var(--surface-light); border: 1px solid var(--border); color: var(--text); padding: 12px; border-radius: 8px; outline: none; transition: border 0.3s; }
     input:focus, textarea:focus, select:focus { border-color: var(--primary); }
     .hidden { display: none !important; }
     
     /* Auth Screen */
-    #auth-pane { position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: var(--bg); z-index: 1000; padding: 20px; }
-    .auth-box { background: var(--surface); padding: 40px 30px; border-radius: 16px; border: 1px solid var(--border); width: 100%; max-width: 400px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
+    #auth-pane { position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: var(--bg); z-index: 1000; }
+    .auth-box { background: var(--surface); padding: 40px; border-radius: 16px; border: 1px solid var(--border); width: 100%; max-width: 400px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
     .auth-box h1 { color: var(--primary); margin-bottom: 8px; font-weight: 300; letter-spacing: 2px; }
     .auth-box p { color: var(--text-muted); margin-bottom: 24px; font-size: 14px; }
     .auth-form { display: flex; flex-direction: column; gap: 16px; }
     
     /* Main Layout */
-    #app-layout { display: none; height: 100vh; width: 100vw; flex-direction: row; }
+    #app-layout { display: none; height: 100vh; width: 100vw; }
     
-    /* Mobile Header */
-    .mobile-header { display: none; justify-content: space-between; align-items: center; padding: 16px 20px; border-bottom: 1px solid var(--border); background: var(--surface); position: sticky; top: 0; z-index: 10; }
-    .mobile-header h2 { color: var(--primary); font-weight: 300; font-size: 18px; letter-spacing: 1px; }
-    
-    /* Sidebar / Bottom Nav */
+    /* Sidebar */
     .sidebar { width: 260px; background: var(--surface); border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 24px 0; }
     .brand { padding: 0 24px 24px 24px; border-bottom: 1px solid var(--border); margin-bottom: 24px; }
     .brand h2 { color: var(--primary); font-weight: 300; letter-spacing: 1px; font-size: 20px; }
@@ -69,67 +67,49 @@
     .pane-header h1 { font-size: 32px; font-weight: 300; margin-bottom: 8px; }
     .pane-header p { color: var(--text-muted); }
     
-    /* Grids */
+    /* Grid Layouts */
     .dashboard-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-bottom: 40px; }
     .stat-card { background: var(--surface); border: 1px solid var(--border); padding: 24px; border-radius: 12px; text-align: center; }
     .stat-card h3 { font-size: 36px; color: var(--primary); font-weight: 300; margin-bottom: 8px; }
     .stat-card span { color: var(--text-muted); font-size: 14px; text-transform: uppercase; letter-spacing: 1px; }
     
-    /* Creation Form */
+    /* Creation Form (The Forge) */
     .creation-form { background: var(--surface); border: 1px solid var(--border); padding: 32px; border-radius: 16px; display: flex; flex-direction: column; gap: 24px; }
     .form-group { display: flex; flex-direction: column; gap: 8px; }
     .form-group label { color: var(--primary); font-size: 14px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; }
     .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
     
-    /* Goal Cards */
-    .goals-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 24px; }
-    .goal-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 24px; display: flex; flex-direction: column; gap: 16px; position: relative; overflow: hidden; }
+    /* Goal Cards (The Vault) */
+    .goals-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(400px, 1fr)); gap: 24px; }
+    .goal-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 24px; display: flex; flex-direction: column; gap: 16px; transition: transform 0.3s, border-color 0.3s; position: relative; overflow: hidden; }
+    .goal-card:hover { border-color: var(--primary); transform: translateY(-4px); }
     .goal-card.completed::before { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: var(--success); }
     .card-header { display: flex; justify-content: space-between; align-items: flex-start; }
-    .card-title { font-size: 20px; font-weight: 600; margin-bottom: 6px; }
+    .card-title { font-size: 20px; font-weight: 600; margin-bottom: 4px; }
     .card-emotion { display: inline-block; padding: 4px 10px; background: var(--primary-dim); color: var(--primary); border-radius: 20px; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
     .card-desc { color: var(--text-muted); font-size: 14px; line-height: 1.5; font-style: italic; }
     
     /* Milestones */
-    .milestone-list { display: flex; flex-direction: column; gap: 10px; background: var(--bg); padding: 16px; border-radius: 8px; border: 1px solid var(--border); }
+    .milestone-list { display: flex; flex-direction: column; gap: 8px; background: var(--bg); padding: 16px; border-radius: 8px; border: 1px solid var(--border); }
     .milestone-item { display: flex; align-items: center; gap: 12px; font-size: 14px; }
-    .milestone-item input[type="checkbox"] { width: 20px; height: 20px; accent-color: var(--primary); }
+    .milestone-item input[type="checkbox"] { width: 18px; height: 18px; cursor: pointer; accent-color: var(--primary); }
     .milestone-item.done span { text-decoration: line-through; color: var(--text-muted); }
     
+    /* Progress Bar */
     .progress-container { width: 100%; height: 6px; background: var(--surface-light); border-radius: 4px; overflow: hidden; margin: 12px 0; }
     .progress-bar { height: 100%; background: var(--primary); transition: width 0.5s ease; }
     
+    /* Card Actions */
     .card-actions { display: flex; gap: 12px; border-top: 1px solid var(--border); padding-top: 16px; margin-top: auto; }
     
-    /* Rituals */
+    /* Rituals Pane */
     .ritual-section { background: var(--surface); border: 1px solid var(--border); padding: 32px; border-radius: 16px; margin-bottom: 24px; }
     .ritual-inputs { display: flex; flex-direction: column; gap: 12px; margin-top: 24px; }
     .ritual-row { display: flex; gap: 12px; align-items: center; }
-    .ritual-row button { flex: 1; }
-    .ritual-log-container { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 16px; max-height: 300px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
-    .log-entry { font-size: 14px; color: var(--text-muted); border-bottom: 1px solid var(--surface-light); padding-bottom: 12px; }
+    .ritual-row input { flex: 1; }
+    .ritual-log-container { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 16px; max-height: 200px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
+    .log-entry { font-size: 13px; color: var(--text-muted); border-bottom: 1px solid var(--surface-light); padding-bottom: 8px; }
     
-    /* --- MOBILE RESPONSIVENESS --- */
-    @media (max-width: 768px) {
-      #app-layout { flex-direction: column; }
-      .mobile-header { display: flex; }
-      
-      .sidebar { position: fixed; bottom: 0; left: 0; width: 100%; height: 75px; flex-direction: row; padding: 0; border-right: none; border-top: 1px solid var(--border); z-index: 100; }
-      .brand, .logout-container { display: none; }
-      
-      .nav-items { flex-direction: row; width: 100%; justify-content: space-around; align-items: center; padding: 0; gap: 0; }
-      .nav-item { flex-direction: column; font-size: 11px; padding: 8px 0; gap: 4px; flex: 1; justify-content: center; text-align: center; border-radius: 0; border: none; border-top: 3px solid transparent; }
-      .nav-item.active { border-top: 3px solid var(--primary); background: var(--primary-dim); }
-      
-      .main-content { padding: 20px 16px 95px 16px; }
-      .pane-header h1 { font-size: 26px; }
-      .dashboard-grid { grid-template-columns: 1fr; gap: 16px; }
-      .form-row { grid-template-columns: 1fr; gap: 16px; }
-      .goals-grid { grid-template-columns: 1fr; }
-      .ritual-row { flex-direction: column; align-items: stretch; }
-      .creation-form, .ritual-section { padding: 20px; }
-      .card-actions { flex-direction: column; }
-    }
   </style>
 </head>
 <body>
@@ -141,7 +121,7 @@
       <p>Secure Manifestation Engine</p>
       <div class="auth-form">
         <input type="text" id="login-user" placeholder="Username (e.g., vedic)" autocomplete="off">
-        <input type="password" id="login-pass" placeholder="Password (Reverse username)">
+        <input type="password" id="login-pass" placeholder="Password (Reverse of username)">
         <button id="btn-login" class="btn btn-gold">Enter Vault</button>
       </div>
     </div>
@@ -149,23 +129,16 @@
 
   <!-- Main App Layout -->
   <div id="app-layout">
-    
-    <!-- Mobile Top Header -->
-    <div class="mobile-header">
-      <h2>VEDIC GOALS</h2>
-      <button id="btn-logout-mobile" class="btn" style="padding: 8px 16px; font-size: 12px;">Lock</button>
-    </div>
-
-    <!-- Sidebar / Bottom Nav -->
+    <!-- Sidebar Navigation -->
     <nav class="sidebar">
       <div class="brand">
         <h2>VEDIC GOALS</h2>
       </div>
       <div class="nav-items">
-        <div class="nav-item active" data-target="pane-dashboard">📊 Status</div>
-        <div class="nav-item" data-target="pane-create">✨ Forge</div>
-        <div class="nav-item" data-target="pane-review">👁️ Vault</div>
-        <div class="nav-item" data-target="pane-rituals">🧘 Rituals</div>
+        <div class="nav-item active" data-target="pane-dashboard">📊 Status / Overview</div>
+        <div class="nav-item" data-target="pane-create">✨ The Forge (Set)</div>
+        <div class="nav-item" data-target="pane-review">👁️ The Vault (Review)</div>
+        <div class="nav-item" data-target="pane-rituals">🧘 369 Rituals</div>
       </div>
       <div class="logout-container">
         <button id="btn-logout" class="btn" style="width: 100%;">Lock Vault</button>
@@ -175,7 +148,7 @@
     <!-- Main Content -->
     <main class="main-content">
       
-      <!-- Dashboard -->
+      <!-- 1. Dashboard Pane -->
       <section id="pane-dashboard" class="pane active">
         <div class="pane-header">
           <h1>Alignment Status</h1>
@@ -198,12 +171,14 @@
         <div class="ritual-section">
           <h3 style="margin-bottom: 16px; color: var(--primary); font-weight: 400;">Daily Alignment Check</h3>
           <p style="color: var(--text-muted); line-height: 1.6;">
-            Manifestation is not about wanting; it is about becoming. Review your goals in "The Vault", feel the elevated emotion attached to them, and log your 369 repetitions in the "Rituals" pane. The universe responds to frequency.
+            Manifestation is not about wanting; it is about becoming. 
+            Review your goals in "The Vault", feel the elevated emotion attached to them, and log your 369 repetitions in the "Rituals" pane. 
+            The universe responds to the frequency of your action and feeling combined.
           </p>
         </div>
       </section>
 
-      <!-- The Forge -->
+      <!-- 2. Creation Pane (The Forge) -->
       <section id="pane-create" class="pane">
         <div class="pane-header">
           <h1>The Forge</h1>
@@ -213,7 +188,7 @@
           <div class="form-row">
             <div class="form-group">
               <label>Clear Intention (The Goal)</label>
-              <input type="text" id="forge-title" placeholder="e.g., Launch MVP successfully">
+              <input type="text" id="forge-title" placeholder="e.g., Launch MVP and acquire 100 users">
             </div>
             <div class="form-group">
               <label>Elevated Emotion (The Anchor)</label>
@@ -228,19 +203,20 @@
           </div>
           <div class="form-group">
             <label>Sensory Details (Living in the End)</label>
-            <textarea id="forge-desc" rows="3" placeholder="Describe the exact feeling, sights, and sounds. Assume it is already done."></textarea>
+            <textarea id="forge-desc" rows="3" placeholder="Describe the exact feeling, sights, and sounds of the moment this is accomplished. Assume it is already done."></textarea>
           </div>
           <div class="form-group">
-            <label>Bridge of Incidents (Physical Steps)</label>
-            <input type="text" id="forge-milestones" placeholder="Comma separated: Build UI, Connect DB, Launch">
+            <label>Bridge of Incidents (Actionable Milestones)</label>
+            <input type="text" id="forge-milestones" placeholder="Comma separated: Build UI, Connect DB, Launch Product">
+            <small style="color: var(--text-muted); margin-top: 4px;">The universe loves speed. Outline the physical steps you will take.</small>
           </div>
           <div class="flex-end" style="margin-top: 16px;">
-            <button id="btn-forge" class="btn btn-gold" style="font-size: 16px; padding: 14px 32px;">Cast into the Universe</button>
+            <button id="btn-forge" class="btn btn-gold" style="font-size: 16px; padding: 12px 32px;">Cast into the Universe</button>
           </div>
         </div>
       </section>
 
-      <!-- The Vault -->
+      <!-- 3. Review Pane (The Vault) -->
       <section id="pane-review" class="pane">
         <div class="pane-header">
           <h1>The Vault</h1>
@@ -249,18 +225,19 @@
         <div id="vault-grid" class="goals-grid"></div>
       </section>
 
-      <!-- Rituals Pane -->
+      <!-- 4. Rituals Pane -->
       <section id="pane-rituals" class="pane">
         <div class="pane-header">
           <h1>369 Method</h1>
-          <p>Program your subconscious. Write your intention 3x, 6x, and 9x daily.</p>
+          <p>Program your subconscious. Write your intention 3x (Morning), 6x (Afternoon), 9x (Night).</p>
         </div>
         
         <div class="ritual-section">
           <div class="form-group">
             <label>Current Affirmation / Focus</label>
-            <input type="text" id="ritual-focus" placeholder="e.g., I am so happy and grateful now that...">
+            <input type="text" id="ritual-focus" placeholder="e.g., I am so happy and grateful now that my app is thriving.">
           </div>
+          
           <div class="ritual-inputs">
             <div class="ritual-row">
               <button id="btn-log-morning" class="btn">🌅 Morning (3x)</button>
@@ -278,7 +255,8 @@
   </div>
 
   <script>
-    var appData = JSON.parse(localStorage.getItem('vedic_manifest_data')) || {
+    // --- State Management ---
+    let appData = JSON.parse(localStorage.getItem('vedic_manifest_data')) || {
       goals: [],
       rituals: []
     };
@@ -288,17 +266,17 @@
       updateDashboard();
     }
 
-    var loginUser = document.getElementById('login-user');
-    var loginPass = document.getElementById('login-pass');
-    var btnLogin = document.getElementById('btn-login');
-    var btnLogoutDesk = document.getElementById('btn-logout');
-    var btnLogoutMob = document.getElementById('btn-logout-mobile');
+    // --- Authentication Logic ---
+    const loginUser = document.getElementById('login-user');
+    const loginPass = document.getElementById('login-pass');
+    const btnLogin = document.getElementById('btn-login');
+    const btnLogout = document.getElementById('btn-logout');
 
     btnLogin.onclick = function() {
-      var u = loginUser.value.trim();
-      var p = loginPass.value.trim();
+      const u = loginUser.value.trim();
+      const p = loginPass.value.trim();
       if (!u) { alert("Enter a username"); return; }
-      var reversed = u.split('').reverse().join('');
+      const reversed = u.split('').reverse().join('');
       if (p === reversed) {
         document.getElementById('auth-pane').classList.add('hidden');
         document.getElementById('app-layout').style.display = 'flex';
@@ -310,58 +288,55 @@
       }
     };
 
-    function handleLogout() {
+    btnLogout.onclick = function() {
       document.getElementById('app-layout').style.display = 'none';
       document.getElementById('auth-pane').classList.remove('hidden');
       loginUser.value = '';
       loginPass.value = '';
-    }
+    };
 
-    btnLogoutDesk.onclick = handleLogout;
-    btnLogoutMob.onclick = handleLogout;
+    // --- Navigation Logic ---
+    const navItems = document.querySelectorAll('.nav-item');
+    const panes = document.querySelectorAll('.pane');
 
-    var navItems = document.querySelectorAll('.nav-item');
-    var panes = document.querySelectorAll('.pane');
-
-    navItems.forEach(function(item) {
+    navItems.forEach(item => {
       item.onclick = function() {
-        navItems.forEach(function(n) { n.classList.remove('active'); });
-        panes.forEach(function(p) { p.classList.remove('active'); });
-        item.classList.add('active');
-        document.getElementById(item.getAttribute('data-target')).classList.add('active');
+        navItems.forEach(n => n.classList.remove('active'));
+        panes.forEach(p => p.classList.remove('active'));
+        this.classList.add('active');
+        document.getElementById(this.getAttribute('data-target')).classList.add('active');
       };
     });
 
+    // --- Dashboard ---
     function updateDashboard() {
-      var total = appData.goals.length;
-      var manifested = 0;
-      appData.goals.forEach(function(g) {
-        if (g.completed) manifested++;
-      });
-      var active = total - manifested;
+      const total = appData.goals.length;
+      const manifested = appData.goals.filter(g => g.completed).length;
+      const active = total - manifested;
       document.getElementById('stat-active').innerText = active;
       document.getElementById('stat-manifested').innerText = manifested;
       document.getElementById('stat-rituals').innerText = appData.rituals.length;
     }
 
-    var btnForge = document.getElementById('btn-forge');
+    // --- The Forge (Create Goal) ---
+    const btnForge = document.getElementById('btn-forge');
     btnForge.onclick = function() {
-      var title = document.getElementById('forge-title').value.trim();
-      var emotion = document.getElementById('forge-emotion').value;
-      var desc = document.getElementById('forge-desc').value.trim();
-      var milesRaw = document.getElementById('forge-milestones').value;
+      const title = document.getElementById('forge-title').value.trim();
+      const emotion = document.getElementById('forge-emotion').value;
+      const desc = document.getElementById('forge-desc').value.trim();
+      const milesRaw = document.getElementById('forge-milestones').value;
 
       if (!title) { alert("A clear intention is required."); return; }
 
-      var milestones = [];
+      const milestones = [];
       if (milesRaw) {
-        milesRaw.split(',').forEach(function(part) {
-          var text = part.trim();
+        milesRaw.split(',').forEach(part => {
+          const text = part.trim();
           if (text) milestones.push({ text: text, done: false });
         });
       }
 
-      var newGoal = {
+      const newGoal = {
         id: Date.now().toString(),
         title: title,
         emotion: emotion,
@@ -374,37 +349,34 @@
       appData.goals.unshift(newGoal);
       saveData();
       
+      // Clear inputs
       document.getElementById('forge-title').value = '';
       document.getElementById('forge-desc').value = '';
       document.getElementById('forge-milestones').value = '';
       
+      // Navigate to Vault
       navItems[2].click();
       renderVault();
     };
 
+    // --- The Vault (Review Goals) ---
     function renderVault() {
-      var grid = document.getElementById('vault-grid');
+      const grid = document.getElementById('vault-grid');
       grid.innerHTML = '';
 
-      appData.goals.forEach(function(goal, gIndex) {
-        var card = document.createElement('div');
+      appData.goals.forEach((goal, gIndex) => {
+        const card = document.createElement('div');
         card.className = 'goal-card' + (goal.completed ? ' completed' : '');
 
-        var totalMiles = goal.milestones.length;
-        var doneMiles = 0;
-        goal.milestones.forEach(function(m) { if(m.done) doneMiles++; });
-        
-        var progress = 0;
-        if (totalMiles !== 0) {
-          progress = (doneMiles / totalMiles) * 100;
-        } else if (goal.completed) {
-          progress = 100;
-        }
+        const totalMiles = goal.milestones.length;
+        let doneMiles = 0;
+        goal.milestones.forEach(m => { if(m.done) doneMiles++; });
+        const progress = totalMiles === 0 ? (goal.completed ? 100 : 0) : (doneMiles / totalMiles) * 100;
 
-        var milestonesHtml = '';
-        if (totalMiles !== 0) {
+        let milestonesHtml = '';
+        if (totalMiles > 0) {
           milestonesHtml = '<div class="milestone-list">';
-          goal.milestones.forEach(function(m, mIndex) {
+          goal.milestones.forEach((m, mIndex) => {
             milestonesHtml += 
               '<label class="milestone-item ' + (m.done ? 'done' : '') + '">' +
                 '<input type="checkbox" ' + (m.done ? 'checked' : '') + ' data-gidx="' + gIndex + '" data-midx="' + mIndex + '" class="mile-chk">' +
@@ -441,17 +413,17 @@
     }
 
     function attachVaultListeners() {
-      document.querySelectorAll('.mile-chk').forEach(function(chk) {
+      // Toggle Milestone
+      document.querySelectorAll('.mile-chk').forEach(chk => {
         chk.onchange = function(e) {
-          var gIdx = e.target.getAttribute('data-gidx');
-          var mIdx = e.target.getAttribute('data-midx');
+          const gIdx = e.target.getAttribute('data-gidx');
+          const mIdx = e.target.getAttribute('data-midx');
           appData.goals[gIdx].milestones[mIdx].done = e.target.checked;
           
-          var total = appData.goals[gIdx].milestones.length;
-          var done = 0;
-          appData.goals[gIdx].milestones.forEach(function(m) { if(m.done) done++; });
-          
-          if (total !== 0 && total === done) {
+          // Auto-complete goal if all milestones are done
+          const total = appData.goals[gIdx].milestones.length;
+          const done = appData.goals[gIdx].milestones.filter(m => m.done).length;
+          if (total > 0 && total === done) {
              appData.goals[gIdx].completed = true;
           } else {
              appData.goals[gIdx].completed = false;
@@ -462,19 +434,21 @@
         };
       });
 
-      document.querySelectorAll('.btn-complete').forEach(function(btn) {
+      // Toggle Goal Complete Override
+      document.querySelectorAll('.btn-complete').forEach(btn => {
         btn.onclick = function(e) {
-          var gIdx = e.target.getAttribute('data-gidx');
+          const gIdx = e.target.getAttribute('data-gidx');
           appData.goals[gIdx].completed = !appData.goals[gIdx].completed;
           saveData();
           renderVault();
         };
       });
 
-      document.querySelectorAll('.btn-delete').forEach(function(btn) {
+      // Delete Goal
+      document.querySelectorAll('.btn-delete').forEach(btn => {
         btn.onclick = function(e) {
           if(confirm("Release this intention from the vault?")) {
-            var gIdx = e.target.getAttribute('data-gidx');
+            const gIdx = e.target.getAttribute('data-gidx');
             appData.goals.splice(gIdx, 1);
             saveData();
             renderVault();
@@ -482,36 +456,39 @@
         };
       });
 
-      document.querySelectorAll('.btn-tts').forEach(function(btn) {
+      // TTS (Neville Goddard - Living in the End)
+      document.querySelectorAll('.btn-tts').forEach(btn => {
         btn.onclick = function(e) {
           if (!('speechSynthesis' in window)) { alert("TTS not supported."); return; }
           window.speechSynthesis.cancel();
-          var gIdx = e.target.getAttribute('data-gidx');
-          var goal = appData.goals[gIdx];
+          const gIdx = e.target.getAttribute('data-gidx');
+          const goal = appData.goals[gIdx];
           
-          var script = 'Take a deep breath. Feel the ' + goal.emotion + ' flowing through you. I am so happy and grateful now that ' + goal.title + ' is my reality. ' + (goal.desc ? goal.desc : '') + '. It is completely done. Thank you.';
+          // Construct present-tense assumption script
+          const script = `Take a deep breath. Feel the \({goal.emotion} flowing through you. I am so happy and grateful now that\){goal.title} is my reality. ${goal.desc ? goal.desc : ''}. It is completely done. Thank you.`;
           
-          var msg = new SpeechSynthesisUtterance(script);
-          msg.rate = 0.85;
+          const msg = new SpeechSynthesisUtterance(script);
+          msg.rate = 0.85; // Slow, meditative pace
           msg.pitch = 0.9;
           window.speechSynthesis.speak(msg);
         };
       });
     }
 
+    // --- 369 Rituals ---
     function renderRituals() {
-      var container = document.getElementById('ritual-log');
+      const container = document.getElementById('ritual-log');
       container.innerHTML = '';
-      appData.rituals.forEach(function(r) {
-        var div = document.createElement('div');
+      appData.rituals.forEach(r => {
+        const div = document.createElement('div');
         div.className = 'log-entry';
-        div.innerHTML = '<strong>' + r.period + '</strong> - ' + new Date(r.timestamp).toLocaleString() + ' <br> "' + r.text + '"';
+        div.innerHTML = `<strong>\({r.period}</strong> -\){new Date(r.timestamp).toLocaleString()} <br> "${r.text}"`;
         container.appendChild(div);
       });
     }
 
     function logRitual(period) {
-      var focus = document.getElementById('ritual-focus').value.trim();
+      const focus = document.getElementById('ritual-focus').value.trim();
       if (!focus) { alert("Please enter your current affirmation focus first."); return; }
       
       appData.rituals.unshift({
@@ -524,9 +501,9 @@
       renderRituals();
     }
 
-    document.getElementById('btn-log-morning').onclick = function() { logRitual('Morning (3x)'); };
-    document.getElementById('btn-log-afternoon').onclick = function() { logRitual('Afternoon (6x)'); };
-    document.getElementById('btn-log-night').onclick = function() { logRitual('Night (9x)'); };
+    document.getElementById('btn-log-morning').onclick = () => logRitual('Morning (3x)');
+    document.getElementById('btn-log-afternoon').onclick = () => logRitual('Afternoon (6x)');
+    document.getElementById('btn-log-night').onclick = () => logRitual('Night (9x)');
 
   </script>
 </body>
