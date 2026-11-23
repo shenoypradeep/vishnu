@@ -58,6 +58,9 @@ section{margin-top:56px}
 .s-head{text-align:center;margin:0 0 18px}
 .s-head h2{font-family:var(--deva);font-weight:400;font-size:1.65rem;margin:0;line-height:1.35}
 .s-head p{margin:2px 0 0;font-size:.9rem;color:var(--soft)}
+/* IAST and English under a Sanskrit heading: same typeface and colour as the heading itself */
+.s-head .s-sub{font-family:var(--deva);color:var(--ink);font-size:1.12rem;line-height:1.45;margin-top:4px}
+.lead-in{text-align:center;font-style:italic;font-size:1.02rem}
 .s-intro{max-width:640px;margin:0 auto 18px}
 .k{font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin:0}
 
