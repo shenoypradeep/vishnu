@@ -1,0 +1,16 @@
+/* Vedic Space Grantha · palette and fonts, shared by every page.
+   Change a colour or a font family here and the whole site follows. */
+:root{
+  --ink:#2b2420; --soft:#6f655c; --faint:#a1968b; --line:#e7dfd4; --paper:#fdfaf5; --card:#fffdf9;
+  --accent:#9a4a1c; --accent-soft:#f5e6d8; --on:#9a4a1c; --off:#d8cfc4;
+  --deva:"Tiro Devanagari Sanskrit","Noto Serif Devanagari",serif;
+  --latin:"Noto Serif",Georgia,serif;
+}
+/* dark palette: follows the device unless the reader picked a theme with the switch */
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){--ink:#ece4da;--soft:#b8ab9d;--faint:#85796d;--line:#3a332d;--paper:#1c1916;--card:#231f1b;
+        --accent:#e09a6a;--accent-soft:#3a2a1f;--on:#e09a6a;--off:#4a423a;color-scheme:dark}
+}
+:root[data-theme="dark"]{--ink:#ece4da;--soft:#b8ab9d;--faint:#85796d;--line:#3a332d;--paper:#1c1916;--card:#231f1b;
+  --accent:#e09a6a;--accent-soft:#3a2a1f;--on:#e09a6a;--off:#4a423a;color-scheme:dark}
+:root[data-theme="light"]{color-scheme:light}
