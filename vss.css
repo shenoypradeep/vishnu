@@ -1,0 +1,154 @@
+/* Vedic Space · VSS Sādhana page. Loaded after base.css (the shared Granthālaya palette and fonts).
+   Toolbar, title, cards and footer follow grantha.vedicspace.in so the two read as one place. */
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:70px}
+html,body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--latin)}
+body{font-size:16px;line-height:1.65}
+a{color:var(--accent)}
+img{max-width:100%}
+.wrap{max-width:820px;margin:0 auto;padding:0 20px 64px}
+[lang="sa"]{font-family:var(--deva)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important;animation:none!important}}
+
+/* ---- toolbar (as on the Granthālaya) */
+.topbar{position:sticky;top:0;z-index:6;background:color-mix(in srgb,var(--paper) 86%,transparent);
+  -webkit-backdrop-filter:saturate(1.3) blur(12px);backdrop-filter:saturate(1.3) blur(12px);
+  border-bottom:1px solid transparent;transition:border-color .25s,box-shadow .25s}
+.topbar.scrolled{border-bottom-color:var(--line);box-shadow:0 1px 14px rgba(60,40,20,.05)}
+.tb-in{max-width:820px;margin:0 auto;padding:0 20px;height:54px;display:flex;align-items:center;gap:16px}
+.brand{display:inline-flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink);flex-shrink:0;border-radius:8px}
+.brand img{width:32px;height:32px;display:block;transition:transform .3s ease}
+.brand:hover img{transform:rotate(-6deg) scale(1.05)}
+.brand-name{font-weight:600;font-size:1.02rem;letter-spacing:.01em;white-space:nowrap}
+.tb-links{margin-left:auto;display:flex;align-items:center;gap:20px;font-size:.88rem}
+.tb-links a{color:var(--soft);text-decoration:none;white-space:nowrap}
+.tb-links a:hover,.tb-links a:focus-visible{color:var(--accent)}
+.theme-btn{width:28px;height:28px;border-radius:50%;border:1px solid var(--line);background:none;color:var(--soft);
+  display:inline-grid;place-items:center;cursor:pointer;padding:0;flex-shrink:0;transition:color .2s,border-color .2s,background .2s}
+.theme-btn:hover{color:var(--accent);border-color:var(--accent);background:var(--accent-soft)}
+.theme-btn svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.theme-btn .i-sun{display:none}
+.theme-btn[data-mode="dark"] .i-sun{display:block}
+.theme-btn[data-mode="dark"] .i-moon{display:none}
+@media (max-width:600px){.tb-in{padding:0 14px;gap:10px;height:50px}.brand img{width:30px;height:30px}
+  .tb-links{gap:13px;font-size:.84rem}.tb-links .wide{display:none}}
+@media (max-width:380px){.brand-name{display:none}}
+
+/* ---- title */
+header{text-align:center;padding:42px 0 6px}
+.deva-title{font-family:var(--deva);font-size:2.5rem;line-height:1.3;margin:0;font-weight:400}
+.iast-title{font-style:italic;color:var(--soft);margin:4px 0 0;font-size:1.08rem}
+.en-title{margin:4px auto 0;font-size:.98rem;color:var(--soft);max-width:520px}
+.invocation{margin:18px 0 0;font-size:.86rem;color:var(--soft)}
+.invocation [lang="sa"]{display:block;font-size:1.25rem;color:var(--accent);line-height:1.5}
+@media (max-width:560px){header{padding-top:28px}.deva-title{font-size:2.05rem}}
+
+.lead{max-width:640px;margin:22px auto 0;font-size:1.04rem}
+.begin{display:flex;justify-content:center;gap:10px 14px;flex-wrap:wrap;margin:22px 0 0;font-size:.92rem}
+.btn{display:inline-flex;align-items:center;gap:8px;text-decoration:none;border:1px solid color-mix(in srgb,var(--accent) 35%,var(--line));
+  border-radius:999px;padding:9px 20px;min-height:44px;color:var(--accent);background:none;font:inherit;cursor:pointer;transition:background .2s}
+.btn:hover,.btn:focus-visible{background:var(--accent-soft)}
+.btn.solid{background:var(--accent);border-color:var(--accent);color:var(--paper)}
+.btn.solid:hover,.btn.solid:focus-visible{background:color-mix(in srgb,var(--accent) 88%,var(--ink))}
+.btn svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+
+/* ---- section heads, as the Granthālaya catalogue head */
+section{margin-top:56px}
+.s-head{text-align:center;margin:0 0 18px}
+.s-head h2{font-family:var(--deva);font-weight:400;font-size:1.65rem;margin:0;line-height:1.35}
+.s-head p{margin:2px 0 0;font-size:.9rem;color:var(--soft)}
+.s-intro{max-width:640px;margin:0 auto 18px}
+.k{font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin:0}
+
+/* ---- cards (the Granthālaya .text card) */
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin-top:12px}
+.card h3{margin:0;font-size:1.05rem;font-weight:600}
+.card p{margin:8px 0 0}
+@media (max-width:560px){.card{padding:16px}}
+
+/* verse cards: śāstra basis */
+.verse .src{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap}
+.verse .src a{font-size:.84rem;text-decoration:none;white-space:nowrap}
+.verse .src a:hover{text-decoration:underline}
+.verse .sa{font-size:1.32rem;line-height:1.75;margin:10px 0 0;white-space:pre-line;text-align:center}
+.verse .tr{margin:10px 0 0;font-size:.95rem}
+.verse .why{margin:10px 0 0;padding-top:10px;border-top:1px solid var(--line);font-size:.9rem;color:var(--soft)}
+.verse .why b{color:var(--ink);font-weight:600}
+@media (max-width:560px){.verse .sa{font-size:1.18rem}}
+.credit{font-size:.8rem;color:var(--soft);text-align:center;margin:14px 0 0}
+
+.argument{list-style:none;margin:20px 0 0;padding:0;border-top:1px solid var(--line)}
+.argument li{display:grid;grid-template-columns:7.5em 1fr;gap:12px;padding:10px 2px;border-bottom:1px solid var(--line);font-size:.94rem}
+.argument .k{padding-top:3px}
+@media (max-width:480px){.argument li{grid-template-columns:1fr;gap:2px}}
+
+/* ---- the sitting: three movements of one breath */
+.sitting{list-style:none;margin:8px 0 0;padding:0;position:relative}
+.sitting::before{content:"";position:absolute;left:23px;top:30px;bottom:30px;width:1px;
+  background:linear-gradient(var(--accent-soft),color-mix(in srgb,var(--accent) 45%,transparent),var(--accent-soft))}
+.sitting li{position:relative;display:flex;gap:18px;padding:14px 0}
+.sitting .num{flex:0 0 48px;height:48px;border-radius:50%;display:grid;place-items:center;background:var(--paper);
+  border:1px solid color-mix(in srgb,var(--accent) 40%,var(--line));color:var(--accent);font-family:var(--deva);font-size:1.3rem;z-index:1}
+.sitting h3{margin:4px 0 0;font-size:1.05rem;font-weight:600}
+.sitting h3 [lang="sa"]{font-weight:400;color:var(--accent);margin-left:6px}
+.sitting p{margin:4px 0 0;font-size:.94rem}
+.topics{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0 0;padding:0;list-style:none;justify-content:center}
+.topics li{font-size:.84rem;border:1px solid var(--line);border-radius:999px;padding:4px 12px;background:var(--card)}
+
+/* ---- qualities the practice cultivates */
+.qualities{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:0 24px;margin:6px 0 0;padding:0;list-style:none;
+  border-top:1px solid var(--line)}
+.qualities li{padding:11px 0;border-bottom:1px solid var(--line)}
+.qualities .q{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.qualities [lang="sa"]{font-size:1.08rem;color:var(--accent)}
+.qualities .qe{font-weight:600;font-size:.93rem}
+.qualities p{margin:2px 0 0;font-size:.88rem;color:var(--soft)}
+.note{font-size:.84rem;color:var(--soft);margin:12px 0 0}
+
+/* two dimensions */
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:640px){.two{grid-template-columns:1fr}}
+.refs{margin:10px 0 0;padding-left:1.2em;font-size:.84rem;color:var(--soft)}
+.refs li{margin:4px 0}
+
+/* programmes */
+.prog dl{margin:10px 0 0;display:grid;grid-template-columns:8.5em 1fr;gap:6px 14px;font-size:.93rem}
+.prog dt{color:var(--soft)}
+.prog dd{margin:0}
+@media (max-width:480px){.prog dl{grid-template-columns:1fr;gap:0}.prog dd{margin-bottom:8px}}
+.tbc{font-size:.72rem;letter-spacing:.04em;color:var(--accent);background:var(--accent-soft);border-radius:999px;padding:1px 8px;white-space:nowrap}
+.dakshina{margin-top:14px;padding:16px 20px;border-radius:14px;border:1px solid color-mix(in srgb,var(--accent) 30%,var(--line));
+  background:linear-gradient(135deg,var(--accent-soft),color-mix(in srgb,var(--accent-soft) 30%,var(--card)))}
+.dakshina h3{margin:0;font-weight:600;font-size:1.02rem}
+.dakshina h3 [lang="sa"]{font-weight:400;color:var(--accent);margin-left:6px}
+.dakshina p{margin:6px 0 0;font-size:.93rem}
+
+/* learners: video facade + quotes */
+.video{position:relative;display:block;width:100%;aspect-ratio:16/9;border:0;padding:0;border-radius:12px;overflow:hidden;
+  background:#000 center/cover no-repeat;cursor:pointer}
+.video::after{content:"";position:absolute;inset:0;background:linear-gradient(transparent 55%,rgba(0,0,0,.55))}
+.video .play{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:64px;height:64px;border-radius:50%;z-index:1;
+  display:grid;place-items:center;background:color-mix(in srgb,var(--paper) 88%,transparent);color:var(--accent);transition:transform .25s}
+.video:hover .play,.video:focus-visible .play{transform:translate(-50%,-50%) scale(1.06)}
+.video .play svg{width:24px;height:24px;margin-left:3px;fill:currentColor}
+.video .cap{position:absolute;left:14px;right:14px;bottom:10px;z-index:1;color:#fff;font-size:.86rem;text-align:left;line-height:1.35}
+.video iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.quote{display:flex;gap:14px;align-items:flex-start}
+.quote img{width:52px;height:52px;border-radius:50%;object-fit:cover;flex-shrink:0;border:1px solid var(--line)}
+.quote blockquote{margin:0;font-size:.95rem}
+.quote blockquote p{margin:0 0 8px}
+.quote .who{margin:6px 0 0;font-size:.86rem;color:var(--soft)}
+.quote .who b{color:var(--ink);font-weight:600}
+@media (max-width:480px){.quote{flex-direction:column;gap:10px}}
+
+/* join */
+.join{text-align:center}
+.join .begin{margin-top:16px}
+
+footer{margin-top:56px;padding-top:18px;border-top:1px solid var(--line);font-size:.82rem;color:var(--soft)}
+footer p{margin:5px 0}
+footer a{color:var(--soft)}
+footer a:hover{color:var(--accent)}
+footer nav{display:flex;flex-wrap:wrap;gap:6px 18px;margin-bottom:8px}
+.close-line{text-align:center;font-style:italic;color:var(--soft);margin:40px 0 0}
